@@ -32,6 +32,8 @@ public class Indexer extends SubsystemBase{
 
     private final DigitalInputIO canRange;
 
+    private final double maxError = 1;
+
     public Indexer(){
         if (Robot.isSimulation()){
             rollerIO = new SimRoller(IndexerConstants.RollerSim, new PIDController(20, 0, 0));
@@ -87,6 +89,10 @@ public class Indexer extends SubsystemBase{
 
     public boolean hasPiece(){
         return canRange.getValue();
+    }
+
+    public boolean withinBounds(){
+        return Math.abs(getTargetVelocity() - getVelocity()) < maxError;
     }
 
     public DigitalInputIO getDigitalInputIO(){

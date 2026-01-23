@@ -6,7 +6,6 @@ package frc.robot.subsystems.intakeMechanism;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -43,20 +42,22 @@ public class Arm extends SubsystemBase {
   private final DoublePublisher armTarget = armTable
     .getDoubleTopic("ArmTarget").publish();
 
+  private final double maxError = .02;
+
   /** Subsystem constructor. */
   public Arm() {
     if (Robot.isSimulation()){
-      armIO1 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(110, 0, 7));
-      armIO2 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(110, 0, 7));
+      armIO1 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(20, 0, 1));
+      armIO2 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(20, 0, 1));
     }else{
       armIO1 = new TalonPosition(
         new TalonFX(ArmConstants.ARM_MOTOR_LEFT_ID)
         ,ArmConstants.talonFXConfiguration, false
-      )/*.withFollower(new TalonFX(ArmConstants.ARM_MOTOR_RIGHT_ID), false)*/.withFakeOffset(-.2);
+      )/*.withFollower(new TalonFX(ArmConstants.ARM_MOTOR_RIGHT_ID), false)*/;
       armIO2 = new TalonPosition(
         new TalonFX(ArmConstants.ARM_MOTOR_RIGHT_ID)
         ,ArmConstants.talonFXConfiguration, false
-      ).withFakeOffset(-.2);
+      );
     }
   }
 
@@ -117,9 +118,13 @@ public class Arm extends SubsystemBase {
     return armIO1.getTarget();
   }
 
+  public boolean withinBounds(){
+    return Math.abs(getTarget() - getPosition()) < maxError;
+  }
+
   @Override
   public void periodic(){
-    armPublisher.accept(new Pose3d(-.055,0, 0.152,new Rotation3d(Units.degreesToRadians(90),Units.rotationsToRadians(getPosition()),Units.degreesToRadians(180))));
+    armPublisher.accept(new Pose3d(-.055,0, 0.152,new Rotation3d(Units.degreesToRadians(90),Units.rotationsToRadians(getPosition()-.25),Units.degreesToRadians(180))));
     armRotations.accept(getPosition());
     armTarget.accept(getTarget());
   }

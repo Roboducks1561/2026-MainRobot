@@ -200,10 +200,10 @@ public class Bootleg2022{
     public static void addMainDrive(AbstractDriveTrainSimulation mainDrive){
         drive = mainDrive;
 
-        new Trigger(()->drive.getSimulatedDriveTrainPose().minus(GameData.getFeederPose(true)).getTranslation().getNorm() < 2)
-        .whileTrue(Commands.sequence(Commands.waitSeconds(.4),Commands.runOnce(()->{
-            SimulatedArena.getInstance().addGamePiece(new ReefscapeAlgaeOnField(GameData.getFeederPose(true).getTranslation()));
-        }),Commands.waitSeconds(.5)).repeatedly());
+        // new Trigger(()->drive.getSimulatedDriveTrainPose().minus(GameData.getFeederPose(true)).getTranslation().getNorm() < 2)
+        // .whileTrue(Commands.sequence(Commands.waitSeconds(.4),Commands.runOnce(()->{
+        //     SimulatedArena.getInstance().addGamePiece(new ReefscapeAlgaeOnField(GameData.getFeederPose(true).getTranslation()));
+        // }),Commands.waitSeconds(.5)).repeatedly());
 
         // new Trigger(()->drive.getSimulatedDriveTrainPose().minus(GameData.feederPose(2)).getTranslation().getNorm() < 2)
         // .whileTrue(Commands.sequence(Commands.waitSeconds(.8),Commands.runOnce(()->{
@@ -211,10 +211,10 @@ public class Bootleg2022{
         //         new Transform3d(0,0,1,new Rotation3d(0,0,0)), 0);
         // }),Commands.waitSeconds(3)).repeatedly());
 
-        new Trigger(()->drive.getSimulatedDriveTrainPose().minus(GameData.getFeederPose(false)).getTranslation().getNorm() < 2)
-        .whileTrue(Commands.sequence(Commands.waitSeconds(.4),Commands.runOnce(()->{
-            SimulatedArena.getInstance().addGamePiece(new ReefscapeAlgaeOnField(GameData.getFeederPose(false).getTranslation()));
-        }),Commands.waitSeconds(.5)).repeatedly());
+        // new Trigger(()->drive.getSimulatedDriveTrainPose().minus(GameData.getFeederPose(false)).getTranslation().getNorm() < 2)
+        // .whileTrue(Commands.sequence(Commands.waitSeconds(.4),Commands.runOnce(()->{
+        //     SimulatedArena.getInstance().addGamePiece(new ReefscapeAlgaeOnField(GameData.getFeederPose(false).getTranslation()));
+        // }),Commands.waitSeconds(.5)).repeatedly());
 
         // new Trigger(()->drive.getSimulatedDriveTrainPose().minus(GameData.feederPose(2,true)).getTranslation().getNorm() < 2)
         // .whileTrue(Commands.sequence(Commands.waitSeconds(.8),Commands.runOnce(()->{

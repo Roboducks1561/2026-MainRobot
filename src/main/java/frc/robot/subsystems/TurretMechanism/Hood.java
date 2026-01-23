@@ -46,6 +46,8 @@ public class Hood extends SubsystemBase {
   private final DoublePublisher armTarget = armTable
     .getDoubleTopic("HoodTarget").publish();
 
+  private final double maxError = .02;
+
   /** Subsystem constructor. */
   public Hood() {
     if (Robot.isSimulation()){
@@ -54,13 +56,12 @@ public class Hood extends SubsystemBase {
       armIO = new TalonPosition(
         new TalonFX(HoodConstants.HOOD_MOTOR_ID,"Canivore")
         ,HoodConstants.talonFXConfiguration, false
-      ).withEncoder(new CANcoder(HoodConstants.HOOD_ENCODER_ID, "Canivore"), HoodConstants.encoderConfiguration)
-      .withFakeOffset(/*.627756*/0);
+      ).withEncoder(new CANcoder(HoodConstants.HOOD_ENCODER_ID, "Canivore"), HoodConstants.encoderConfiguration);
     }
   }
 
   public void setPosition(double position){
-    armIO.setPosition(MathUtil.clamp(linearInterpolation(position), Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)));
+    armIO.setPosition(MathUtil.clamp(position, Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)));
   }
 
   /**
@@ -113,12 +114,8 @@ public class Hood extends SubsystemBase {
     return armIO.getTarget();
   }
 
-  public double linearInterpolation(double val){
-    return -1.18098*val + .266115;
-  }
-
-  public double invertInterpolation(double val){
-    return (val-.266115)/-1.18098;
+  public boolean withinBounds(){
+    return Math.abs(getTarget() - getPosition()) < maxError;
   }
 
   @Override

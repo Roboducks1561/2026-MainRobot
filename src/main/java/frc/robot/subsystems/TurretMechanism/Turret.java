@@ -6,7 +6,6 @@ package frc.robot.subsystems.TurretMechanism;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -46,16 +45,17 @@ public class Turret extends SubsystemBase {
 
   public final Transform3d fromSwerveBase = new Transform3d(0,0,.5628, new Rotation3d());
 
+  private final double maxError = .02;
+
   /** Subsystem constructor. */
   public Turret() {
     if (Robot.isSimulation()){
-      armIO = new SimArm(TurretConstants.singleJointedArmSim, new PIDController(50, 0, 1));
+      armIO = new SimArm(TurretConstants.singleJointedArmSim, new PIDController(100, 0, 1));
     }else{
       armIO = new TalonPosition(
         new TalonFX(TurretConstants.TURRET_MOTOR_ID)
         ,TurretConstants.talonFXConfiguration, false
-      )//.withEncoder(new CANcoder(TurretConstants.TURRET_ENCODER_ID), TurretConstants.encoderConfiguration)
-      .withFakeOffset(0);
+      );//.withEncoder(new CANcoder(TurretConstants.TURRET_ENCODER_ID), TurretConstants.encoderConfiguration);
     }
   }
 
@@ -112,6 +112,10 @@ public class Turret extends SubsystemBase {
     return armIO.getTarget();
   }
 
+  public boolean withinBounds(){
+    return Math.abs(getTarget() - getPosition()) < maxError;
+  }
+
   /**
    * 
    * @returns 2 items, first min, second max
@@ -121,7 +125,6 @@ public class Turret extends SubsystemBase {
   }
 
   @Override
-  //Send Current position and orientation data of Arm to Network table and get Elevator data, is Main loop of arm
   public void periodic(){
     armPublisher.accept(new Pose3d(0.12, 0, 0.45,new Rotation3d(0,0,Units.rotationsToRadians(getPosition()))));
     armRotations.accept(getPosition());

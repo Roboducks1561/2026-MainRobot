@@ -7,6 +7,7 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.constants.GameData;
 
@@ -30,6 +31,15 @@ public class PoseEX {
         }
         return new Pose2d(GameData.fieldSizeX-initPose.getX(), GameData.fieldSizeY-initPose.getY(), Rotation2d.fromDegrees(newDegrees));
     }
+
+    public static Pose3d pose180(Pose3d initPose){
+        double newDegrees = initPose.getRotation().toRotation2d().getDegrees() - 180;
+        if (newDegrees < -180){
+            newDegrees+=360;
+        }
+        return new Pose3d(GameData.fieldSizeX-initPose.getX(), GameData.fieldSizeY-initPose.getY(), initPose.getZ(), new Rotation3d(initPose.getRotation().getMeasureX().baseUnitMagnitude(),initPose.getRotation().getMeasureY().baseUnitMagnitude(),Units.degreesToRadians(newDegrees)));
+    }
+    
     
     public static double getDistanceFromPoseMeters(Pose2d mainPose, Pose2d comparingPose) {
         return Math.sqrt(Math.pow(comparingPose.getX()-mainPose.getX(),2)+Math.pow(comparingPose.getY()-mainPose.getY(),2));
@@ -103,6 +113,7 @@ public class PoseEX {
         degrees = degrees > 180 ? degrees-360 : degrees < -180 ? degrees+360 : degrees;
         return Rotation2d.fromDegrees(degrees);
     }
+
 
     public static double correctedRotation(double rotations){
         rotations = rotations%1;

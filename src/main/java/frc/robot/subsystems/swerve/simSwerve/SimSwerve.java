@@ -67,25 +67,25 @@ public class SimSwerve implements SwerveDriveIO {
 
             @Override
             public void placeGamePiecesOnField() {
-                Translation2d[] bluePositions = new Translation2d[] {
-                    GameData.getCargoPose(1,false).getTranslation()
-                    ,GameData.getCargoPose(2,false).getTranslation()
-                    ,GameData.getCargoPose(3,false).getTranslation()
-                    ,GameData.getCargoPose(4,false).getTranslation()
-                    ,GameData.getCargoPose(5,false).getTranslation()
-                    ,GameData.getCargoPose(6,false).getTranslation()
-                };
-                for (Translation2d position : bluePositions) super.addGamePiece(new ReefscapeAlgaeOnField(position));
+            //     Translation2d[] bluePositions = new Translation2d[] {
+            //         GameData.getCargoPose(1,false).getTranslation()
+            //         ,GameData.getCargoPose(2,false).getTranslation()
+            //         ,GameData.getCargoPose(3,false).getTranslation()
+            //         ,GameData.getCargoPose(4,false).getTranslation()
+            //         ,GameData.getCargoPose(5,false).getTranslation()
+            //         ,GameData.getCargoPose(6,false).getTranslation()
+            //     };
+            //     for (Translation2d position : bluePositions) super.addGamePiece(new ReefscapeAlgaeOnField(position));
 
-                Translation2d[] redPositions = new Translation2d[] {
-                    GameData.getCargoPose(1,true).getTranslation()
-                    ,GameData.getCargoPose(2,true).getTranslation()
-                    ,GameData.getCargoPose(3,true).getTranslation()
-                    ,GameData.getCargoPose(4,true).getTranslation()
-                    ,GameData.getCargoPose(5,true).getTranslation()
-                    ,GameData.getCargoPose(6,true).getTranslation()
-                };
-                for (Translation2d position : redPositions) super.addGamePiece(new CrescendoNoteOnField(position));
+            //     Translation2d[] redPositions = new Translation2d[] {
+            //         GameData.getCargoPose(1,true).getTranslation()
+            //         ,GameData.getCargoPose(2,true).getTranslation()
+            //         ,GameData.getCargoPose(3,true).getTranslation()
+            //         ,GameData.getCargoPose(4,true).getTranslation()
+            //         ,GameData.getCargoPose(5,true).getTranslation()
+            //         ,GameData.getCargoPose(6,true).getTranslation()
+            //     };
+            //     for (Translation2d position : redPositions) super.addGamePiece(new CrescendoNoteOnField(position));
             }
         });
         SimulatedArena.getInstance().addDriveTrainSimulation(simulatedDrive.getDriveTrainSimulation());

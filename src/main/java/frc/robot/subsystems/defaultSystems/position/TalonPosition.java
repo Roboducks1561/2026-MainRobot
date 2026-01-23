@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 public class TalonPosition implements PositionIO{
 
@@ -28,7 +29,6 @@ public class TalonPosition implements PositionIO{
     private final ArrayList<TalonFX> followers = new ArrayList<>();
 
     private double armSetpointReal = 0;
-    private double armFakeOffset = 0;
 
     public TalonPosition(TalonFX armMotor, TalonFXConfiguration configuration, boolean pro){
         this.armMotor = armMotor;
@@ -46,10 +46,10 @@ public class TalonPosition implements PositionIO{
     public void setPosition(double position) {
         armSetpointReal = position;
         if (pro){
-            armMotor.setControl(controlRequest.withPosition(armSetpointReal - armFakeOffset).withSlot(0));
+            armMotor.setControl(controlRequest.withPosition(armSetpointReal).withSlot(0));
             return;
         }
-        armMotor.setControl(positionVoltage.withPosition(armSetpointReal - armFakeOffset).withSlot(0));
+        armMotor.setControl(positionVoltage.withPosition(armSetpointReal).withSlot(0));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TalonPosition implements PositionIO{
 
     @Override
     public double getPosition() {
-        return armMotor.getPosition().getValueAsDouble()+armFakeOffset;
+        return armMotor.getPosition().getValueAsDouble();
     }
 
     @Override
@@ -81,14 +81,10 @@ public class TalonPosition implements PositionIO{
     }
 
     public TalonPosition withFollower(TalonFX motor, boolean opposeDirection){
-        motor.setControl(new Follower(this.armMotor.getDeviceID(), opposeDirection));
+        MotorAlignmentValue alignmentValue = opposeDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned;
+        motor.setControl(new Follower(this.armMotor.getDeviceID(), alignmentValue));
         followers.add(motor);
         // configMotor(motor, configuration);
-        return this;
-    }
-
-    public TalonPosition withFakeOffset(double offset){
-        armFakeOffset = offset;
         return this;
     }
 }

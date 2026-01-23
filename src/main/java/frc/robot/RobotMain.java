@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -15,9 +16,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -30,21 +29,22 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.BranchAutos;
-import frc.robot.commands.BranchAutos.BranchInstruction;
-import frc.robot.commands.BranchAutos.Positions;
+import frc.robot.commands.SequentialAutos;
 import frc.robot.constants.GameData;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandMechanism;
 import frc.robot.subsystems.TurretMechanism.Hood;
 import frc.robot.subsystems.TurretMechanism.Shooter;
 import frc.robot.subsystems.TurretMechanism.Turret;
+import frc.robot.subsystems.climbMechanism.ClimbElevator;
 import frc.robot.subsystems.intakeMechanism.Arm;
 import frc.robot.subsystems.intakeMechanism.Indexer;
 import frc.robot.subsystems.intakeMechanism.Intake;
+import frc.robot.subsystems.intakeMechanism.Spindexer;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.swerveHelpers.Telemetry;
 import frc.robot.util.ChoreoEX;
+import frc.robot.util.MutSlewRateLimiter;
 
 
 public class RobotMain extends RobotContainer {
@@ -64,13 +64,14 @@ public class RobotMain extends RobotContainer {
 
   private final Arm arm = new Arm();
   private final Indexer indexer = new Indexer();
+  private final Spindexer spindexer = new Spindexer();
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
   private final Shooter shooter = new Shooter();
   private final Turret turret = new Turret();
+  private final ClimbElevator climbElevator = new ClimbElevator();
 
-  private final CommandMechanism commandMechanism = new CommandMechanism(arm,intake,indexer,turret,hood,shooter,drivetrain);
-  private final BranchAutos branchAutos = new BranchAutos(commandMechanism);
+  private final CommandMechanism commandMechanism = new CommandMechanism(arm,intake,indexer,spindexer,turret,hood,shooter,climbElevator,drivetrain,driverController);
 
   // private final ObjectDetection objectDetection = new ObjectDetection("Test",
   //   new Transform3d(new Translation3d(0,-.101, .522), new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(0))), ()->drivetrain.getPose());
@@ -104,31 +105,11 @@ public class RobotMain extends RobotContainer {
       }
     }));
 
-    StructPublisher<Pose2d> armPublisher = NetworkTableInstance.getDefault()
-    .getStructTopic("pose2d", Pose2d.struct).publish();
-    armPublisher.set(new Pose2d());
-    // arm.setDefaultCommand(arm.reachGoal(0));
-    // turret.setDefaultCommand(turret.reachGoal(0));
-    // hood.setDefaultCommand(hood.reachGoal(0));
-    // driverController.a().whileTrue(arm.reachGoal(.25));
-    // driverController.b().whileTrue(turret.reachGoal(.5));
-    // driverController.x().whileTrue(hood.reachGoal(.5));
-    driverController.leftBumper().whileTrue(commandMechanism.intake());
-    driverController.rightTrigger().whileTrue(commandMechanism.scoreWhileMoving(GameData.scorePose3d));
-    driverController.rightBumper().whileTrue(commandMechanism.autoScore(GameData.scorePose3d));
-
-    // driverController.y().whileTrue(commandMechanism.testScore(2,0));
-    // driverController.a().whileTrue(commandMechanism.testScore(2.5,0));
-    // driverController.b().whileTrue(commandMechanism.testScore(3,0));
-    // driverController.x().whileTrue(commandMechanism.testScore(3.5,0));
-
-    driverController.x().onTrue(Commands.runOnce(()->{
-      drivetrain.resetPose(new Pose2d(-.4,0,new Rotation2d()));
-    }));
-    // driverController.y().whileTrue(commandMechanism.testShoot(40,0.25));
-    // driverController.a().whileTrue(commandMechanism.testShoot(45,0.19));
-    // driverController.b().whileTrue(commandMechanism.testShoot(50,0.19));
-    // driverController.x().whileTrue(commandMechanism.testShoot(15,0.25));
+    driverController.a().whileTrue(commandMechanism.passDynamic(true));
+    driverController.b().whileTrue(commandMechanism.passStatic(false));
+    driverController.x().whileTrue(commandMechanism.shootDynamicNoTurret());
+    driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
+    driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));
   }
 
   public RobotMain() {
@@ -179,19 +160,14 @@ public class RobotMain extends RobotContainer {
   }
 
   public void createAutos(){
-    autoChooser.addOption("First"
-      ,branchAutos.auto("First", new Pose2d(GameData.fieldSizeX/2 - .5, GameData.fieldSizeY/2 + 1, new Rotation2d())
-      , "NONE"
-      , new BranchInstruction(Positions.BeginUp,Positions.Cargo3),new BranchInstruction(Positions.Cargo3,Positions.Score3)
-      , new BranchInstruction(Positions.Score3,Positions.Cargo2),new BranchInstruction(Positions.Cargo2,Positions.Cargo1)
-      , new BranchInstruction(Positions.Cargo1,Positions.Score1),new BranchInstruction(Positions.Score1,Positions.Feeder)
-      ,new BranchInstruction(Positions.Feeder,Positions.ScoreF)));
+    autoChooser.addOption("First", Commands.none());
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
 
+  @Deprecated
   public static SendableChooser<Command> buildAutoChooser(
       String defaultAutoName,
       Function<Stream<PathPlannerAuto>, Stream<PathPlannerAuto>> optionsModifier) {

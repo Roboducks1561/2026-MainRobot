@@ -15,12 +15,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.TurretMechanism.Hood;
-import frc.robot.subsystems.TurretMechanism.Shooter;
-import frc.robot.subsystems.TurretMechanism.Turret;
-import frc.robot.subsystems.intakeMechanism.Arm;
-import frc.robot.subsystems.intakeMechanism.Indexer;
-import frc.robot.subsystems.intakeMechanism.Intake;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.swerveHelpers.Telemetry;
 
@@ -30,8 +24,8 @@ public class RobotTest extends RobotContainer{
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps;
   private double MaxAngularRate = TunerConstants.MAX_ANGULAR_RATE;
 
-  private double speedPercent = .6;
-  private double rotationPercent = .6;
+  private double speedPercent = .3;
+  private double rotationPercent = .3;
 
 
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -76,21 +70,6 @@ public class RobotTest extends RobotContainer{
         drivetrain.seedFieldRelative(Rotation2d.fromDegrees(0));
       }
     }));
-    // turret.setDefaultCommand(turret.reachGoal(0));
-    // driverController.a().whileTrue(turret.reachGoal(100));
-    // driverController.b().whileTrue(turret.reachGoal(-100));
-
-    // shooter.setDefaultCommand(shooter.reachGoal(0));
-    // driverController.leftBumper().whileTrue(shooter.reachGoal(50));
-
-    // // indexer.setDefaultCommand(indexer.reachGoal(0));0
-    // // driverController.leftBumper().whileTrue(indexer.reachGoal(10));
-
-    // hood.setDefaultCommand(hood.reachGoal(.12));
-    // driverController.rightBumper().whileTrue(hood.reachGoal(.32));
-
-    // arm.setDefaultCommand(arm.reachGoal(-.2));
-    // driverController.x().whileTrue(arm.reachGoal(-.09));
   }
 
   public RobotTest() {

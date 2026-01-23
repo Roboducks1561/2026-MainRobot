@@ -27,6 +27,8 @@ public class Shooter extends SubsystemBase{
     private final DoublePublisher rollerTargetPublisher = rollerTable
         .getDoubleTopic("ShooterTargetVelocity").publish();
 
+    private final double maxError = 1;
+
     public Shooter(){
         if (Robot.isSimulation()){
             rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(20, 0, 0));
@@ -76,6 +78,10 @@ public class Shooter extends SubsystemBase{
 
     public double getTargetVelocity(){
         return rollerIO.getTarget();
+    }
+
+    public boolean withinBounds(){
+        return Math.abs(getTargetVelocity() - getVelocity()) < maxError;
     }
 
     @Override

@@ -1,196 +1,110 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Robot;
 import frc.robot.constants.GameData;
-import frc.robot.constants.HoodConstants;
 import frc.robot.subsystems.TurretMechanism.Hood;
 import frc.robot.subsystems.TurretMechanism.Shooter;
 import frc.robot.subsystems.TurretMechanism.Turret;
+import frc.robot.subsystems.climbMechanism.ClimbElevator;
 import frc.robot.subsystems.intakeMechanism.Arm;
 import frc.robot.subsystems.intakeMechanism.Indexer;
 import frc.robot.subsystems.intakeMechanism.Intake;
+import frc.robot.subsystems.intakeMechanism.Spindexer;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.PoseEX;
-import frc.robot.util.Vector2;
 
 public class CommandMechanism extends BaseMechanism{
     private final Notifier notifier;
-    private double[] shootingData;
-    public CommandMechanism(Arm arm, Intake intake, Indexer indexer, Turret turret, Hood hood, Shooter shooter, SwerveDrive swerveDrive){
-        super(arm, intake, indexer, turret, hood, shooter, swerveDrive);
-        notifier = new Notifier(this :: scoringPeriodic);
-        notifier.setName("Scoring Periodic");
+
+    private final ScoreMath scoreMath;
+    private double[] dynamicScoringData = new double[]{0,0,0};
+    private double[] dynamicPassLeft = new double[]{0,0,0};
+    private double[] dynamicPassRight = new double[]{0,0,0};
+    private boolean interpolate = false;
+    private final double maxAimError = .02;
+
+    public CommandMechanism(Arm arm, Intake intake, Indexer indexer, Spindexer spindexer, Turret turret, Hood hood, Shooter shooter, ClimbElevator climbElevator, SwerveDrive swerveDrive, CommandXboxController commandXboxController){
+        super(arm, intake, indexer, spindexer, turret, hood, shooter, climbElevator, swerveDrive, commandXboxController);
+        scoreMath = new ScoreMath(swerveDrive, turret.fromSwerveBase);
+
+        turret.setDefaultCommand(turret.reachGoal(()->PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())));
+
+        notifier = new Notifier(this :: commandPeriodic);
+        notifier.setName("CommandMechanism Periodic");
         notifier.startPeriodic(.02);
         Runtime.getRuntime().addShutdownHook(new Thread(notifier::close));
     }
 
-    public double[] hoodSpeedCalc(Vector2 point1, Vector2 point2){
-        try {
-            double dx = point2.x - point1.x;
-            double dy = point2.y - point1.y;
-
-            double lastBestTheta = 0;
-            double lastBestVelocity = 0;
-            
-            for (double i = hood.invertInterpolation(Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD)); i > hood.invertInterpolation(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)); i-=.005){
-                double theta = Units.rotationsToRadians(i);
-                double denom = 2*Math.pow(Math.cos(theta),2) * (dx * Math.tan(theta) - dy);
-                if (denom <= 0){
-                    continue;
-                }
-                double velocity = Math.sqrt(9.81 * dx * dx / denom);
-                if (velocity > 7){
-                    continue;
-                }
-
-                return new double[]{Units.radiansToRotations(theta), velocity};
-            }
-            System.out.println("Failed");
-            return new double[]{Units.radiansToRotations(lastBestTheta), lastBestVelocity};
-        } catch (Exception e) {
-            return new double[]{0,0};
-        }
-    }
-
-    // /**
-    //  * returns needed hood position (rotations), and shooter speed (rpm) for current location
-    //  * @return
-    //  */
-    // @Deprecated
-    // public double[] calculateScoringPositions(Pose3d scorePose){
-    //     Pose3d turretPose = new Pose3d(swerveDrive.getPose()).transformBy(turret.fromSwerveBase);
-    //     double dist = PoseEX.getDistanceFromPoseMeters(turretPose.toPose2d(),scorePose.toPose2d());
-    //     double heightDif = scorePose.getZ() - turretPose.getZ();
-
-    //     Vector2 point1 = new Vector2(0, 0);
-    //     Vector2 point2 = new Vector2(dist, heightDif);
-
-    //     try {
-    //         double a = (point1.y*point2.x - point2.y*point1.x)/(Math.pow(point1.x,2)*point2.x - Math.pow(point2.x,2) * point1.x);
-    //         double b = (point2.y*Math.pow(point1.x,2) - point1.y*Math.pow(point2.x,2))/(Math.pow(point1.x,2)*point2.x - Math.pow(point2.x,2) * point1.x);
-
-    //         double theta = Math.atan(b);
-
-    //         double n = a*Math.pow(-b/(2*a),2) - Math.pow(b,2)/(2*a);
-    //         double velocity = Math.sqrt(-4*-9.81*n)/Math.sin(theta);
-
-    //         // if (hood.linearInterpolation(Units.radiansToRotations(theta)) > Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)){                
-    //         //     theta = hood.invertInterpolation(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD));
-    //         //     velocity = Math.sqrt((9.81*Math.pow(point2.x,2))
-    //         //     /((2*Math.pow(Math.cos(theta), 2))*(point2.x*Math.tan(theta)-point2.y)));
-    //         // }
-    //         // if (hood.linearInterpolation(Units.radiansToRotations(theta)) < Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD)){
-    //         //     theta = hood.invertInterpolation(Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD));
-    //         //     velocity = Math.sqrt((9.81*Math.pow(point2.x,2))
-    //         //     /((2*Math.pow(Math.cos(theta), 2))*(point2.x*Math.tan(theta)-point2.y)));
-    //         // }
-
-    //         return new double[]{Units.radiansToRotations(theta), velocity};
-    //     } catch (Exception e) {
-    //         return new double[]{0,0};
-    //     }
+    // @Override
+    // public boolean readyToShoot(){
+    //     return super.readyToShoot()
+    //     && Math.abs(dynamicScoringData[2]-swerveDrive.getYaw().getRotations()-turret.getPosition()) < maxAimError;
     // }
 
-    public double[] turretCalc(Pose2d turretPose, Pose2d scorePose){
-        double targetRotation = PoseEX.getPoseAngle(turretPose, scorePose).getRotations();
-        double swerveDriveRotation = swerveDrive.getPose().getRotation().getRotations();
-
-        return new double[]{targetRotation, PoseEX.correctedRotation(targetRotation - swerveDriveRotation)};
+    public double mpsTorps(double mps){
+        return mps;
     }
 
-    public double[] calculateStaticScoring(Pose3d scorePose){
-
-        double[] answers = new double[4];
-        Pose3d turretPose = new Pose3d(swerveDrive.getPose()).transformBy(turret.fromSwerveBase);
-        double heightDif = scorePose.getZ() - turretPose.getZ();
-        double dist = PoseEX.getDistanceFromPoseMeters(turretPose.toPose2d(),scorePose.toPose2d());
-
-        Vector2 point1 = new Vector2(0, 0);
-        Vector2 point2 = new Vector2(dist, heightDif);
-
-
-        double[] hoodSpeedVals = hoodSpeedCalc(point1, point2);
-        answers[0] = hoodSpeedVals[0];
-        answers[1] = hoodSpeedVals[1];
-
-        double[] turretVals = turretCalc(turretPose.toPose2d(), scorePose.toPose2d());
-        answers[2] = turretVals[0];
-        answers[3] = turretVals[1];
-        return answers;
+    public double rpsTomps(double rps){
+        return rps;
     }
 
-
-    public double[] calculateMovingScoring(Pose3d scorePose){
-
-        double[] answers = new double[]{0,0,0,0};
-
-        double heightDif = scorePose.getZ() - turret.fromSwerveBase.getZ();
-        double timeTillTarget = 10;
-
-        ChassisSpeeds swerveSpeeds = swerveDrive.getSpeeds();//.plus(swerveDrive.getAcceleration().times(timeTillTarget));
-        Pose3d turretPose = new Pose3d(swerveDrive.getPose()).transformBy(new Transform3d(swerveSpeeds.vxMetersPerSecond * timeTillTarget, swerveSpeeds.vyMetersPerSecond * timeTillTarget,0,new Rotation3d())).transformBy(turret.fromSwerveBase);
-        double dist = PoseEX.getDistanceFromPoseMeters(turretPose.toPose2d(),scorePose.toPose2d());
-        
-        Vector2 point1 = new Vector2(0, 0);
-        Vector2 point2 = new Vector2(dist, heightDif);
-
-        double[] hoodSpeedVals = hoodSpeedCalc(point1, point2);
-        answers[0] = hoodSpeedVals[0];
-        answers[1] = hoodSpeedVals[1];
-
-        double[] turretVals = turretCalc(turretPose.toPose2d(), scorePose.toPose2d());
-        answers[2] = turretVals[0];
-        answers[3] = turretVals[1];
-        return answers;
+    public double hoodRotationsToShootRotations(double rotations){
+        return Robot.isSimulation() ? rotations : rotations;
     }
 
-    /**
-     * returns needed hood position (rotations), and shooter speed (rpm) for current location
-     * @return
-     */
-    public double[] testScoringPositions(double dist, double height){
-        Pose3d turretPose = new Pose3d(swerveDrive.getPose()).transformBy(turret.fromSwerveBase);
-        double heightDif = height - turretPose.getZ();
-
-        Vector2 point1 = new Vector2(0, 0);
-        Vector2 point2 = new Vector2(dist, heightDif);
-
-        return hoodSpeedCalc(point1, point2);
+    public double shootRotationsToHoodRotations(double rotations){
+        return Robot.isSimulation() ? rotations : rotations;
     }
 
-    public Command autoScore(Pose3d scorePose){
-        return shoot(
-            ()->shootingData[2]
-            ,()->shootingData[3]
-            ,()->shootingData[0]
-            ,()->shootingData[1]
-        );
+    public Command shootDefault(Supplier<double[]> dynamicScoringData){
+        return shootContinuous(()->shootRotationsToHoodRotations(dynamicScoringData.get()[0])
+            ,()->mpsTorps(dynamicScoringData.get()[1])
+            ,()->PoseEX.correctedRotation(dynamicScoringData.get()[2]-swerveDrive.getYaw().getRotations()));
     }
 
-    public Command scoreWhileMoving(Pose3d scorePose){
-        return shoot(
-            ()->shootingData[3]
-            ,()->shootingData[0]
-            ,()->shootingData[1]
-        );
+    public Command shootDynamic() {
+        return shootDefault(()->dynamicScoringData);
     }
 
-    public Command testScore(double dist, double height){
-        return shoot(
-            ()->0
-            ,()->testScoringPositions(dist,height)[0]
-            ,()->testScoringPositions(dist,height)[1]
-        );
+    public Command shootStatic() {
+        return Commands.parallel(swerveDrive.brake()
+            ,shootDefault(()->dynamicScoringData));
     }
 
-    public void scoringPeriodic(){
-        shootingData = calculateStaticScoring(GameData.scorePose3d);
+    public Command shootDynamicNoTurret() {
+        return shootDefault(()->dynamicScoringData)
+            .alongWith(swerveDrive.pointWhileDrive(()->Rotation2d.fromRotations(dynamicScoringData[2]), xboxController, 5,1,5,1));
+    }
+
+    public Command passDynamic(boolean left) {
+        return shootDefault(()-> left ? dynamicPassLeft : dynamicPassRight);
+    }
+
+    public Command passStatic(boolean left) {
+        return Commands.parallel(swerveDrive.brake()
+            ,shootDefault(()-> left ? dynamicPassLeft : dynamicPassRight));
+    }
+
+    public Command passDynamicNoTurret(boolean left) {
+        return shootDefault(()-> left ? dynamicPassLeft : dynamicPassRight)
+            .alongWith(swerveDrive.pointWhileDrive(()->Rotation2d.fromRotations(left ? dynamicPassLeft[2] : dynamicPassRight[2]), xboxController, 5,1,5,1));
+    }
+
+    public void commandPeriodic(){
+        dynamicScoringData = scoreMath.dynamicScore(GameData.getHubPose3d(), interpolate && !Robot.isSimulation()
+            ,hoodRotationsToShootRotations(.055), hoodRotationsToShootRotations(.125), rpsTomps(8));
+
+        dynamicPassLeft = scoreMath.dynamicScore(GameData.getPassPose3d(true), interpolate && !Robot.isSimulation()
+            ,hoodRotationsToShootRotations(.055), hoodRotationsToShootRotations(.125), rpsTomps(10));
+        dynamicPassRight = scoreMath.dynamicScore(GameData.getPassPose3d(false), interpolate && !Robot.isSimulation()
+            ,hoodRotationsToShootRotations(.055), hoodRotationsToShootRotations(.125), rpsTomps(10));
     }
 }

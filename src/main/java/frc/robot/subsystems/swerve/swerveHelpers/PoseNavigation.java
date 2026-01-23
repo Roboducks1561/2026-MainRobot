@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve.swerveHelpers;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,6 +30,12 @@ public class PoseNavigation {
         double finalRotation = Math.min(Math.max(rotationPID.calculate(distToCorrectedPoint(target.getRadians(), current.getRotation().getRadians()),0),-radianPSCap),radianPSCap);
         return new ChassisSpeeds(0, 0, finalRotation);
     }
+    
+    public ChassisSpeeds calculateTowardRotation(Pose2d target, Pose2d current, double radianPSCap) {
+        double targetRotation = -PoseEX.getYawFromPose(current, target).getRadians();
+        double finalRotation = Math.min(Math.max(rotationPID.calculate(targetRotation,0),-radianPSCap),radianPSCap);
+        return new ChassisSpeeds(0, 0, finalRotation);
+    }
 
     /**
      * direction to the defined pose with speed constraints
@@ -48,6 +55,24 @@ public class PoseNavigation {
         }
 
         double finalRotation = Math.min(Math.max(rotationPID.calculate(distToCorrectedPoint(target.getRotation().getRadians(), current.getRotation().getRadians()),0),-radianPSCap),radianPSCap);
+
+        return new ChassisSpeeds(finalSpeeds.x, finalSpeeds.y, finalRotation);
+    }
+
+    /**
+     * direction to the defined arc with speed constraints
+    **/
+    public ChassisSpeeds calculateTowardAndPointArc(Pose2d target, Pose2d pointTo, Pose2d current, double distFromCenter, double speedCap, double radianPSCap) {
+        Vector2 vector = new Vector2(target.getX()-current.getX(), target.getY()-current.getY());
+        Vector2 weights = vector.normalize();
+
+        Vector2 finalSpeeds = new Vector2(-speedsPID.calculate(vector.x,weights.x*distFromCenter),-speedsPID.calculate(vector.y,weights.y*distFromCenter));
+        if (finalSpeeds.getMagnitude() > speedCap){
+            finalSpeeds = finalSpeeds.normalize().multiply(speedCap);
+        }
+        double targetRotation = -PoseEX.getYawFromPose(current, pointTo).getRadians();
+
+        double finalRotation = Math.min(Math.max(rotationPID.calculate(targetRotation,0),-radianPSCap),radianPSCap);
 
         return new ChassisSpeeds(finalSpeeds.x, finalSpeeds.y, finalRotation);
     }

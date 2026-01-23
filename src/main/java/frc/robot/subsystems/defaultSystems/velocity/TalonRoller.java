@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 public class TalonRoller implements VelocityIO{
     
@@ -80,7 +81,8 @@ public class TalonRoller implements VelocityIO{
     }
 
     public TalonRoller withFollower(TalonFX motor, boolean opposeDirection){
-        motor.setControl(new Follower(motor.getDeviceID(), opposeDirection));
+        MotorAlignmentValue alignmentValue = opposeDirection ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned;
+        motor.setControl(new Follower(this.intakeMotor.getDeviceID(), alignmentValue));
         followers.add(motor);
         configMotor(motor, talonFXConfigs);
         return this;

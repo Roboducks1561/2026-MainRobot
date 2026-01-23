@@ -19,6 +19,8 @@ public class HoodConstants{
 
     public static final double HOOD_WEIGHT_KG = 3;
     public static final double HOOD_LENGTH_METERS = .36;
+
+    public static final double INIT_HOOD_ANGLE_RAD = Units.rotationsToRadians(.01);
     public static final double MAX_HOOD_ANGLE_RAD = Units.rotationsToRadians(.07);
     public static final double MIN_HOOD_ANGLE_RAD = Units.rotationsToRadians(0);
 

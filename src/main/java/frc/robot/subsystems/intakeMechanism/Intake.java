@@ -36,6 +36,8 @@ public class Intake extends SubsystemBase{
     private final DigitalInputIO colorSensor;
     private final DigitalInputIO motorStrain;
 
+    private final double maxError = 1;
+
     public Intake(){
         if (Robot.isSimulation()){
             intakeIO = new SimRoller(IntakeConstants.intakeSim, new PIDController(20, 0, 0));
@@ -101,6 +103,10 @@ public class Intake extends SubsystemBase{
 
     public boolean intaking(){
         return motorStrain.getValue();
+    }
+
+    public boolean withinBounds(){
+        return Math.abs(getTargetVelocity() - getVelocity()) < maxError;
     }
 
     public DigitalInputIO getDigitalInputIO(){

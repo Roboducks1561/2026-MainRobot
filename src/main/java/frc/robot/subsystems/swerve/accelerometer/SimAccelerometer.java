@@ -16,7 +16,8 @@ public class SimAccelerometer implements AccelerometerIO{
     private double yAccel = 0;
 
     /**
-     * All returned values are in G forces
+     * All returned values are in G forces.
+     * Even though this is for sim, it is doing the right calculations for acceleration during a real match if roborio isn't optimal
      * @param xVel robot relative
      * @param yVel robot relative
      */

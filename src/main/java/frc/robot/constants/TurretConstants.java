@@ -17,9 +17,9 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class TurretConstants{
 
-    public static final double TURRET_WEIGHT_KG = 3;
+    public static final double TURRET_WEIGHT_KG = 1;
     public static final double TURRET_LENGTH_METERS = .2;
-    public static final double MAX_TURRET_ANGLE_RAD = Units.rotationsToRadians(.1105);
+    public static final double MAX_TURRET_ANGLE_RAD = Units.rotationsToRadians(.5676);
     public static final double MIN_TURRET_ANGLE_RAD = Units.rotationsToRadians(-.5676);
 
     public static final int TURRET_MOTOR_ID = 20;
