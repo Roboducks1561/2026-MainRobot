@@ -18,7 +18,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Notifier;
 
 public class Animations {
@@ -91,8 +90,8 @@ public class Animations {
             Pair<Translation3d, Translation3d> pair = flyingObjects.get(i);
             Translation3d initPose = pair.getFirst();
             Translation3d velocity = pair.getSecond();
-            Translation3d finalPose = initPose.plus(velocity.times(.02).minus(new Translation3d()));
-            Translation3d finalVelocity = velocity.plus(new Translation3d(0,0,-9.81*.02).minus(new Translation3d()));
+            Translation3d finalPose = initPose.plus(velocity.times(.02));
+            Translation3d finalVelocity = velocity.plus(new Translation3d(0,0,-9.81*.02));
 
             flyingObjects.set(i, new Pair<Translation3d,Translation3d>(finalPose, finalVelocity));
             arr[i] = flyingObjects.get(i).getFirst();

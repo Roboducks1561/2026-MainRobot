@@ -4,6 +4,8 @@
 
 package frc.robot.util;
 
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -44,22 +46,25 @@ public class PoseEX {
     public static double getDistanceFromPoseMeters(Pose2d mainPose, Pose2d comparingPose) {
         return Math.sqrt(Math.pow(comparingPose.getX()-mainPose.getX(),2)+Math.pow(comparingPose.getY()-mainPose.getY(),2));
     }
+
+    public static boolean isNear(Pose2d mainPose, Pose2d[] comparingPoses, double minDist){
+        for (Pose2d pose : comparingPoses){
+            if (getDistanceFromPoseMeters(mainPose, pose) < minDist){
+                return true;
+            }
+        }
+        return false;
+    }
     
     public static Rotation2d getYawFromPose(Pose2d mainPose, Pose2d comparingPose) {
         double deltaX = comparingPose.getX() - mainPose.getX();
         double deltaY = comparingPose.getY() - mainPose.getY();
 
-        double angleRadians = ((Math.atan(deltaY/deltaX)));
+        double angleRadians = Math.atan2(deltaY,deltaX);
 
         // Convert the angle to Rotation2d
-        Rotation2d rotation = Rotation2d.fromRadians(angleRadians - mainPose.getRotation().getRadians());
-        if (mainPose.getX()>comparingPose.getX()){
-            if (rotation.getDegrees()>0){
-                rotation = Rotation2d.fromDegrees(Units.radiansToDegrees(angleRadians) - mainPose.getRotation().getDegrees()-180);
-            }else{
-                rotation = Rotation2d.fromDegrees(Units.radiansToDegrees(angleRadians) - mainPose.getRotation().getDegrees()+180);
-            }
-        }
+        Rotation2d rotation = correctedRotation(Rotation2d.fromRadians(angleRadians - mainPose.getRotation().getRadians()));
+
         return rotation;
     }
 

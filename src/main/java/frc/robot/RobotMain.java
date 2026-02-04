@@ -13,10 +13,13 @@ import java.util.stream.Stream;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -33,6 +36,7 @@ import frc.robot.commands.SequentialAutos;
 import frc.robot.constants.GameData;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandMechanism;
+import frc.robot.subsystems.GameState;
 import frc.robot.subsystems.TurretMechanism.Hood;
 import frc.robot.subsystems.TurretMechanism.Shooter;
 import frc.robot.subsystems.TurretMechanism.Turret;
@@ -62,16 +66,23 @@ public class RobotMain extends RobotContainer {
   
   private final SwerveDrive drivetrain = new SwerveDrive();
 
+
+  private final NetworkTable robot = NetworkTableInstance.getDefault().getTable("Robot");
+
+  private final StructPublisher<Pose2d> basePublisher = robot
+    .getStructTopic("Base", Pose2d.struct).publish();
+
   private final Arm arm = new Arm();
   private final Indexer indexer = new Indexer();
   private final Spindexer spindexer = new Spindexer();
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
   private final Shooter shooter = new Shooter();
-  private final Turret turret = new Turret();
+  // private final Turret turret = new Turret();
   private final ClimbElevator climbElevator = new ClimbElevator();
 
-  private final CommandMechanism commandMechanism = new CommandMechanism(arm,intake,indexer,spindexer,turret,hood,shooter,climbElevator,drivetrain,driverController);
+  private final CommandMechanism commandMechanism = new CommandMechanism(arm,intake,indexer,spindexer,hood,shooter,climbElevator,drivetrain);
+  private final GameState gameState = new GameState(commandMechanism, driverController);
 
   // private final ObjectDetection objectDetection = new ObjectDetection("Test",
   //   new Transform3d(new Translation3d(0,-.101, .522), new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(0))), ()->drivetrain.getPose());
@@ -87,11 +98,7 @@ public class RobotMain extends RobotContainer {
   private void configureBindings() {
     drivetrain.resetPose(new Pose2d(7,5,Rotation2d.fromDegrees(180)));
   
-    drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * speedPercent * MaxSpeed)
-            .withVelocityY(-driverController.getLeftX() * speedPercent * MaxSpeed)
-            .withRotationalRate(-driverController.getRightX() * rotationPercent * MaxAngularRate)
-    ));
+    drivetrain.createDefaultCommand(driverController, speedPercent, rotationPercent);
     
     drivetrain.getDriveIO().registerTelemetry((log)->logger.telemeterize(log));
     
@@ -103,13 +110,18 @@ public class RobotMain extends RobotContainer {
       }else{
         drivetrain.seedFieldRelative(Rotation2d.fromDegrees(0));
       }
-    }));
+    })
+    .alongWith(commandMechanism.climbUp().withTimeout(3).andThen(commandMechanism.climbDown())));
 
-    driverController.a().whileTrue(commandMechanism.passDynamic(true));
-    driverController.b().whileTrue(commandMechanism.passStatic(false));
-    driverController.x().whileTrue(commandMechanism.shootDynamicNoTurret());
-    driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
-    driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));
+    // driverController.a().whileTrue(commandMechanism.passDynamic(true));
+    // driverController.b().whileTrue(commandMechanism.passStatic(false));
+    // driverController.x().whileTrue(commandMechanism.shootDynamic());
+    // driverController.leftBumper().whileTrue(commandMechanism.intake());
+    // driverController.rightBumper().whileTrue(hood.reachGoal(.09774));
+    driverController.rightBumper().whileTrue(gameState.shoot());
+    driverController.leftBumper().whileTrue(gameState.intake());
+    // driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
+    // driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));
   }
 
   public RobotMain() {
@@ -119,10 +131,11 @@ public class RobotMain extends RobotContainer {
     DriverStation.startDataLog(DataLogManager.getLog());
     DataLogManager.logNetworkTables(true);
     
-    configureAutonomousCommands();
+    new SequentialAutos(commandMechanism);
 
+    
     autoChooser = AutoBuilder.buildAutoChooser();
-
+    
     createAutos();
     // autoChooser = buildAutoChooser("", (data) -> data);
 
@@ -153,10 +166,13 @@ public class RobotMain extends RobotContainer {
 
     //How you might make a choreo only path
     autoChooser.addOption("ChoreoPath", ChoreoEX.getChoreoGroupPath(true,new String[]{"shootPreAmp","intake4","shoot4M","intake5","shoot5M","intake6","shoot6M","intake7","shoot7M"}));
+  
+    basePublisher.accept(new Pose2d());
   }
 
   public void configureAutonomousCommands() {
-    
+    NamedCommands.registerCommand("intake", commandMechanism.intake().alongWith(Commands.print("HIII")));
+    NamedCommands.registerCommand("shoot", commandMechanism.intake());
   }
 
   public void createAutos(){

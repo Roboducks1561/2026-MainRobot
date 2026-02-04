@@ -1,7 +1,9 @@
 package frc.robot.subsystems.swerve;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.dyn4j.geometry.Rotation;
@@ -15,6 +17,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -74,10 +77,13 @@ public class SwerveDrive extends SubsystemBase{
     public final PIDController rotationPID = new PIDController(6, 0, 0);
     
     
-    private final PoseNavigation poseNavigation;
+    public final PoseNavigation poseNavigation;
 
 
     private final Notifier visionUpdates;
+
+
+    private BiConsumer<ChassisSpeeds, DriveFeedforwards> autoConsumer;
 
     public SwerveDrive(){
         if (Robot.isSimulation()){
@@ -87,6 +93,10 @@ public class SwerveDrive extends SubsystemBase{
             this.swerveIO = TunerConstants.createDrivetrain();
             this.accelerometer = new RoboRioAccelerometer();
         }
+
+        autoConsumer = (speeds, feedForward)->{
+            swerveIO.setControl(robotCentricDrive.withSpeeds(speeds.times(1)));
+        };
 
         poseNavigation = new PoseNavigation(speedsPID, rotationPID);
 
@@ -146,12 +156,30 @@ public class SwerveDrive extends SubsystemBase{
         swerveIO.seedFieldRelative(rot);
     }
 
+    public void createDefaultCommand(CommandXboxController driverController, double speedPercent, double rotationPercent){
+        setDefaultCommand(applyRequest(() -> driverCentricDrive.withVelocityX(-driverController.getLeftY() * speedPercent * TunerConstants.kSpeedAt12VoltsMps)
+            .withVelocityY(-driverController.getLeftX() * speedPercent * TunerConstants.kSpeedAt12VoltsMps)
+            .withRotationalRate(-driverController.getRightX() * rotationPercent * TunerConstants.MAX_ANGULAR_RATE)));
+    }
+
+    public BiConsumer<ChassisSpeeds, DriveFeedforwards> getAutoConsumer(){
+        return autoConsumer;
+    }
+
+    public void setAutoConsumer(BiConsumer<ChassisSpeeds, DriveFeedforwards> autoConsumer){
+        this.autoConsumer = autoConsumer;
+    }
+
+    private void accepter(ChassisSpeeds speeds, DriveFeedforwards feedforwards){
+        autoConsumer.accept(speeds, feedforwards);
+    }
+
     public void configurePathPlanner() {
         AutoBuilder.configure(
             this::getPose, // getState of the robot pose
             this::resetPose,  // Consumer for seeding pose against auto
             swerveIO::getSpeeds,
-            (speeds, feedForward)->swerveIO.setControl(robotCentricDrive.withSpeeds(speeds.times(1))), // Consumer of ChassisSpeeds to drive the robot
+            (speeds, feedforwards)->accepter(speeds, feedforwards), // Consumer of ChassisSpeeds to drive the robot
             new PPHolonomicDriveController(new PIDConstants(5, 0, 0),
                                             new PIDConstants(5, 0, 0)),
             PathplannerConstants.pathingConfig,
@@ -211,6 +239,14 @@ public class SwerveDrive extends SubsystemBase{
         return applyRequest(()->fieldCentricDrive.withSpeeds(new ChassisSpeeds()));
     }
 
+    public boolean withinRotation(Rotation2d other, double maxRadError){
+        Pose2d pose = getPose();
+        if (Math.abs(pose.getRotation().getRadians() - other.getRadians()) > maxRadError){
+            return false;
+        }
+        return true;
+    }
+
     public boolean withinCoords(Pose2d wantedPose, double maxXError, double maxYError, double maxRadError){
         Pose2d pose = getPose();
         if (Math.abs(pose.getX() - wantedPose.getX()) > maxXError){
@@ -266,15 +302,15 @@ public class SwerveDrive extends SubsystemBase{
         return applyRequest(()->fieldCentricDrive.withSpeeds(poseNavigation.calculateTowardAndPointArc(pose, pointTo, getPose(), distFromCenter, maxSpeed, maxRads)));
     }
 
-    public Command pointWhileDrive(Supplier<Rotation2d> pointTo, CommandXboxController xboxController, double speedPercent, double MaxSpeed, double MaxAngularRate, double rotationPercent){
-        return applyRequest(()->driverCentricDrive.withVelocityX(-xboxController.getLeftY() * speedPercent * MaxSpeed)
-            .withVelocityY(-xboxController.getLeftX() * speedPercent * MaxSpeed)
+    public Command pointWhileDrive(Supplier<Rotation2d> pointTo, DoubleSupplier vx, DoubleSupplier vy, double speedPercent, double MaxSpeed, double MaxAngularRate, double rotationPercent){
+        return applyRequest(()->driverCentricDrive.withVelocityX(vx.getAsDouble() * speedPercent * MaxSpeed)
+            .withVelocityY(vy.getAsDouble() * speedPercent * MaxSpeed)
             .withRotationalRate(poseNavigation.calculateTowardRotation(pointTo.get(), getPose(), MaxAngularRate).omegaRadiansPerSecond * rotationPercent));
     }
 
-    public Command pointWhileDrive(Pose2d pointTo, CommandXboxController xboxController, double speedPercent, double MaxSpeed, double MaxAngularRate, double rotationPercent){
-        return applyRequest(()->driverCentricDrive.withVelocityX(-xboxController.getLeftY() * speedPercent * MaxSpeed)
-            .withVelocityY(-xboxController.getLeftX() * speedPercent * MaxSpeed)
+    public Command pointWhileDrive(Pose2d pointTo, DoubleSupplier vx, DoubleSupplier vy, double speedPercent, double MaxSpeed, double MaxAngularRate, double rotationPercent){
+        return applyRequest(()->driverCentricDrive.withVelocityX(vx.getAsDouble() * speedPercent * MaxSpeed)
+            .withVelocityY(vy.getAsDouble() * speedPercent * MaxSpeed)
             .withRotationalRate(poseNavigation.calculateTowardRotation(pointTo, getPose(), MaxAngularRate).omegaRadiansPerSecond * rotationPercent));
     }
 

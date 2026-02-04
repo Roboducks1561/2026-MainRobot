@@ -26,7 +26,7 @@ public class LimelightConstants {
     // public static final Transform3d AMP_CAM_TRANSFORM =
     //     new Transform3d(new Translation3d(0,-.101, .522), new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(0)));
 
-    public static final AprilTagFieldLayout K_TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    public static final AprilTagFieldLayout K_TAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees//actually maybe radians) std deviation}
       {0, 0.0, 0.0, 0},

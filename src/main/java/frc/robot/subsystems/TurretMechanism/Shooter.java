@@ -27,11 +27,11 @@ public class Shooter extends SubsystemBase{
     private final DoublePublisher rollerTargetPublisher = rollerTable
         .getDoubleTopic("ShooterTargetVelocity").publish();
 
-    private final double maxError = 1;
+    private final double maxError = .03;
 
     public Shooter(){
         if (Robot.isSimulation()){
-            rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(20, 0, 0));
+            rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(25, 3, 0));
         }else{
             rollerIO = new TalonRoller(new TalonFX(ShooterConstants.SHOOTER_MOTOR_ID, "Canivore"), ShooterConstants.talonFXConfiguration, false);
         }

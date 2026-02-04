@@ -36,6 +36,8 @@ public class Arm extends SubsystemBase {
 
   private final StructPublisher<Pose3d> armPublisher = armTable
     .getStructTopic("ArmAngle", Pose3d.struct).publish();
+  private final StructPublisher<Pose3d> hopperPublisher = armTable
+    .getStructTopic("HopperPosition", Pose3d.struct).publish();
 
   private final DoublePublisher armRotations = armTable
     .getDoubleTopic("ArmRotations").publish();
@@ -47,8 +49,8 @@ public class Arm extends SubsystemBase {
   /** Subsystem constructor. */
   public Arm() {
     if (Robot.isSimulation()){
-      armIO1 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(20, 0, 1));
-      armIO2 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(20, 0, 1));
+      armIO1 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(50, 0, 3));
+      armIO2 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(50, 0, 3));
     }else{
       armIO1 = new TalonPosition(
         new TalonFX(ArmConstants.ARM_MOTOR_LEFT_ID)
@@ -124,7 +126,10 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic(){
-    armPublisher.accept(new Pose3d(-.055,0, 0.152,new Rotation3d(Units.degreesToRadians(90),Units.rotationsToRadians(getPosition()-.25),Units.degreesToRadians(180))));
+    // armPublisher.accept(new Pose3d());
+    armPublisher.accept(new Pose3d(0.2,0, 0.15,new Rotation3d(0,Units.rotationsToRadians(getPosition()),0)));
+    double meterRadius = .172;
+    hopperPublisher.accept(new Pose3d(Math.sin(Units.rotationsToRadians(getPosition()))*meterRadius,0, 0,new Rotation3d(0,0,0)));
     armRotations.accept(getPosition());
     armTarget.accept(getTarget());
   }

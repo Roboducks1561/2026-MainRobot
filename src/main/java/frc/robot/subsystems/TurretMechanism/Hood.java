@@ -36,8 +36,6 @@ public class Hood extends SubsystemBase {
   private final NetworkTable robot = NetworkTableInstance.getDefault().getTable("Robot");
   private final NetworkTable armTable = robot.getSubTable("Hood");
 
-  private final StructSubscriber<Pose3d> turretSubscriber = robot.getSubTable("Turret").getStructTopic("TurretAngle",Pose3d.struct).subscribe(new Pose3d());
-
   private final StructPublisher<Pose3d> armPublisher = armTable
     .getStructTopic("HoodAngle", Pose3d.struct).publish();
 
@@ -46,7 +44,7 @@ public class Hood extends SubsystemBase {
   private final DoublePublisher armTarget = armTable
     .getDoubleTopic("HoodTarget").publish();
 
-  private final double maxError = .02;
+  private final double maxError = .005;
 
   /** Subsystem constructor. */
   public Hood() {
@@ -120,11 +118,9 @@ public class Hood extends SubsystemBase {
 
   @Override
   public void periodic(){
-    Pose3d turretPose = turretSubscriber.get();
-    double pivotFromCenter = Units.inchesToMeters(6.588);
-    double sinOf = Math.sin(turretSubscriber.get().getRotation().getZ()) * pivotFromCenter;
-    double cosOf = Math.cos(turretSubscriber.get().getRotation().getZ()) * pivotFromCenter;
-    armPublisher.accept(new Pose3d(0.291-pivotFromCenter+cosOf, 0.01+sinOf, 0.55,new Rotation3d(0,Units.rotationsToRadians(getPosition() + .17-.25),turretPose.getRotation().getZ())));
+    double minimumHoodRotation = .02;
+    // armPublisher.accept(new Pose3d());
+    armPublisher.accept(new Pose3d(-.16, 0, .398,new Rotation3d(0,Units.rotationsToRadians(getPosition()+minimumHoodRotation),0)));
     armRotations.accept(getPosition());
     armTarget.accept(getTarget());
   }

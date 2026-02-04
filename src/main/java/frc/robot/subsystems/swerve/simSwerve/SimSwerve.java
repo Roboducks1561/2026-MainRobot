@@ -1,17 +1,15 @@
 package frc.robot.subsystems.swerve.simSwerve;
 
-import java.util.Arrays;
+import static edu.wpi.first.units.Units.Inches;
+
 import java.util.function.Consumer;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SelfControlledSwerveDriveSimulation;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
-import org.ironmaple.simulation.gamepieces.GamePieceOnFieldSimulation;
-import org.ironmaple.simulation.seasonspecific.crescendo2024.CrescendoNoteOnField;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralAlgaeStack;
-import org.ironmaple.utils.FieldMirroringUtils;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveControlParameters;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
@@ -30,10 +28,12 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.constants.GameData;
 import frc.robot.subsystems.swerve.SwerveDriveIO;
-import frc.robot.util.mapleSim.Bootleg2022;
+// import frc.robot.util.mapleSim.Bootleg2022;
+import frc.robot.util.mapleSim.Bootleg2026;
 
 //TODO Imperfect, better can be done
 public class SimSwerve implements SwerveDriveIO {
@@ -61,33 +61,7 @@ public class SimSwerve implements SwerveDriveIO {
                 new SwerveDriveSimulation(config, new Pose2d(7, 5, new Rotation2d())), VecBuilder.fill(0.1,0.1,0.1), VecBuilder.fill(0,0,0));
 
         // Register the drivetrain simulation to the simulation world
-        SimulatedArena.overrideInstance(new SimulatedArena(new SimulatedArena.FieldMap() {
-            
-        }) {
-
-            @Override
-            public void placeGamePiecesOnField() {
-            //     Translation2d[] bluePositions = new Translation2d[] {
-            //         GameData.getCargoPose(1,false).getTranslation()
-            //         ,GameData.getCargoPose(2,false).getTranslation()
-            //         ,GameData.getCargoPose(3,false).getTranslation()
-            //         ,GameData.getCargoPose(4,false).getTranslation()
-            //         ,GameData.getCargoPose(5,false).getTranslation()
-            //         ,GameData.getCargoPose(6,false).getTranslation()
-            //     };
-            //     for (Translation2d position : bluePositions) super.addGamePiece(new ReefscapeAlgaeOnField(position));
-
-            //     Translation2d[] redPositions = new Translation2d[] {
-            //         GameData.getCargoPose(1,true).getTranslation()
-            //         ,GameData.getCargoPose(2,true).getTranslation()
-            //         ,GameData.getCargoPose(3,true).getTranslation()
-            //         ,GameData.getCargoPose(4,true).getTranslation()
-            //         ,GameData.getCargoPose(5,true).getTranslation()
-            //         ,GameData.getCargoPose(6,true).getTranslation()
-            //     };
-            //     for (Translation2d position : redPositions) super.addGamePiece(new CrescendoNoteOnField(position));
-            }
-        });
+        
         SimulatedArena.getInstance().addDriveTrainSimulation(simulatedDrive.getDriveTrainSimulation());
         SimulatedArena.getInstance().placeGamePiecesOnField();
         updateThread = new Thread(()->{
@@ -108,7 +82,7 @@ public class SimSwerve implements SwerveDriveIO {
         });
         updateThread.setDaemon(true);
         updateThread.start();
-        Bootleg2022.addMainDrive(simulatedDrive.getDriveTrainSimulation());
+        Bootleg2026.addMainDrive(simulatedDrive.getDriveTrainSimulation());
     }
 
     @Override
@@ -193,6 +167,9 @@ public class SimSwerve implements SwerveDriveIO {
         return simulatedDrive.getActualPoseInSimulationWorld();
     }
 
+
+    protected static Translation2d redDepotBottomRightCorner = new Translation2d(0.02, 5.53);
+    protected static Translation2d blueDepotBottomRightCorner = new Translation2d(16.0274, 1.646936);
     double resetTime = -1;
     @Override
     public void resetPose(Pose2d pose) {
@@ -200,6 +177,26 @@ public class SimSwerve implements SwerveDriveIO {
         simulatedDrive.setSimulationWorldPose(pose);
         simulatedDrive.resetOdometry(pose);
         SimulatedArena.getInstance().resetFieldForAuto();
+        boolean isOnBlue = !DriverStation.getAlliance().isEmpty()
+                && DriverStation.getAlliance().get() == Alliance.Blue;
+
+        if (!isOnBlue && ((Arena2026Rebuilt)SimulatedArena.getInstance()).getEfficiencyMode()) {
+            for (int x = 0; x < 4; x++) {
+                for (int y = 0; y < 6; y++) {
+                    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(blueDepotBottomRightCorner.plus(
+                            new Translation2d(Inches.of(5.991 * x), Inches.of(5.95 * y)))));
+                }
+            }
+        }
+
+        if (isOnBlue && ((Arena2026Rebuilt)SimulatedArena.getInstance()).getEfficiencyMode()) {
+            for (int x = 0; x < 4; x++) {
+                for (int y = 0; y < 6; y++) {
+                    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(redDepotBottomRightCorner.plus(
+                            new Translation2d(Inches.of(5.991 * x), Inches.of(5.95 * y)))));
+                }
+            }
+        }
     }
 
     @Override

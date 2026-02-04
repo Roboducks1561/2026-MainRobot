@@ -32,9 +32,23 @@ public class PoseNavigation {
     }
     
     public ChassisSpeeds calculateTowardRotation(Pose2d target, Pose2d current, double radianPSCap) {
-        double targetRotation = -PoseEX.getYawFromPose(current, target).getRadians();
+        double targetRotation = -getYawFromPose(current, target).getRadians();
+        System.out.println(targetRotation);
         double finalRotation = Math.min(Math.max(rotationPID.calculate(targetRotation,0),-radianPSCap),radianPSCap);
         return new ChassisSpeeds(0, 0, finalRotation);
+    }
+
+    public static Rotation2d getYawFromPose(Pose2d mainPose, Pose2d comparingPose) {
+        double deltaX = comparingPose.getX() - mainPose.getX();
+        double deltaY = comparingPose.getY() - mainPose.getY();
+
+        double angleRadians = Math.atan2(deltaY,deltaX);
+
+        System.out.println(angleRadians+"    "+deltaX +"   "+deltaY);
+        // Convert the angle to Rotation2d
+        Rotation2d rotation = PoseEX.correctedRotation(Rotation2d.fromRadians(angleRadians - mainPose.getRotation().getRadians()));
+
+        return rotation;
     }
 
     /**

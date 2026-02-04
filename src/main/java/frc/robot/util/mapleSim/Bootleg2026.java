@@ -1,13 +1,14 @@
 package frc.robot.util.mapleSim;
 
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
@@ -18,26 +19,26 @@ import org.dyn4j.geometry.Vector2;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.constants.GameData;
-//Not great code, but since its 2025 code, doesn't need to be fixed
+
 public class Bootleg2026{
 
     private static final Bootleg2026 instance;
@@ -58,7 +59,7 @@ public class Bootleg2026{
         public IntakeInfo(IntakeSimulation intakeSimulation, String key){
             this.intakeSimulation = intakeSimulation;
             intakeSimulation.register();
-            intakeSimulation.setGamePiecesCount(1);
+            intakeSimulation.setGamePiecesCount(8);
 
             activationRequirements = new ArrayList<>();
             this.key = key;
@@ -73,21 +74,21 @@ public class Bootleg2026{
         public final ArrayList<BooleanSupplier> activationRequirements;
         public final Supplier<Transform3d> shootVector;
         public final DoubleSupplier shootSpeed;
-        public final String coralOrAlgae;
+        public final String gamePieceType;
         public Supplier<Pose2d> robotPose = null;
 
-        public ShootInfo(Supplier<Transform3d> vectorOfShoot, DoubleSupplier shootSpeed, String coralOrAlgae){
+        public ShootInfo(Supplier<Transform3d> vectorOfShoot, DoubleSupplier shootSpeed, String gamePieceType){
             activationRequirements = new ArrayList<>();
             shootVector = vectorOfShoot;
             this.shootSpeed = shootSpeed;
-            this.coralOrAlgae = coralOrAlgae;
+            this.gamePieceType = gamePieceType;
         }
 
-        public ShootInfo(Supplier<Pose2d> robotPose, Supplier<Transform3d> vectorOfShoot, DoubleSupplier shootSpeed, String coralOrAlgae){
+        public ShootInfo(Supplier<Pose2d> robotPose, Supplier<Transform3d> vectorOfShoot, DoubleSupplier shootSpeed, String gamePieceType){
             activationRequirements = new ArrayList<>();
             shootVector = vectorOfShoot;
             this.shootSpeed = shootSpeed;
-            this.coralOrAlgae = coralOrAlgae;
+            this.gamePieceType = gamePieceType;
             this.robotPose = robotPose;
         }
 
@@ -101,13 +102,11 @@ public class Bootleg2026{
 
     private final NetworkTable networkTable;
 
-    private final StructArrayPublisher<Pose3d> coralPublisher;
+    private final StructArrayPublisher<Pose3d> fuelPublisher;
 
     /**
      * object detection sim relies on this as a subscriber
      */
-    private final StructArrayPublisher<Pose3d> algaePublisher;
-
     private static AbstractDriveTrainSimulation drive;
 
     private final Thread updateThread;
@@ -116,21 +115,18 @@ public class Bootleg2026{
         shootKeys = new HashMap<>();
         networkTable = NetworkTableInstance.getDefault().getTable("RealData");
         
-        coralPublisher = networkTable
-            .getStructArrayTopic("AllCoral", Pose3d.struct).publish();
-
-        algaePublisher = networkTable
-            .getStructArrayTopic("AllAlgae", Pose3d.struct).publish();
-        
+        fuelPublisher = networkTable
+            .getStructArrayTopic("AllFuel", Pose3d.struct).publish();
         
         updateThread = new Thread(()->{
-            int lastGamePieceAmount = 1;
+            int lastGamePieceAmount = 8;
+            // ((Arena2026Rebuilt)SimulatedArena.getInstance()).setEfficiencyMode(false);
+            ((Arena2026Rebuilt)SimulatedArena.getInstance()).resetFieldForAuto();
             while(true){
                 try {
                     double startTime = Timer.getFPGATimestamp();
                     SimulatedArena.getInstance().simulationPeriodic();
-                    coralPublisher.set(SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-                    algaePublisher.set(SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+                    fuelPublisher.set(SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
 
                     for (IntakeInfo info : intakeKeys.values()){
                         if (lastGamePieceAmount == 0 && info.intakeSimulation.getGamePiecesAmount() ==2){
@@ -144,9 +140,9 @@ public class Bootleg2026{
                                 intaking = false;
                             }
                         }
-                        if (info.intakeSimulation.getGamePiecesAmount() > 1){
-                            intaking = false;
-                        }
+                        // if (info.intakeSimulation.getGamePiecesAmount() > 1){
+                        //     intaking = false;
+                        // }
                         if (intaking){
                             info.intakeSimulation.startIntake();
                         }else{
@@ -161,21 +157,14 @@ public class Bootleg2026{
                             }
                             if (shooting){
                                 info.intakeSimulation.obtainGamePieceFromIntake();
-                                if (shootKeys.get(info.key).coralOrAlgae.equals("Coral")){
+                                if (shootKeys.get(info.key).gamePieceType.equals("Fuel")){
                                     if (shootKeys.get(info.key).robotPose != null){
-                                        createShootingCoral(shootKeys.get(info.key).robotPose.get(),shootKeys.get(info.key).shootVector.get(), shootKeys.get(info.key).shootSpeed.getAsDouble());
+                                        createShootingFuel(shootKeys.get(info.key).robotPose.get(),shootKeys.get(info.key).shootVector.get(), shootKeys.get(info.key).shootSpeed.getAsDouble());
                                     }else{
-                                        createShootingCoral(shootKeys.get(info.key).shootVector.get(), shootKeys.get(info.key).shootSpeed.getAsDouble());
+                                        createShootingFuel(shootKeys.get(info.key).shootVector.get(), shootKeys.get(info.key).shootSpeed.getAsDouble());
                                     }
                                     
-                                }else{
-                                    if (shootKeys.get(info.key).robotPose != null){
-                                        createShootingAlgae(shootKeys.get(info.key).robotPose.get(), shootKeys.get(info.key).shootVector.get(), shootKeys.get(info.key).shootSpeed.getAsDouble());
-                                    }else{
-                                        createShootingAlgae(shootKeys.get(info.key).shootVector.get(), shootKeys.get(info.key).shootSpeed.getAsDouble());
-                                    }
                                 }
-                                
                             }
                         }
                         if (info.numPiece != null){
@@ -198,6 +187,12 @@ public class Bootleg2026{
 
     public static void addMainDrive(AbstractDriveTrainSimulation mainDrive){
         drive = mainDrive;
+        new Trigger(()->drive.getSimulatedDriveTrainPose().minus(GameData.getOutpostPose()).getTranslation().getNorm() < .5)
+        .onTrue(Commands.waitSeconds(.3).andThen(Commands.defer(()->Commands.runOnce(()->{
+            for (int i = 0; i < 24; i++){
+                ((Arena2026Rebuilt)SimulatedArena.getInstance()).outpostThrow(!GameData.isRed.getAsBoolean(), Rotation2d.fromDegrees(260), Degree.ofBaseUnits(45), MetersPerSecond.of(1.2));
+            }
+        }), Set.of())));
 
         // new Trigger(()->drive.getSimulatedDriveTrainPose().minus(GameData.getFeederPose(true)).getTranslation().getNorm() < 2)
         // .whileTrue(Commands.sequence(Commands.waitSeconds(.4),Commands.runOnce(()->{
@@ -222,18 +217,17 @@ public class Bootleg2026{
         // }),Commands.waitSeconds(3)).repeatedly());
     }
 
-    public static void addIntakeSimulation(String uniqueIntakeKey, String target, double widthMeters, double lengthMeters, Translation2d position){
+    public static void addIntakeSimulation(String uniqueIntakeKey, String target, double widthMeters, double lengthMeters, int capacity, Translation2d position){
         intakeKeys.put(uniqueIntakeKey, new IntakeInfo(
             new IntakeSimulation(
                 target,
                 drive,
                 getIntakeRectangle(lengthMeters, widthMeters, new Vector2(position.getX(), position.getY())),
-                2)
+                capacity)
             ,uniqueIntakeKey));
     }
 
-    private static Rectangle getIntakeRectangle(
-            double width, double lengthExtended, Vector2 translation) {
+    private static Rectangle getIntakeRectangle(double width, double lengthExtended, Vector2 translation) {
         final Rectangle intakeRectangle = new Rectangle(width, lengthExtended);
 
         //from center of robot
@@ -241,6 +235,7 @@ public class Bootleg2026{
 
         return intakeRectangle;
     }
+
     public static void addIntakeRequirements(String key, BooleanSupplier requirement){
         IntakeInfo info = intakeKeys.get(key);
         if (info != null){
@@ -255,11 +250,11 @@ public class Bootleg2026{
         }
     }
 
-    public static void createShootingAlgae(Transform3d shooterPosition, double calculatedVelocity){
-        createShootingAlgae(drive.getSimulatedDriveTrainPose(), shooterPosition, calculatedVelocity);
+    public static void createShootingFuel(Transform3d shooterPosition, double calculatedVelocity){
+        createShootingFuel(drive.getSimulatedDriveTrainPose(), shooterPosition, calculatedVelocity);
     }
 
-    public static void createShootingAlgae(Pose2d from, Transform3d shooterPosition, double calculatedVelocity){
+    public static void createShootingFuel(Pose2d from, Transform3d shooterPosition, double calculatedVelocity){
 
         Vector2 robotSpeeds = new Vector2();
         double angularVelocity = 0;
@@ -269,8 +264,8 @@ public class Bootleg2026{
             //TODO this is because in 2022 we are modeling a turret, which cancels out rotational velocity
             angularVelocity = 0;
         }
-        ReefscapeAlgaeOnFly algaeOnFly = new ReefscapeAlgaeOnFly(
-            // Specify the position of the chassis when the algae is launched
+        RebuiltFuelOnFly fuelOnFly = new RebuiltFuelOnFly(
+            // Specify the position of the chassis when the fuel is launched
             from.getTranslation(),
             // Specify the translation of the shooter from the robot center (in the shooter’s reference frame)
             shooterPosition.getTranslation().toTranslation2d(),
@@ -286,43 +281,16 @@ public class Bootleg2026{
             // The angle at which the note is launched
             Radians.of(shooterPosition.getRotation().getY())
         );
-        algaeOnFly.enableBecomesGamePieceOnFieldAfterTouchGround();
-        SimulatedArena.getInstance().addGamePieceProjectile(algaeOnFly);
+        fuelOnFly.enableBecomesGamePieceOnFieldAfterTouchGround();
+        SimulatedArena.getInstance().addGamePieceProjectile(fuelOnFly);
     }
 
-    public static void createShootingCoral(Transform3d shooterPosition, double calculatedVelocity){
-        createShootingCoral(drive.getSimulatedDriveTrainPose(), shooterPosition, calculatedVelocity);
+    public static void addShooterSimulation(Supplier<Transform3d> shooterPosition, DoubleSupplier shootSpeed, String gamePieceType, String corrospondingIntakeKey){
+        shootKeys.put(corrospondingIntakeKey, new ShootInfo(shooterPosition, shootSpeed, gamePieceType));
     }
 
-    public static void createShootingCoral(Pose2d from, Transform3d shooterPosition, double calculatedVelocity){
-        Vector2 robotSpeeds = drive.getLinearVelocity();
-        ReefscapeCoralOnFly algaeOnFly = new ReefscapeCoralOnFly(
-            // Specify the position of the chassis when the algae is launched
-            from.getTranslation(),
-            // Specify the translation of the shooter from the robot center (in the shooter’s reference frame)
-            shooterPosition.getTranslation().toTranslation2d(),
-            // Specify the field-relative speed of the chassis, adding it to the initial velocity of the projectile
-            new ChassisSpeeds(robotSpeeds.x, robotSpeeds.y, drive.getAngularVelocity()),
-            // The shooter facing direction is the same as the robot’s facing direction
-            Rotation2d.fromRadians(from.getRotation().getRadians() + shooterPosition.getRotation().toRotation2d().getRadians()),
-                    // Add the shooter’s rotation,
-            // Initial height of the flying note
-            Meters.of(shooterPosition.getZ()),
-            // The launch speed is proportional to the RPM; assumed to be 16 meters/second at 6000 RPM
-            MetersPerSecond.of(calculatedVelocity),
-            // The angle at which the note is launched
-            Radians.of(shooterPosition.getRotation().getY())
-        );
-        algaeOnFly.enableBecomesGamePieceOnFieldAfterTouchGround();
-        SimulatedArena.getInstance().addGamePieceProjectile(algaeOnFly);
-    }
-
-    public static void addShooterSimulation(Supplier<Transform3d> shooterPosition, DoubleSupplier shootSpeed, String coralOrAlgae, String corrospondingIntakeKey){
-        shootKeys.put(corrospondingIntakeKey, new ShootInfo(shooterPosition, shootSpeed, coralOrAlgae));
-    }
-
-    public static void addShooterSimulation(Supplier<Pose2d> robotPose, Supplier<Transform3d> shooterPosition, DoubleSupplier shootSpeed, String coralOrAlgae, String corrospondingIntakeKey){
-        shootKeys.put(corrospondingIntakeKey, new ShootInfo(robotPose, shooterPosition, shootSpeed, coralOrAlgae));
+    public static void addShooterSimulation(Supplier<Pose2d> robotPose, Supplier<Transform3d> shooterPosition, DoubleSupplier shootSpeed, String gamePieceType, String corrospondingIntakeKey){
+        shootKeys.put(corrospondingIntakeKey, new ShootInfo(robotPose, shooterPosition, shootSpeed, gamePieceType));
     }
 
     public static void addShootRequirements(String corrospondingIntakeKey, BooleanSupplier requirements){

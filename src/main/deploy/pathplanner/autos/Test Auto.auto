@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NewPath"
+            "pathName": "IDIO"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IOTR"
           }
         }
       ]
