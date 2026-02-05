@@ -1,6 +1,8 @@
 package frc.robot.subsystems.swerve;
 
 import java.util.function.Consumer;
+
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
@@ -31,4 +33,9 @@ public interface SwerveDriveIO {
     public ChassisSpeeds getSpeeds();
 
     public SwerveDriveState getState();
+
+    //This is a test thing, probably shouldn't stay
+    public double getDriveMotorRotations(int num);
+
+    public double getTotalAddedRotation();
 }

@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SequentialAutos;
+import frc.robot.commands.WheelRadiusCommand;
 import frc.robot.constants.GameData;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandMechanism;
@@ -120,6 +121,8 @@ public class RobotMain extends RobotContainer {
     // driverController.rightBumper().whileTrue(hood.reachGoal(.09774));
     driverController.rightBumper().whileTrue(gameState.shoot());
     driverController.leftBumper().whileTrue(gameState.intake());
+    driverController.a().onTrue(new WheelRadiusCommand(drivetrain));
+    driverController.b().whileTrue(drivetrain.applyRequest(()->drive.withRotationalRate(1)));
     // driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
     // driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));
   }

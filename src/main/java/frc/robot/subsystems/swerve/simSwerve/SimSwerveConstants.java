@@ -7,6 +7,7 @@ import org.ironmaple.simulation.drivesims.COTS;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import frc.robot.generated.TunerConstants;
 
 public class SimSwerveConstants {
     // Create and configure a drivetrain simulation configuration
@@ -14,13 +15,13 @@ public class SimSwerveConstants {
                 // Specify gyro type (for realistic gyro drifting and error simulation)
                 .withGyro(COTS.ofPigeon2())
                 // Specify swerve module (for realistic swerve dynamics)
-                .withSwerveModule(COTS.ofMark4(
+                .withSwerveModule(COTS.ofMark4n(
                         DCMotor.getKrakenX60(1), // Drive motor is a Kraken X60
                         DCMotor.getFalcon500(1), // Steer motor is a Falcon 500
                         COTS.WHEELS.SLS_PRINTED_WHEELS.cof, // Use the COF for Colson Wheels
                         1)) // L1 Gear ratio
                 // Configures the track length and track width (spacing between swerve modules)
-                .withTrackLengthTrackWidth(Inches.of(24), Inches.of(24))
+                .withTrackLengthTrackWidth(Inches.of(TunerConstants.driveBaseRadius*2), Inches.of(TunerConstants.driveBaseRadius*2))
                 // Configures the bumper size (dimensions of the robot bumper)
                 .withBumperSize(Inches.of(30), Inches.of(30))
                 .withRobotMass(Kilograms.of(60));

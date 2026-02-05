@@ -1,5 +1,7 @@
 package frc.robot.subsystems.swerve;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -102,5 +104,15 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
     @Override
     public Pose2d getPose() {
         return getState().Pose;
+    }
+
+    @Override
+    public double getDriveMotorRotations(int num) {
+        return getModule(0).getDriveMotor().getPosition().getValueAsDouble();
+    }
+
+    @Override
+    public double getTotalAddedRotation() {
+        return getPigeon2().getAccumGyroZ().asSupplier().get().in(Rotation);
     }
 }

@@ -1,6 +1,8 @@
 package frc.robot.subsystems.swerve.simSwerve;
 
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.Rotation;
 
 import java.util.function.Consumer;
 
@@ -265,5 +267,15 @@ public class SimSwerve implements SwerveDriveIO {
         state.Speeds = getSpeeds();
         
         return state;
+    }
+
+    @Override
+    public double getDriveMotorRotations(int num) {
+        return simulatedDrive.getDriveTrainSimulation().getModules()[0].getDriveWheelFinalPosition().in(Rotation);//.getDriveMotor().getPosition().getValueAsDouble();
+    }
+
+    @Override
+    public double getTotalAddedRotation() {
+        return simulatedDrive.getDriveTrainSimulation().getGyroSimulation().getGyroReading().getRotations();
     }
 }

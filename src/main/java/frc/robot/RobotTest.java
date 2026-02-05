@@ -53,11 +53,7 @@ public class RobotTest extends RobotContainer{
   private void configureBindings() {
     drivetrain.resetPose(new Pose2d(7,5,Rotation2d.fromDegrees(180)));
   
-    drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * speedPercent * MaxSpeed)
-            .withVelocityY(-driverController.getLeftX() * speedPercent * MaxSpeed)
-            .withRotationalRate(-driverController.getRightX() * rotationPercent * MaxAngularRate)
-    ));
+    drivetrain.createDefaultCommand(driverController, speedPercent, rotationPercent);
     
     drivetrain.getDriveIO().registerTelemetry((log)->logger.telemeterize(log));
     
