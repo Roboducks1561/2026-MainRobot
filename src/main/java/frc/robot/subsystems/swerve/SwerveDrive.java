@@ -50,6 +50,7 @@ import frc.robot.subsystems.swerve.accelerometer.SimAccelerometer;
 import frc.robot.subsystems.swerve.simSwerve.SimSwerve;
 import frc.robot.subsystems.swerve.swerveHelpers.PoseNavigation;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.util.MutSlewRateLimiter;
 
 public class SwerveDrive extends SubsystemBase{
     private final Vision cameras;
@@ -75,6 +76,10 @@ public class SwerveDrive extends SubsystemBase{
 
     public final PIDController speedsPID = new PIDController(6, 0, 0);
     public final PIDController rotationPID = new PIDController(6, 0, 0);
+
+    public final MutSlewRateLimiter xSlewRateLimiter = new MutSlewRateLimiter(100);
+    public final MutSlewRateLimiter ySlewRateLimiter = new MutSlewRateLimiter(100);
+    public final MutSlewRateLimiter rotSlewRateLimiter = new MutSlewRateLimiter(100);
     
     
     public final PoseNavigation poseNavigation;

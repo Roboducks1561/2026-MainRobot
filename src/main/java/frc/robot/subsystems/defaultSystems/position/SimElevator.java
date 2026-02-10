@@ -80,4 +80,9 @@ public class SimElevator extends SubsystemBase implements PositionIO{
         outputVolts = volts;
         stopped = false;
     }
+
+    @Override
+    public void setZero() {
+        elevatorSim.setState(0,0);
+    }
 }

@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 public class ShooterConstants {
     public static final double GEARING = .5;
 
-    public static final int SHOOTER_MOTOR_ID = 22;
+    public static final int SHOOTER_MOTOR_LEFT_ID = 22;
+    public static final int SHOOTER_MOTOR_RIGHT_ID = 23;
     // Add 0.25 V output to overcome static friction
 
     public static final double kS = .4; // An error of 1 rps results in 0.11 V output

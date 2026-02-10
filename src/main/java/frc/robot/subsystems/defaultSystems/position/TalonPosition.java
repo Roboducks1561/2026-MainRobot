@@ -87,4 +87,12 @@ public class TalonPosition implements PositionIO{
         // configMotor(motor, configuration);
         return this;
     }
+
+    @Override
+    public void setZero() {
+        if (encoder != null){
+            encoder.setPosition(0);
+        }
+        armMotor.setPosition(0);
+    }
 }

@@ -22,18 +22,23 @@ public class Shooter extends SubsystemBase{
     private final NetworkTable robot = NetworkTableInstance.getDefault().getTable("Robot");
     private final NetworkTable rollerTable = robot.getSubTable("Shooter");
 
-    private final DoublePublisher rollerVelocityPublisher = rollerTable
-        .getDoubleTopic("ShooterVelocity").publish();
-    private final DoublePublisher rollerTargetPublisher = rollerTable
-        .getDoubleTopic("ShooterTargetVelocity").publish();
+    private final DoublePublisher rollerVelocityPublisher;
+    private final DoublePublisher rollerTargetPublisher;
 
-    private final double maxError = .03;
+    private final double maxError = .06;
 
-    public Shooter(){
+    private final int id;
+
+    public Shooter(int id){
+        this.id = id;
+        rollerVelocityPublisher = rollerTable
+            .getDoubleTopic("ShooterVelocity"+id).publish();
+        rollerTargetPublisher = rollerTable
+            .getDoubleTopic("ShooterTargetVelocity"+id).publish();
         if (Robot.isSimulation()){
-            rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(25, 3, 0));
+            rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(25, 0, 0));
         }else{
-            rollerIO = new TalonRoller(new TalonFX(ShooterConstants.SHOOTER_MOTOR_ID, "Canivore"), ShooterConstants.talonFXConfiguration, false);
+            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), ShooterConstants.talonFXConfiguration, false);
         }
     }
 
@@ -60,10 +65,10 @@ public class Shooter extends SubsystemBase{
     }
 
     /**
-   * Run control loop to reach and maintain goal.
-   *
-   * @param goal the position to maintain
-   */
+     * Run control loop to reach and maintain goal.
+     *
+     * @param goal the position to maintain
+     */
     public Command reachGoalOnce(double goal) {
         return this.runOnce(()->rollerIO.setVelocity(goal));
     }

@@ -116,6 +116,10 @@ public class Hood extends SubsystemBase {
     return Math.abs(getTarget() - getPosition()) < maxError;
   }
 
+  public void setZero(){
+    armIO.setZero();
+  }
+
   @Override
   public void periodic(){
     double minimumHoodRotation = .02;

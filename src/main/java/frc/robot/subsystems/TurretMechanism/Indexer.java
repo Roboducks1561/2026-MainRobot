@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intakeMechanism;
+package frc.robot.subsystems.TurretMechanism;
 
 import java.util.function.DoubleSupplier;
 
@@ -25,22 +25,30 @@ public class Indexer extends SubsystemBase{
     private final NetworkTable robot = NetworkTableInstance.getDefault().getTable("Robot");
     private final NetworkTable IndexerTable = robot.getSubTable("Indexer");
 
-    private final DoublePublisher rollerVelocityPublisher = IndexerTable
-        .getDoubleTopic("IndexerVelocity").publish();
-    private final DoublePublisher rollerTargetPublisher = IndexerTable
-        .getDoubleTopic("IndexerTargetVelocity").publish();
+    private final DoublePublisher rollerVelocityPublisher;
+    private final DoublePublisher rollerTargetPublisher;
 
     private final DigitalInputIO canRange;
 
     private final double maxError = 1;
 
-    public Indexer(){
+    private final int id;
+    private final int canRangeID;
+
+    public Indexer(int id, int canRangeID){
+        this.id = id;
+        this.canRangeID = canRangeID;
+        rollerVelocityPublisher = IndexerTable
+            .getDoubleTopic("IndexerVelocity"+id).publish();
+        rollerTargetPublisher = IndexerTable
+            .getDoubleTopic("IndexerTargetVelocity"+id).publish();
+
         if (Robot.isSimulation()){
             rollerIO = new SimRoller(IndexerConstants.RollerSim, new PIDController(20, 0, 0));
             canRange = new DigitalInputSim();
         }else{
-            rollerIO = new TalonRoller(new TalonFX(IndexerConstants.INDEXER_MOTOR_ID), IndexerConstants.talonFXConfiguration, false);
-            canRange = new CANRange(IndexerConstants.INDEXER_CAN_RANGE_ID, .1, "");
+            rollerIO = new TalonRoller(new TalonFX(id), IndexerConstants.talonFXConfiguration, false);
+            canRange = new CANRange(canRangeID, .1, "");
         }
     }
 

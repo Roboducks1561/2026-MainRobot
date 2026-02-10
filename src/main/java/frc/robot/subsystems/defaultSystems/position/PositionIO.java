@@ -17,4 +17,6 @@ public interface PositionIO {
     public double getTarget();
 
     public void setVoltage(double volts);
+
+    public void setZero();
 }

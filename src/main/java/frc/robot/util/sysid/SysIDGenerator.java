@@ -1,5 +1,9 @@
 package frc.robot.util.sysid;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotation;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.BooleanSupplier;
@@ -58,7 +62,14 @@ public class SysIDGenerator {
                             motor.setControl(sysIDGenerated.m_sysIdControl.withOutput(volts));
                         }
                     },
-                    null,
+                    log-> {
+                        for (TalonFX motor : motors){
+                            log.motor("MotorSysID")
+                            .voltage(Volts.mutable(0).mut_replace(motor.getMotorVoltage().getValueAsDouble(), Volts))
+                            .angularPosition(Radians.mutable(0).mut_replace(motor.getPosition().getValueAsDouble(), Rotations))
+                            .angularVelocity(RadiansPerSecond.mutable(0).mut_replace(motor.getVelocity().getValueAsDouble(), RadiansPerSecond));
+                        }
+                    },
                     requirements
                 )
             );

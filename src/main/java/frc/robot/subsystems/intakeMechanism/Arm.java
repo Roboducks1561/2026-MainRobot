@@ -27,8 +27,7 @@ import frc.robot.subsystems.defaultSystems.position.TalonPosition;
 
 public class Arm extends SubsystemBase {
   
-  private final PositionIO armIO1;
-  private final PositionIO armIO2;
+  private final PositionIO armIO;
 
   //Send Arm data to NetworkTable
   private final NetworkTable robot = NetworkTableInstance.getDefault().getTable("Robot");
@@ -49,23 +48,17 @@ public class Arm extends SubsystemBase {
   /** Subsystem constructor. */
   public Arm() {
     if (Robot.isSimulation()){
-      armIO1 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(50, 0, 3));
-      armIO2 = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(50, 0, 3));
+      armIO = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(50, 0, 3));
     }else{
-      armIO1 = new TalonPosition(
+      armIO = new TalonPosition(
         new TalonFX(ArmConstants.ARM_MOTOR_LEFT_ID)
         ,ArmConstants.talonFXConfiguration, false
       )/*.withFollower(new TalonFX(ArmConstants.ARM_MOTOR_RIGHT_ID), false)*/;
-      armIO2 = new TalonPosition(
-        new TalonFX(ArmConstants.ARM_MOTOR_RIGHT_ID)
-        ,ArmConstants.talonFXConfiguration, false
-      );
     }
   }
 
   public void setPosition(double position){
-    armIO1.setPosition(position);
-    armIO2.setPosition(position);
+    armIO.setPosition(position);
   }
 
   /**
@@ -104,24 +97,25 @@ public class Arm extends SubsystemBase {
   }
 
   public Command stop(){
-    return this.runOnce(()->{
-      armIO1.stop();
-      armIO2.stop();
-    });
+    return this.runOnce(()->armIO.stop());
   }
 
   //Get position of Arm
   public double getPosition(){
-    return armIO1.getPosition();
+    return armIO.getPosition();
   }
 
   //Get target
   public double getTarget(){
-    return armIO1.getTarget();
+    return armIO.getTarget();
   }
 
   public boolean withinBounds(){
     return Math.abs(getTarget() - getPosition()) < maxError;
+  }
+
+  public void setZero(){
+    armIO.setZero();
   }
 
   @Override

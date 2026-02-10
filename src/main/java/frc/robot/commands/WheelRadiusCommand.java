@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.swerve.SwerveDrive;
 
-//This class was Chatgpt generated, but it used my initial example.
-//I struggled to find a working solution, so I guess this is it...
 public class WheelRadiusCommand extends Command {
 
     private final SwerveDrive drivetrain;
@@ -123,7 +121,6 @@ public class WheelRadiusCommand extends Command {
         double robotRadians = robotRotations * 2.0 * Math.PI;
         double wheelRadians = wheelRotations * 2.0 * Math.PI;
 
-        // drivebase radius (center to module)
         double drivebaseRadiusMeters =
             Units.inchesToMeters(
                 Math.sqrt(

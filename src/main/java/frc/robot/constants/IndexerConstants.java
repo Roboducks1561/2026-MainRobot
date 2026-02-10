@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 public class IndexerConstants {
     public static final double GEARING = 3;
 
-    public static final int INDEXER_MOTOR_ID = 13;
+    public static final int INDEXER_MOTOR_LEFT_ID = 13;
+    public static final int INDEXER_MOTOR_RIGHT_ID = 14;
     // Add 0.25 V output to overcome static friction
 
     public static final double kS = .3; // An error of 1 rps results in 0.11 V output
@@ -32,8 +33,8 @@ public class IndexerConstants {
     public static final boolean INDEXER_STATOR_CURRENT_LIMIT_ENABLE = true;
 	public static final double INDEXER_STATOR_CURRENT_LIMIT = 120;
 
-    public static final int INDEXER_CAN_RANGE_ID = 0;
-
+    public static final int INDEXER_CAN_RANGE_LEFT_ID = 0;
+    public static final int INDEXER_CAN_RANGE_RIGHT_ID = 1;
 
     public static final TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
     public static final CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs();

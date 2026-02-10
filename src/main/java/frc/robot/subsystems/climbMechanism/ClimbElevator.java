@@ -115,6 +115,10 @@ public class ClimbElevator extends SubsystemBase {
   public boolean withinBounds(){
     return Math.abs(getTarget() - getPosition()) < maxError;
   }
+
+  public void setZero(){
+    elevatorIO.setZero();
+  }
   
   @Override
   public void periodic(){

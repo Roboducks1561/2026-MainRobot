@@ -124,6 +124,10 @@ public class Turret extends SubsystemBase {
     return new double[]{Units.radiansToRotations(TurretConstants.MIN_TURRET_ANGLE_RAD), Units.radiansToRotations(TurretConstants.MAX_TURRET_ANGLE_RAD)};
   }
 
+  public void setZero(){
+    armIO.setZero();
+  }
+
   @Override
   public void periodic(){
     armPublisher.accept(new Pose3d(0.12, 0, 0.45,new Rotation3d(0,0,Units.rotationsToRadians(getPosition()))));

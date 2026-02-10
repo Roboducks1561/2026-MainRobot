@@ -79,4 +79,9 @@ public class SimArm implements PositionIO{
         outputVolts = volts;
         stopped = false;
     }
+
+    @Override
+    public void setZero() {
+        singleJointedArmSim.setState(0,0);
+    }
 }

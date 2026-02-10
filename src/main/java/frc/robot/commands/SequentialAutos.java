@@ -11,8 +11,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.constants.GameData;
 import frc.robot.subsystems.CommandMechanism;
 import frc.robot.subsystems.swerve.SwerveDrive;
+import frc.robot.util.PoseEX;
 
 public class SequentialAutos {
 
@@ -76,7 +78,7 @@ public class SequentialAutos {
     }
 
     public Command shootStatic(){
-        return commandMechanism.shootStatic();
+        return commandMechanism.shootStatic().unless(()->(GameData.isRed.getAsBoolean() ? PoseEX.pose180(commandMechanism.swerveDrive.getPose()) : commandMechanism.swerveDrive.getPose()).getX() > GameData.scorePose2d.getX());
     }
 
     public Command stopShooting(){
@@ -91,14 +93,14 @@ public class SequentialAutos {
         BiConsumer<ChassisSpeeds, DriveFeedforwards> passLeftAuto = pointToRotationConsumer(()->Rotation2d.fromRotations(commandMechanism.getDynamicPassingData(true)[2]));
         return wrapCommand(Commands.sequence(
             Commands.runOnce(()->swerveDrive.setAutoConsumer(passLeftAuto))
-            ,commandMechanism.shootDefault(()->commandMechanism.getDynamicPassingData(true),()->commandMechanism.readyToShoot())));
+            ,commandMechanism.shootDefault(()->commandMechanism.getDynamicPassingData(true),()->true)));
     }
 
     public Command passRight(){
         BiConsumer<ChassisSpeeds, DriveFeedforwards> passRightAuto = pointToRotationConsumer(()->Rotation2d.fromRotations(commandMechanism.getDynamicPassingData(false)[2]));
         return wrapCommand(Commands.sequence(
             Commands.runOnce(()->swerveDrive.setAutoConsumer(passRightAuto))
-            ,commandMechanism.shootDefault(()->commandMechanism.getDynamicPassingData(false),()->commandMechanism.readyToShoot())));
+            ,commandMechanism.shootDefault(()->commandMechanism.getDynamicPassingData(false),()->true)));
     }
 
     public Command intake(){
