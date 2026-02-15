@@ -22,20 +22,19 @@ public class ArmConstants{
     public static final double MAX_ARM_ANGLE_RAD = Units.rotationsToRadians(.5);
     public static final double MIN_ARM_ANGLE_RAD = Units.rotationsToRadians(-.5);
 
-    public static final int ARM_MOTOR_LEFT_ID = 10;
-    public static final int ARM_MOTOR_RIGHT_ID = 11;
-    public static final int ARM_ENCODER_ID = 10;
+    public static final int ARM_MOTOR_LEFT_ID = 11;
+    // public static final int ARM_ENCODER_ID = 10;
 
     public static final double kS = 0;
     public static final double kV = 0;
     public static final double kA = 0;
     
-    public static final double kP = 15;
+    public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;//50;
     public static final double kG = 0;//-26;//8.4749;
 
-    public static final double ARM_SENSOR_TO_MECHANISM_RATIO = 9;
+    public static final double ARM_SENSOR_TO_MECHANISM_RATIO = 43.2;
     public static final double ARM_ROTOR_TO_SENSOR_RATIO = 1;
 
     public static final double CRUISE_VELOCITY = 9999;
@@ -77,7 +76,7 @@ public class ArmConstants{
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
 
         talonFXConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;//InvertedValue.Clockwise_Positive
-        talonFXConfiguration.Feedback.FeedbackRemoteSensorID = ARM_ENCODER_ID;
+        // talonFXConfiguration.Feedback.FeedbackRemoteSensorID = ARM_ENCODER_ID;
         talonFXConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         talonFXConfiguration.Feedback.SensorToMechanismRatio = ARM_SENSOR_TO_MECHANISM_RATIO;
         talonFXConfiguration.Feedback.RotorToSensorRatio = ARM_ROTOR_TO_SENSOR_RATIO;

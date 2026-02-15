@@ -53,8 +53,8 @@ public class Hood extends SubsystemBase {
     }else{
       armIO = new TalonPosition(
         new TalonFX(HoodConstants.HOOD_MOTOR_ID,"Canivore")
-        ,HoodConstants.talonFXConfiguration, false
-      ).withEncoder(new CANcoder(HoodConstants.HOOD_ENCODER_ID, "Canivore"), HoodConstants.encoderConfiguration);
+        ,HoodConstants.talonFXConfiguration, true
+      );
     }
   }
 

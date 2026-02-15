@@ -30,17 +30,17 @@ public class Spindexer extends SubsystemBase{
     private final DoublePublisher rollerTargetPublisher = IndexerTable
         .getDoubleTopic("SpindexerTargetVelocity").publish();
 
-    private final DigitalInputIO canRange;
+    // private final DigitalInputIO canRange;
 
     private final double maxError = 1;
 
     public Spindexer(){
         if (Robot.isSimulation()){
             rollerIO = new SimRoller(SpindexerConstants.RollerSim, new PIDController(20, 0, 0));
-            canRange = new DigitalInputSim();
+            // canRange = new DigitalInputSim();
         }else{
-            rollerIO = new TalonRoller(new TalonFX(SpindexerConstants.INDEXER_MOTOR_ID), SpindexerConstants.talonFXConfiguration, false);
-            canRange = new CANRange(SpindexerConstants.INDEXER_CAN_RANGE_ID, .1, "");
+            rollerIO = new TalonRoller(new TalonFX(SpindexerConstants.INDEXER_MOTOR_ID, "Canivore"), SpindexerConstants.talonFXConfiguration, true);
+            // canRange = new CANRange(SpindexerConstants.INDEXER_CAN_RANGE_ID, .1, "Canivore");
         }
     }
 
@@ -87,17 +87,17 @@ public class Spindexer extends SubsystemBase{
         return rollerIO.getTarget();
     }
 
-    public boolean hasPiece(){
-        return canRange.getValue();
-    }
+    // public boolean hasPiece(){
+    //     return canRange.getValue();
+    // }
 
     public boolean withinBounds(){
         return Math.abs(getTargetVelocity() - getVelocity()) < maxError;
     }
 
-    public DigitalInputIO getDigitalInputIO(){
-        return canRange;
-    }
+    // public DigitalInputIO getDigitalInputIO(){
+    //     return canRange;
+    // }
 
     @Override
     public void periodic() {

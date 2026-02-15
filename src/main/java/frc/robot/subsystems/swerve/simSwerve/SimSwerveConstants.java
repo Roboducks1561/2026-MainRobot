@@ -21,8 +21,8 @@ public class SimSwerveConstants {
                         COTS.WHEELS.SLS_PRINTED_WHEELS.cof, // Use the COF for Colson Wheels
                         1)) // L1 Gear ratio
                 // Configures the track length and track width (spacing between swerve modules)
-                .withTrackLengthTrackWidth(Inches.of(TunerConstants.driveBaseRadius*2), Inches.of(TunerConstants.driveBaseRadius*2))
+                .withTrackLengthTrackWidth(TunerConstants.kFrontLeftXPos.times(2), TunerConstants.kFrontLeftYPos.times(2))
                 // Configures the bumper size (dimensions of the robot bumper)
                 .withBumperSize(Inches.of(30), Inches.of(30))
-                .withRobotMass(Kilograms.of(60));
+                .withRobotMass(Kilograms.of(50));
 }

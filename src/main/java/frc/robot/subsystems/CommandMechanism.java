@@ -22,7 +22,6 @@ import frc.robot.constants.HoodConstants;
 import frc.robot.subsystems.TurretMechanism.Hood;
 import frc.robot.subsystems.TurretMechanism.Indexer;
 import frc.robot.subsystems.TurretMechanism.Shooter;
-import frc.robot.subsystems.climbMechanism.ClimbElevator;
 import frc.robot.subsystems.intakeMechanism.Arm;
 import frc.robot.subsystems.intakeMechanism.Intake;
 import frc.robot.subsystems.intakeMechanism.Spindexer;
@@ -46,8 +45,8 @@ public class CommandMechanism extends BaseMechanism{
     private final BooleanPublisher aimCorrect = readyToShootRequirements
         .getBooleanTopic("aimCorrect").publish();
 
-    public CommandMechanism(Arm arm, Intake intake, Indexer leftIndexer, Indexer rightIndexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, ClimbElevator climbElevator, SwerveDrive swerveDrive){
-        super(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, climbElevator, swerveDrive);
+    public CommandMechanism(Arm arm, Intake intake, Indexer leftIndexer, Indexer rightIndexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
+        super(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, swerveDrive);
         scoreMath = new ScoreMath(swerveDrive, fromSwerveBase);
 
         if (Robot.isSimulation()){
@@ -55,7 +54,7 @@ public class CommandMechanism extends BaseMechanism{
                 ()->fromSwerveBase.plus(new Transform3d(0,0,0,new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),0)))
                     ,()->leftShooter.getVelocity() * 1.07, "Fuel", "Intake");
             Bootleg2026.addShootRequirements("Intake", ()->{
-                boolean ready = readyToShootLeft() && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .15;
+                boolean ready = leftShooter.getVelocity() > 1 && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .15;
                 if (ready){
                     lastLaunchLeft = Utils.getCurrentTimeSeconds();
                 }
@@ -101,11 +100,11 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public double mpsTorps(double mps){
-        return Robot.isSimulation() ? mps : mps;
+        return Robot.isSimulation() ? mps : mps*10;
     }
 
     public double rpsTomps(double rps){
-        return Robot.isSimulation() ? rps : rps;
+        return Robot.isSimulation() ? rps : rps/10;
     }
 
     //TODO, likely the conversion of hood rotations to shoo rotations is not linear, so fix when physical robot is available.
@@ -161,16 +160,6 @@ public class CommandMechanism extends BaseMechanism{
         return passDynamic(()->left, vx, vy);
     }
 
-    /**
-     *  position is 1 left, 2 middle, 3 right
-     */
-    public Command autoClimb(int position){
-        return Commands.deadline(Commands.defer(()->swerveDrive.toPose(GameData.getTowerPose(position), 1, 5,5), Set.of(swerveDrive))
-            .until(()->swerveDrive.withinCoords(GameData.getTowerPose(position),.01,.01)).andThen(Commands.waitSeconds(.5))
-            ,climbUp())
-            .andThen(climbDown());
-    }
-
     double lastLaunchLeft = 0;
     double lastLaunchRight = 0;
     public void commandPeriodic(){
@@ -182,11 +171,11 @@ public class CommandMechanism extends BaseMechanism{
         dynamicPassRight = scoreMath.dynamicScore(GameData.getPassPose3d(false), interpolate && !Robot.isSimulation()
             ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(10));
     
-        if (!Robot.isSimulation() && readyToShootLeft() && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
+        if (!Robot.isSimulation() && leftShooter.getVelocity() > 1 && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
             lastLaunchLeft = Utils.getCurrentTimeSeconds();
             animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(leftShooter.getVelocity()));
         }
-        if (!Robot.isSimulation() && readyToShootRight() && rightIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchRight + .2){
+        if (!Robot.isSimulation() && rightShooter.getVelocity() > 1 && rightIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchRight + .2){
             lastLaunchRight = Utils.getCurrentTimeSeconds();
             animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(rightShooter.getVelocity()));
         }

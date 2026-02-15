@@ -3,21 +3,16 @@ package frc.robot.subsystems.intakeMechanism;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.ColorSensorV3.RawColor;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.IntakeConstants;
-import frc.robot.subsystems.defaultSystems.digitalInputs.ColorSensor;
-import frc.robot.subsystems.defaultSystems.digitalInputs.DigitalInputIO;
-import frc.robot.subsystems.defaultSystems.digitalInputs.DigitalInputSim;
-import frc.robot.subsystems.defaultSystems.digitalInputs.MotorDI;
+
 import frc.robot.subsystems.defaultSystems.velocity.SimRoller;
 import frc.robot.subsystems.defaultSystems.velocity.TalonRoller;
 import frc.robot.subsystems.defaultSystems.velocity.VelocityIO;
@@ -33,24 +28,24 @@ public class Intake extends SubsystemBase{
     private final DoublePublisher intakeTargetPublisher = intakeTable
         .getDoubleTopic("IntakeTargetVelocity").publish();
 
-    private final DigitalInputIO colorSensor;
-    private final DigitalInputIO motorStrain;
+    // private final DigitalInputIO colorSensor;
+    // private final DigitalInputIO motorStrain;
 
     private final double maxError = 1;
 
     public Intake(){
         if (Robot.isSimulation()){
             intakeIO = new SimRoller(IntakeConstants.intakeSim, new PIDController(20, 0, 0));
-            colorSensor = new DigitalInputSim();
-            motorStrain = new DigitalInputSim();
+            // colorSensor = new DigitalInputSim();
+            // motorStrain = new DigitalInputSim();
         }else{
-            intakeIO = new TalonRoller(new TalonFX(IntakeConstants.INTAKE_MOTOR_ID), IntakeConstants.talonFXConfiguration, false);
-            colorSensor = new ColorSensor(Port.kOnboard);
-            ((ColorSensor)colorSensor).assignBooleanSupplier(()->{
-                RawColor col = ((ColorSensor)colorSensor).getColor();
-                return col.red > 180 || col.blue > 170;
-            });
-            motorStrain = new MotorDI(()->intakeIO.getCurrent(),10);
+            intakeIO = new TalonRoller(new TalonFX(IntakeConstants.INTAKE_MOTOR_ID), IntakeConstants.talonFXConfiguration, true);
+            // colorSensor = new ColorSensor(Port.kOnboard);
+            // ((ColorSensor)colorSensor).assignBooleanSupplier(()->{
+            //     RawColor col = ((ColorSensor)colorSensor).getColor();
+            //     return col.red > 180 || col.blue > 170;
+            // });
+            // motorStrain = new MotorDI(()->intakeIO.getCurrent(),10);
         }
     }
 
@@ -97,25 +92,25 @@ public class Intake extends SubsystemBase{
         return intakeIO.getTarget();
     }
 
-    public boolean hasPiece(){
-        return colorSensor.getValue();
-    }
+    // public boolean hasPiece(){
+    //     return colorSensor.getValue();
+    // }
 
-    public boolean intaking(){
-        return motorStrain.getValue();
-    }
+    // public boolean intaking(){
+    //     return motorStrain.getValue();
+    // }
 
     public boolean withinBounds(){
         return Math.abs(getTargetVelocity() - getVelocity()) < maxError;
     }
 
-    public DigitalInputIO getDigitalInputIO(){
-        return colorSensor;
-    }
+    // public DigitalInputIO getDigitalInputIO(){
+    //     return colorSensor;
+    // }
 
-    public DigitalInputIO getMotorStrainIO(){
-        return motorStrain;
-    }
+    // public DigitalInputIO getMotorStrainIO(){
+    //     return motorStrain;
+    // }
 
     @Override
     public void periodic() {

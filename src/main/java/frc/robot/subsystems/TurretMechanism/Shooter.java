@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase{
         if (Robot.isSimulation()){
             rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(25, 0, 0));
         }else{
-            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), ShooterConstants.talonFXConfiguration, false);
+            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), ShooterConstants.talonFXConfiguration, true);
         }
     }
 

@@ -52,7 +52,7 @@ public class Arm extends SubsystemBase {
     }else{
       armIO = new TalonPosition(
         new TalonFX(ArmConstants.ARM_MOTOR_LEFT_ID)
-        ,ArmConstants.talonFXConfiguration, false
+        ,ArmConstants.talonFXConfiguration, true
       )/*.withFollower(new TalonFX(ArmConstants.ARM_MOTOR_RIGHT_ID), false)*/;
     }
   }

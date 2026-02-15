@@ -1,0 +1,84 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///Documentation
+
+//The absolute most useful documentation
+https://docs.wpilib.org/en/stable/
+
+//The second most used docs for our team
+https://v6.docs.ctr-electronics.com/en/latest/index.html
+
+//Other docs you will very likely need, and probably in the order you will need them
+https://frc-radio.vivid-hosting.net/overview/programming-your-radio-at-home
+https://pathplanner.dev/home.html
+https://docs.advantagescope.org/
+https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary
+https://docs.photonvision.org/en/latest/index.html
+https://choreo.autos/
+https://shenzhen-robotics-alliance.github.io/maple-sim/
+
+//Learning Java: there are many options, and all are likely good, so choose whatever works for you.
+//Here is a video I got off the top of youtube for Java.
+https://www.youtube.com/watch?v=xTtL8E4LzTQ
+
+//0 to Autonomous, probably the best thing to watch to get started after knowing java
+https://www.youtube.com/watch?v=ihO-mw_4Qpo&list=PLKsCZ-M6PfqchNWNbo_IKCZ26jLSQMiCY
+
+//Base simulation and a good coding backbone
+https://www.youtube.com/watch?v=gYL-3Phk6F0
+
+//These are basically gold. At a certain level of programming I think everyone should watch this stuff
+//Orbit Programming Sessions
+https://www.youtube.com/watch?v=vUtVXz7ebEE
+https://www.youtube.com/watch?v=N6ogT5DjGOk&t=1819s
+//Mechanical Advantage Programming Sessions 2024
+https://www.youtube.com/watch?v=buXa1xXWU_U&t=15s
+https://www.youtube.com/watch?v=BrzPw6ngx4o
+//Mechanical Advantage 2025, probably similar to 2024/exactly the same, I haven't watched these too thouroughly though.
+https://www.youtube.com/watch?v=ZMxTRgryrvE
+https://www.youtube.com/watch?v=8FfwFQcvRmU
+
+//I was looking around chief delphi and saw this. It is a subsystem generator, where you can specify what motors you want + extra
+//I would not recommend this as default, but if further years strugge considerably, it seems like a good option.
+https://www.yamgen.com/
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///Hardware Practices
+
+
+//RoboRio:
+//The documentation on these is solid, so just follow the wpilib stuff.
+//Expect 10-20 minutes per rio.
+
+//Radio updates:
+//Generally time consuming, you will need to use https://frc-radio.vivid-hosting.net/overview/programming-your-radio-at-home
+//and follow it to the letter.
+//Fast reference: set your ethernet IP to 192.168.69.2, subnet to 255.255.255.0, and default to 192.168.69.1 on IPV4
+//All switches off on back of radio besides switch 3, which should be on.
+
+//Phoenix Tuner:
+//Download this, you need it.
+//Ideally, you should be able to get pro, and use MotionMagic for MotionMagicTorqueCurrentFOC and MotionMagicVelocityVoltage
+//otherwise do PositionVoltage and VelocityVoltage
+//The UI is rather good, so I believe in you to find updates.
+//For swerve drive, go to mechanisms/swerve in Phoenix Tuner, and it will tell you what to do
+//A good tool from Phoenix Tuner is Settings/Advanced User Settings/Run Temporary Diagnostic Server, which lets you run the robot in a test mode
+
+//Limelights:
+//We only do this once a year, follow the docs and you'll be fine.
+//Make sure to update LimelightHelpers, which is a file you need to run limeights (its in the code...).
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Software Practices
+
+
+//FileSystem and general best practices, at least as I see them.
+
+//Pathplanner:
+
+//Choreo:
+
+//Advantage Scope:
+
+//MapleSim:

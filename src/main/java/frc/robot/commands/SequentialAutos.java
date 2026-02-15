@@ -36,9 +36,6 @@ public class SequentialAutos {
         NamedCommands.registerCommand("shootStatic", shootStatic());
         NamedCommands.registerCommand("passLeft", passLeft());
         NamedCommands.registerCommand("passRight", passRight());
-        NamedCommands.registerCommand("climbLeft", climb(1));
-        NamedCommands.registerCommand("climbMiddle", climb(2));
-        NamedCommands.registerCommand("climbRight", climb(3));
         NamedCommands.registerCommand("intake", intake());
         NamedCommands.registerCommand("stopShooting", stopShooting());
         NamedCommands.registerCommand("stopIntake", stopIntake());
@@ -105,27 +102,6 @@ public class SequentialAutos {
 
     public Command intake(){
         return commandMechanism.intake();
-    }
-
-    public Command climb(int i){
-        return commandMechanism.autoClimb(i);
-        // BiConsumer<ChassisSpeeds, DriveFeedforwards> climbAuto = getToConsumer(()->GameData.getTowerPose(i));
-        // return wrapCommand(Commands.parallel(
-        //     Commands.runOnce(()->swerveDrive.setAutoConsumer(climbAuto))
-        //     ,commandMechanism.climbUp()).until(()->swerveDrive.withinCoords(GameData.getTowerPose(i),.01,.01))
-        //     .andThen(commandMechanism.climbDown()));
-    }
-
-    public Command climbLeft(){
-        return climb(1);
-    }
-
-    public Command climbMiddle(){
-        return climb(2);
-    }
-
-    public Command climbRight(){
-        return climb(3);
     }
 
     public Command wrapCommand(Command command){

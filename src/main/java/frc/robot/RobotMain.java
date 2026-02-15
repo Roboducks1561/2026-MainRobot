@@ -85,20 +85,13 @@ public class RobotMain extends RobotContainer {
   private final Shooter leftShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_LEFT_ID);
   private final Shooter rightShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID);
   // private final Turret turret = new Turret();
-  private final ClimbElevator climbElevator = new ClimbElevator();
 
-  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, climbElevator, drivetrain);
+  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, drivetrain);
   private final GameState gameState = new GameState(commandMechanism, driverController);
 
   // private final ObjectDetection objectDetection = new ObjectDetection("Test",
   //   new Transform3d(new Translation3d(0,-.101, .522), new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(0))), ()->drivetrain.getPose());
   
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(0).withRotationalDeadband(0)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); 
-
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
@@ -116,8 +109,7 @@ public class RobotMain extends RobotContainer {
       }else{
         drivetrain.seedFieldRelative(Rotation2d.fromDegrees(0));
       }
-    })
-    .alongWith(commandMechanism.climbUp().withTimeout(3).andThen(commandMechanism.climbDown())));
+    }));
 
     // driverController.a().whileTrue(commandMechanism.passDynamic(true));
     // driverController.b().whileTrue(commandMechanism.passStatic(false));

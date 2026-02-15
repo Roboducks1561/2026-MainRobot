@@ -24,27 +24,26 @@ public class HoodConstants{
     public static final double MAX_HOOD_ANGLE_RAD = Units.rotationsToRadians(.07);
     public static final double MIN_HOOD_ANGLE_RAD = Units.rotationsToRadians(0);
 
-    public static final int HOOD_MOTOR_ID = 21;
-    public static final int HOOD_ENCODER_ID = 21;
+    public static final int HOOD_MOTOR_ID = 26;
 
     public static final double kS = 0;
     public static final double kV = 0;
     public static final double kA = 0;
     
-    public static final double kP = 500;
+    public static final double kP = 0;
     public static final double kI = 0;
-    public static final double kD = 10;//50;
+    public static final double kD = 0;//50;
     public static final double kG = 0;//-26;//8.4749;
 
-    public static final double HOOD_SENSOR_TO_MECHANISM_RATIO = 3;
-    public static final double HOOD_ROTOR_TO_SENSOR_RATIO = 13.3333;
+    public static final double HOOD_SENSOR_TO_MECHANISM_RATIO = 24;
+    public static final double HOOD_ROTOR_TO_SENSOR_RATIO = 1;
 
     public static final double CRUISE_VELOCITY = 9999;
     public static final double MAX_ACCELERATION = 9999;
     public static final double JERK = 0;
 
 
-    public static final Rotation2d ANGLE_OFFSET = Rotation2d.fromRotations(.0087);
+    public static final Rotation2d ANGLE_OFFSET = Rotation2d.fromRotations(.0);
 
     /* HOOD Current Limiting */ //TODO: Change/Fix these values
     public static final int HOOD_SUPPLY_CURRENT_LIMIT = 4;
@@ -78,7 +77,7 @@ public class HoodConstants{
         // talonFXConfiguration.Feedback.FeedbackRemoteSensorID = HOOD_ENCODER_ID;
         talonFXConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         talonFXConfiguration.Feedback.SensorToMechanismRatio = HOOD_SENSOR_TO_MECHANISM_RATIO*HOOD_ROTOR_TO_SENSOR_RATIO;
-        talonFXConfiguration.Feedback.RotorToSensorRatio = 1;//HOOD_ROTOR_TO_SENSOR_RATIO;
+        talonFXConfiguration.Feedback.RotorToSensorRatio = HOOD_ROTOR_TO_SENSOR_RATIO;
         
         /* Motion Magic Settings */
         var motionMagicConfigs = talonFXConfiguration.MotionMagic;

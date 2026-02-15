@@ -47,8 +47,8 @@ public class Indexer extends SubsystemBase{
             rollerIO = new SimRoller(IndexerConstants.RollerSim, new PIDController(20, 0, 0));
             canRange = new DigitalInputSim();
         }else{
-            rollerIO = new TalonRoller(new TalonFX(id), IndexerConstants.talonFXConfiguration, false);
-            canRange = new CANRange(canRangeID, .1, "");
+            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), IndexerConstants.talonFXConfiguration, true);
+            canRange = new CANRange(canRangeID, .1, "Canivore");
         }
     }
 

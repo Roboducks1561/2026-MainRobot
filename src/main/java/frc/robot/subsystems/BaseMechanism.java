@@ -25,7 +25,6 @@ import frc.robot.subsystems.TurretMechanism.Hood;
 import frc.robot.subsystems.TurretMechanism.Indexer;
 import frc.robot.subsystems.TurretMechanism.Shooter;
 import frc.robot.subsystems.TurretMechanism.Turret;
-import frc.robot.subsystems.climbMechanism.ClimbElevator;
 import frc.robot.subsystems.intakeMechanism.Arm;
 import frc.robot.subsystems.intakeMechanism.Intake;
 import frc.robot.subsystems.intakeMechanism.Spindexer;
@@ -47,7 +46,6 @@ public class BaseMechanism {
     public final Shooter leftShooter;
     public final Shooter rightShooter;
     public final SwerveDrive swerveDrive;
-    public final ClimbElevator climbElevator;
 
     protected final double intakeSpeed = 5;
     protected final double indexSpeed = 5;
@@ -56,14 +54,11 @@ public class BaseMechanism {
     protected final double armIntakePosition = .25;
     protected final double shooterDefaultSpeed = 5;
 
-    protected final double climberUpPosition = 1;
-
     protected final Transform3d fromSwerveBase = new Transform3d(-.24,0,.326, new Rotation3d());
 
     public final Set<Subsystem> smartShootRequirements;
     public final Set<Subsystem> shooterRequirements;
     public final Set<Subsystem> intakeRequirements;
-    public final Set<Subsystem> climbRequirements;
 
     private final NetworkTable robot = NetworkTableInstance.getDefault().getTable("Robot");
     protected final NetworkTable readyToShootRequirements = robot.getSubTable("ShootRequirements");
@@ -75,7 +70,7 @@ public class BaseMechanism {
         .getBooleanTopic("rightShooterCorrect").publish();
 
 
-    public BaseMechanism(Arm arm, Intake intake, Indexer leftIndexer, Indexer rightIndexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, ClimbElevator climbElevator, SwerveDrive swerveDrive){
+    public BaseMechanism(Arm arm, Intake intake, Indexer leftIndexer, Indexer rightIndexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
 
         this.arm = arm;
         this.intake = intake;
@@ -85,13 +80,11 @@ public class BaseMechanism {
         this.hood = hood;
         this.leftShooter = leftShooter;
         this.rightShooter = rightShooter;
-        this.climbElevator = climbElevator;
         this.swerveDrive = swerveDrive;
 
         smartShootRequirements = Set.of(leftIndexer, rightIndexer, spindexer, hood, leftShooter, rightShooter, swerveDrive);
         shooterRequirements = Set.of(leftIndexer, rightIndexer, spindexer, hood, leftShooter, rightShooter);
         intakeRequirements = Set.of(intake, arm);
-        climbRequirements = Set.of(arm, climbElevator);
 
         arm.setDefaultCommand(arm.reachGoal(0));
         intake.setDefaultCommand(intake.reachGoal(0));
@@ -102,7 +95,6 @@ public class BaseMechanism {
         hood.setDefaultCommand(hood.reachGoal(0));
         leftShooter.setDefaultCommand(leftShooter.reachGoal(0));
         rightShooter.setDefaultCommand(rightShooter.reachGoal(0));
-        climbElevator.reachGoal(0);
 
         notifier = new Notifier(this :: periodic);
         notifier.setName("BaseMechanism Periodic");
@@ -111,14 +103,6 @@ public class BaseMechanism {
 
         zeroSetter();
         defaultSetter();
-    }
-
-    public Command climbUp(){
-        return climbElevator.reachGoal(climberUpPosition);
-    }
-
-    public Command climbDown(){
-        return climbElevator.reachGoal(0);
     }
 
     public boolean readyToShootLeft(){
@@ -240,7 +224,6 @@ public class BaseMechanism {
         zeroSetter.onChange((value)->{
             arm.setZero();
             hood.setZero();
-            climbElevator.setZero();
         });
     }
 

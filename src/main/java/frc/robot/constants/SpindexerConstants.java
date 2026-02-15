@@ -11,26 +11,25 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class SpindexerConstants {
-    public static final double GEARING = 3;
-
-    public static final int INDEXER_MOTOR_ID = 13;
+    public static final int INDEXER_MOTOR_ID = 25;
     // Add 0.25 V output to overcome static friction
 
-    public static final double kS = .3; // An error of 1 rps results in 0.11 V output
-    public static final double kV = .28; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kS = 0; // An error of 1 rps results in 0.11 V output
+    public static final double kV = 0; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0; // An acceleration of 1 rps/s requires 0.01 V output
     public static final double kP = 0; // This will need to be tuned after feedforward
     public static final double kI = 0; // For flywheels, this should be 0
     public static final double kD = 0; // For flywheels, this should be 0
 
-    public static final double INDEXER_SENSOR_TO_MECHANISM_RATIO = 3;
+    //TODO this is not right yet
+    public static final double INDEXER_SENSOR_TO_MECHANISM_RATIO = 6;
     /* _INDEXER Current Limiting */
     public static final int INDEXER_SUPPLY_CURRENT_LIMIT = 40;
     public static final double INDEXER_CURRENT_THRESHOLD_TIME = 0.1;
     public static final boolean INDEXER_ENABLE_CURRENT_LIMIT = true;
 
     public static final boolean INDEXER_STATOR_CURRENT_LIMIT_ENABLE = true;
-	public static final double INDEXER_STATOR_CURRENT_LIMIT = 120;
+	public static final double INDEXER_STATOR_CURRENT_LIMIT = 80;
 
     public static final int INDEXER_CAN_RANGE_ID = 0;
 

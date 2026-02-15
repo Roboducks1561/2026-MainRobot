@@ -281,6 +281,10 @@ public class SwerveDrive extends SubsystemBase{
         return applyRequest(()->fieldCentricDrive.withSpeeds(poseNavigation.calculateTowardRotation(rotation2d, getPose(), maxRads)));
     }
 
+    public Command rotateTo(Pose2d target, double maxRads){
+        return applyRequest(()->fieldCentricDrive.withSpeeds(poseNavigation.calculateTowardRotation(target, getPose(), maxRads)));
+    }
+
     public Command rotateTo(Supplier<Rotation2d> rotation2d, double maxRads){
         return applyRequest(()->fieldCentricDrive.withSpeeds(poseNavigation.calculateTowardRotation(rotation2d.get(), getPose(), maxRads)));
     }

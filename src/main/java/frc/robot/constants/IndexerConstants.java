@@ -11,14 +11,12 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class IndexerConstants {
-    public static final double GEARING = 3;
-
-    public static final int INDEXER_MOTOR_LEFT_ID = 13;
-    public static final int INDEXER_MOTOR_RIGHT_ID = 14;
+    public static final int INDEXER_MOTOR_LEFT_ID = 22;
+    public static final int INDEXER_MOTOR_RIGHT_ID = 24;
     // Add 0.25 V output to overcome static friction
 
-    public static final double kS = .3; // An error of 1 rps results in 0.11 V output
-    public static final double kV = .28; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kS = 0; // An error of 1 rps results in 0.11 V output
+    public static final double kV = 0; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0; // An acceleration of 1 rps/s requires 0.01 V output
     public static final double kP = 0; // This will need to be tuned after feedforward
     public static final double kI = 0; // For flywheels, this should be 0
@@ -31,10 +29,10 @@ public class IndexerConstants {
     public static final boolean INDEXER_ENABLE_CURRENT_LIMIT = true;
 
     public static final boolean INDEXER_STATOR_CURRENT_LIMIT_ENABLE = true;
-	public static final double INDEXER_STATOR_CURRENT_LIMIT = 120;
+	public static final double INDEXER_STATOR_CURRENT_LIMIT = 60;
 
-    public static final int INDEXER_CAN_RANGE_LEFT_ID = 0;
-    public static final int INDEXER_CAN_RANGE_RIGHT_ID = 1;
+    public static final int INDEXER_CAN_RANGE_LEFT_ID = 21;
+    public static final int INDEXER_CAN_RANGE_RIGHT_ID = 22;
 
     public static final TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
     public static final CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs();

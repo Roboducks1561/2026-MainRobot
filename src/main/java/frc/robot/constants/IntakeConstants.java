@@ -12,8 +12,6 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class IntakeConstants {
-    public static final double GEARING = 3;
-
     public static final int INTAKE_MOTOR_ID = 12;
     // Add 0.25 V output to overcome static friction
 
@@ -24,7 +22,7 @@ public class IntakeConstants {
     public static final double kI = 0; // For flywheels, this should be 0
     public static final double kD = 0; // For flywheels, this should be 0
 
-    public static final double INTAKE_SENSOR_TO_MECHANISM_RATIO = 2;
+    public static final double INTAKE_SENSOR_TO_MECHANISM_RATIO = 3.49056;
 
     /* Intake Current Limiting */
     public static final int INTAKE_CURRENT_LIMIT = 30;

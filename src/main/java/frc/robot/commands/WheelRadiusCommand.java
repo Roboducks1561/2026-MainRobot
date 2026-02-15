@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
 
@@ -124,8 +126,11 @@ public class WheelRadiusCommand extends Command {
         double drivebaseRadiusMeters =
             Units.inchesToMeters(
                 Math.sqrt(
-                    2.0 * TunerConstants.driveBaseRadius
-                    * TunerConstants.driveBaseRadius
+                    TunerConstants.kFrontLeftXPos.in(Inches)
+                    * TunerConstants.kFrontLeftXPos.in(Inches)
+                    +
+                    TunerConstants.kFrontLeftYPos.in(Inches)
+                    * TunerConstants.kFrontLeftYPos.in(Inches)
                 )
             );
 
