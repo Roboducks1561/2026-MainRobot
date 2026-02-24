@@ -14,15 +14,15 @@ public class SpindexerConstants {
     public static final int INDEXER_MOTOR_ID = 25;
     // Add 0.25 V output to overcome static friction
 
-    public static final double kS = 0; // An error of 1 rps results in 0.11 V output
-    public static final double kV = 0; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kS = 0.33; // An error of 1 rps results in 0.11 V output
+    public static final double kV = 1.05; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0; // An acceleration of 1 rps/s requires 0.01 V output
     public static final double kP = 0; // This will need to be tuned after feedforward
     public static final double kI = 0; // For flywheels, this should be 0
     public static final double kD = 0; // For flywheels, this should be 0
 
     //TODO this is not right yet
-    public static final double INDEXER_SENSOR_TO_MECHANISM_RATIO = 6;
+    public static final double INDEXER_SENSOR_TO_MECHANISM_RATIO = 10;
     /* _INDEXER Current Limiting */
     public static final int INDEXER_SUPPLY_CURRENT_LIMIT = 40;
     public static final double INDEXER_CURRENT_THRESHOLD_TIME = 0.1;

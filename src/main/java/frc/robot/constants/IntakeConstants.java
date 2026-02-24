@@ -15,10 +15,10 @@ public class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 12;
     // Add 0.25 V output to overcome static friction
 
-    public static final double kS = .6; // An error of 1 rps results in 0.11 V output
-    public static final double kV = 0; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kS = .45; // An error of 1 rps results in 0.11 V output
+    public static final double kV = .42; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0; // An acceleration of 1 rps/s requires 0.01 V output
-    public static final double kP = .1; // This will need to be tuned after feedforward
+    public static final double kP = 0; // This will need to be tuned after feedforward
     public static final double kI = 0; // For flywheels, this should be 0
     public static final double kD = 0; // For flywheels, this should be 0
 
@@ -51,7 +51,7 @@ public class IntakeConstants {
         talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         // set Motion Magic Velocity settings
-        talonFXConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        talonFXConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         MotionMagicConfigs motionMagicConfigs = talonFXConfiguration.MotionMagic;
         motionMagicConfigs.MotionMagicAcceleration = 9999; // Target acceleration of 400 rps/s (0.25 seconds to max)
         motionMagicConfigs.MotionMagicJerk = 0; // Target jerk of 4000 rps/s/s (0.1 seconds)

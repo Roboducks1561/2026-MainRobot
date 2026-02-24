@@ -30,7 +30,7 @@ public class HoodConstants{
     public static final double kV = 0;
     public static final double kA = 0;
     
-    public static final double kP = 0;
+    public static final double kP = 300;
     public static final double kI = 0;
     public static final double kD = 0;//50;
     public static final double kG = 0;//-26;//8.4749;
@@ -46,10 +46,10 @@ public class HoodConstants{
     public static final Rotation2d ANGLE_OFFSET = Rotation2d.fromRotations(.0);
 
     /* HOOD Current Limiting */ //TODO: Change/Fix these values
-    public static final int HOOD_SUPPLY_CURRENT_LIMIT = 4;
+    public static final int HOOD_SUPPLY_CURRENT_LIMIT = 60;
     public static final boolean HOOD_ENABLE_CURRENT_LIMIT = true;
     public static final boolean HOOD_STATOR_CURRENT_LIMIT_ENABLE = true;
-    public static final double HOOD_STATOR_CURRENT_LIMIT = 20;
+    public static final double HOOD_STATOR_CURRENT_LIMIT = 80;
 
 
 
@@ -59,9 +59,8 @@ public class HoodConstants{
     static{
         encoderConfiguration.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
         // canCoderConfigs.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-        encoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        encoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderConfiguration.MagnetSensor.MagnetOffset = ANGLE_OFFSET.getRotations();
-        
 
         Slot0Configs slot0Configs = talonFXConfiguration.Slot0;
         slot0Configs.kS = kS; // Add 0.25 V output to overcome static friction
@@ -73,7 +72,7 @@ public class HoodConstants{
         slot0Configs.kG = kG;
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
 
-        talonFXConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;//InvertedValue.Clockwise_Positive
+        talonFXConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;//InvertedValue.Clockwise_Positive
         // talonFXConfiguration.Feedback.FeedbackRemoteSensorID = HOOD_ENCODER_ID;
         talonFXConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         talonFXConfiguration.Feedback.SensorToMechanismRatio = HOOD_SENSOR_TO_MECHANISM_RATIO*HOOD_ROTOR_TO_SENSOR_RATIO;

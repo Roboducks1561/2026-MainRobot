@@ -26,7 +26,7 @@ public class WheelRadiusCommand extends Command {
 
     private static final double SPIN_RATE_RAD_PER_SEC =
             Units.degreesToRadians(60);
-    private static final double RUN_TIME_SEC = 30.0;
+    private static final double RUN_TIME_SEC = 15.0;
 
     private final ApplyRobotSpeeds spinRequest =
             new ApplyRobotSpeeds();
@@ -154,8 +154,6 @@ public class WheelRadiusCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        drivetrain.setControl(
-            spinRequest.withSpeeds(new ChassisSpeeds())
-        );
+        drivetrain.setControl(spinRequest.withSpeeds(new ChassisSpeeds()));
     }
 }

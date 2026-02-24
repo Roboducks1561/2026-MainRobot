@@ -67,6 +67,7 @@ public class RobotMain extends RobotContainer {
 
 
   private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
   
   private final SwerveDrive drivetrain = new SwerveDrive();
 
@@ -77,13 +78,13 @@ public class RobotMain extends RobotContainer {
     .getStructTopic("Base", Pose2d.struct).publish();
 
   private final Arm arm = new Arm();
-  private final Indexer leftIndexer = new Indexer(IndexerConstants.INDEXER_MOTOR_LEFT_ID, IndexerConstants.INDEXER_CAN_RANGE_LEFT_ID);
-  private final Indexer rightIndexer = new Indexer(IndexerConstants.INDEXER_MOTOR_RIGHT_ID, IndexerConstants.INDEXER_CAN_RANGE_RIGHT_ID);
+  private final Indexer leftIndexer = new Indexer(IndexerConstants.INDEXER_MOTOR_LEFT_ID, IndexerConstants.INDEXER_CAN_RANGE_LEFT_ID, false);
+  private final Indexer rightIndexer = new Indexer(IndexerConstants.INDEXER_MOTOR_RIGHT_ID, IndexerConstants.INDEXER_CAN_RANGE_RIGHT_ID, true);
   private final Spindexer spindexer = new Spindexer();
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
-  private final Shooter leftShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_LEFT_ID);
-  private final Shooter rightShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID);
+  private final Shooter leftShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_LEFT_ID, ShooterConstants.talonFXConfigurationLeft);
+  private final Shooter rightShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID, ShooterConstants.talonFXConfigurationRight);
   // private final Turret turret = new Turret();
 
   private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, drivetrain);
@@ -118,7 +119,11 @@ public class RobotMain extends RobotContainer {
     // driverController.rightBumper().whileTrue(hood.reachGoal(.09774));
     driverController.rightBumper().whileTrue(gameState.shoot());
     driverController.leftBumper().whileTrue(gameState.intake());
-    driverController.a().onTrue(new WheelRadiusCommand(drivetrain));
+    driverController.a().whileTrue(drivetrain.brake());
+    driverController.back().onTrue(new WheelRadiusCommand(drivetrain));
+    operatorController.a().whileTrue(Commands.runOnce(()->commandMechanism.setHopperState(0)));
+    operatorController.b().whileTrue(Commands.runOnce(()->commandMechanism.setHopperState(1)));
+    operatorController.x().whileTrue(Commands.runOnce(()->commandMechanism.setHopperState(2)));
     
     // driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
     // driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));
@@ -139,22 +144,22 @@ public class RobotMain extends RobotContainer {
     createAutos();
     // autoChooser = buildAutoChooser("", (data) -> data);
 
-    autoChooser.onChange((data)->{
-      try{
-        if (AutoBuilder.getAllAutoNames().contains(data.getName())){
-          PathPlannerAuto auto = new PathPlannerAuto(data.getName());
-          System.out.println(GameData.isRed.getAsBoolean());
-          drivetrain.resetPose(GameData.isRed.getAsBoolean() ? PoseEX.pose180(auto.getStartingPose()) : auto.getStartingPose());
-        }else{
-          // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
-          //   autoStart = PoseEX.pose180(autoStart);
-          // }
-          // drivetrain.resetPose(autoStart);
-        }
-      } catch(Exception e){
+    // autoChooser.onChange((data)->{
+    //   try{
+    //     if (AutoBuilder.getAllAutoNames().contains(data.getName())){
+    //       PathPlannerAuto auto = new PathPlannerAuto(data.getName());
+    //       System.out.println(GameData.isRed.getAsBoolean());
+    //       drivetrain.resetPose(GameData.isRed.getAsBoolean() ? PoseEX.pose180(auto.getStartingPose()) : auto.getStartingPose());
+    //     }else{
+    //       // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
+    //       //   autoStart = PoseEX.pose180(autoStart);
+    //       // }
+    //       // drivetrain.resetPose(autoStart);
+    //     }
+    //   } catch(Exception e){
         
-      }
-    });
+    //   }
+    // });
 
     
 
@@ -167,7 +172,7 @@ public class RobotMain extends RobotContainer {
     //How you might make a choreo only path
     // autoChooser.addOption("ChoreoPath", ChoreoEX.getChoreoGroupPath(true,new String[]{"shootPreAmp","intake4","shoot4M","intake5","shoot5M","intake6","shoot6M","intake7","shoot7M"}));
   
-    basePublisher.accept(new Pose2d());
+    basePublisher.accept(GameData.getHubPose2d());
   }
 
   public void configureAutonomousCommands() {

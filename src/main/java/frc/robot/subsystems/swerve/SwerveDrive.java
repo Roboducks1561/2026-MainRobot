@@ -54,7 +54,7 @@ import frc.robot.util.MutSlewRateLimiter;
 
 public class SwerveDrive extends SubsystemBase{
     private final Vision cameras;
-    private final ObjectDetection objectDetection;
+    // private final ObjectDetection objectDetection;
     private final AccelerometerIO accelerometer;
 
     private final SwerveDriveIO swerveIO;
@@ -105,24 +105,26 @@ public class SwerveDrive extends SubsystemBase{
 
         poseNavigation = new PoseNavigation(speedsPID, rotationPID);
 
-        objectDetection = new ObjectDetection(LimelightConstants.BACKWARD_LIMELIGHT_NAME
-            , LimelightConstants.BACKWARD_LIMELIGHT_CAMERA_TRANSFORM
-            , ()->getPose());
+        // objectDetection = new ObjectDetection(LimelightConstants.BACKWARD_LIMELIGHT_NAME
+        //     , LimelightConstants.BACKWARD_LIMELIGHT_CAMERA_TRANSFORM
+        //     , ()->getPose());
         
-        LimelightHelpers.setPipelineIndex(LimelightConstants.BACKWARD_LIMELIGHT_NAME, 0);
-        new Trigger(()->DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red).onTrue(Commands.runOnce(()->{
-            LimelightHelpers.setPipelineIndex(LimelightConstants.BACKWARD_LIMELIGHT_NAME, 0);
-        }));
-        new Trigger(()->DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue).onTrue(Commands.runOnce(()->{
-            LimelightHelpers.setPipelineIndex(LimelightConstants.BACKWARD_LIMELIGHT_NAME, 1);
-        }));
+        // LimelightHelpers.setPipelineIndex(LimelightConstants.BACKWARD_LIMELIGHT_NAME, 0);
+        // new Trigger(()->DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red).onTrue(Commands.runOnce(()->{
+        //     LimelightHelpers.setPipelineIndex(LimelightConstants.BACKWARD_LIMELIGHT_NAME, 0);
+        // }));
+        // new Trigger(()->DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue).onTrue(Commands.runOnce(()->{
+        //     LimelightHelpers.setPipelineIndex(LimelightConstants.BACKWARD_LIMELIGHT_NAME, 1);
+        // }));
 
         cameras = new Vision(swerveIO, new Transform3d[]{
                 LimelightConstants.FR_LIMELIGHT_CAMERA_TRANSFORM,
-                LimelightConstants.FL_LIMELIGHT_CAMERA_TRANSFORM
+                LimelightConstants.FL_LIMELIGHT_CAMERA_TRANSFORM,
+                LimelightConstants.BACKWARD_LIMELIGHT_CAMERA_TRANSFORM
             },
                 LimelightConstants.FR_LIMELIGHT_NAME,
-                LimelightConstants.FL_LIMELIGHT_NAME
+                LimelightConstants.FL_LIMELIGHT_NAME,
+                LimelightConstants.BACKWARD_LIMELIGHT_NAME
         );
 
         visionUpdates = new Notifier(()->{
@@ -228,9 +230,9 @@ public class SwerveDrive extends SubsystemBase{
         return swerveIO;
     }
 
-    public Optional<Pose2d> getObjectPose(){
-        return objectDetection.getPiecePose();
-    }
+    // public Optional<Pose2d> getObjectPose(){
+    //     return objectDetection.getPiecePose();
+    // }
 
     public void registerTelemetry(Consumer<SwerveDriveState> object) {
         swerveIO.registerTelemetry(object);

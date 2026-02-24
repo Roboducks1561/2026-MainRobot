@@ -15,8 +15,8 @@ public class IndexerConstants {
     public static final int INDEXER_MOTOR_RIGHT_ID = 24;
     // Add 0.25 V output to overcome static friction
 
-    public static final double kS = 0; // An error of 1 rps results in 0.11 V output
-    public static final double kV = 0; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kS = 0.3; // An error of 1 rps results in 0.11 V output
+    public static final double kV = 0.355; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0; // An acceleration of 1 rps/s requires 0.01 V output
     public static final double kP = 0; // This will need to be tuned after feedforward
     public static final double kI = 0; // For flywheels, this should be 0
@@ -66,6 +66,6 @@ public class IndexerConstants {
 
     public static final DCMotor gearbox = DCMotor.getFalcon500(1);
 
-    public static final FlywheelSim RollerSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(gearbox,0.02,1),
+    public static final FlywheelSim RollerSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(gearbox,0.005,.5),
      gearbox);
 }

@@ -3,49 +3,54 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.575877192982456,
-        "y": 1.0355350877192984
+        "x": 3.482158956109135,
+        "y": 0.9202135231316719
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9288126634302767,
-        "y": 0.9329200731323706
+        "x": 2.8350944265569558,
+        "y": 0.8175985085447441
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6480175438596492,
-        "y": 0.6456842105263172
+        "x": 0.8031198102016615,
+        "y": 0.45756820877817406
       },
       "prevControl": {
-        "x": 1.6609973044525492,
-        "y": 0.8100799265573468
+        "x": 1.8160995707945617,
+        "y": 0.6219639248092037
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -139.55176006299632
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0,
+      "name": "hopperOut",
+      "waypointRelativePos": 0.5624296962879657,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {
-          "name": "intake"
+          "name": "hopperOut"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -60,7 +65,7 @@
   "folder": "Pathplanner Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.85194921965567
+    "rotation": -113.02549200852809
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

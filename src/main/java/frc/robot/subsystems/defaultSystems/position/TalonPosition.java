@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -18,7 +19,7 @@ public class TalonPosition implements PositionIO{
 
     private final VoltageOut voltageRequest = new VoltageOut(0);
     //TODO, the only thing in here that should be customizable and isn't. I don't currently have a fix, but i might not need one
-    private final MotionMagicTorqueCurrentFOC controlRequest = new MotionMagicTorqueCurrentFOC(0);
+    private final MotionMagicVoltage controlRequest = new MotionMagicVoltage(0);
     private final PositionVoltage positionVoltage = new PositionVoltage(0);
 
     private final boolean pro;

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleConsumer;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -9,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.MultiLinearInterpolator;
 import frc.robot.util.PoseEX;
+import frc.robot.util.SendableConsumer;
 import frc.robot.util.Vector2;
 
 public class ScoreMath {
@@ -18,6 +21,12 @@ public class ScoreMath {
     public ScoreMath(SwerveDrive swerveDrive, Transform3d turretTransform){
         this.swerveDrive = swerveDrive;
         this.turretTransform = turretTransform;
+        SendableConsumer.checker(
+            SendableConsumer.createSendableChooser("interpolationTuning", new String[]{"hood additional", "shooter divisor"}, new double[]{0.0,1.0})
+        ,new DoubleConsumer[]{
+            (i)->{additional = i;},
+            (i)->{divisor = i;}
+        });
     }
 
     /**
@@ -42,6 +51,9 @@ public class ScoreMath {
         //TODO timeTillTarget is an educated guess, please fix
         //Done by finding the time it takes to hit the ground at 2.6 meters, multiplying by proportion I think it will actually travel (Because it hits hub before ground)
         double timeTillTarget = .728*1.8;
+        if (interpolate){
+            timeTillTarget = .728 * 1.4;
+        }
 
         //TODO the acceleration might not be working right, check this first if missing, .2 is mostly a guess too
         ChassisSpeeds swerveSpeeds = swerveDrive.getSpeeds().plus(swerveDrive.getAcceleration().times(.2));
@@ -139,16 +151,36 @@ public class ScoreMath {
 
 
 
-    private final MultiLinearInterpolator distToSpeedAndAngle = new MultiLinearInterpolator(new double[][]
+    private double divisor = .98;
+    private double additional = .03;
+    private MultiLinearInterpolator distToSpeedAndAngle = new MultiLinearInterpolator(new double[][]
         {
             //Distance meters, Pivot rotations, velocity
-            {0,0,0}
-            ,{1,0,0}
-            ,{2,0,0}
-            ,{3,0,0}
-            ,{4,0,0}
-            ,{5,0,0}
-            ,{6,0,0}
+            {1.5426,0.0,68.6}
+            ,{1.818,0.007,70}
+            ,{2.008,0.01,70}
+            ,{2.2,0.015,73}
+            ,{2.376,0.015,73}
+            ,{2.573,0.02,73}
+            ,{2.772,0.027,78}
+            ,{3.03,0.031,79}
+            ,{3.241,0.031,79}
+            ,{3.465,0.038,82}
+            ,{3.82,0.043,88}
+            ,{4.095,0.046,90}
+            ,{4.365,0.048,91}
+            ,{4.751,0.06,97}
+            ,{5.3,0.06,97}
+            // ,{1.3852,0.005+additional,70}
+            // ,{1.903,.018+additional,73}
+            // ,{2.77,0.034+additional,82}
+            // ,{3.22,0.038+additional,85}
+            // ,{3.717,0.045+additional,83}
+            // ,{4.34,0.044+additional,87}
+            // ,{4.623,0.044+additional,91}
+            // ,{5.76, 0.06+additional, 91}
+            // ,{6, 0.06+additional, 91}
+            // ,{6, 0.06+additional, 91}
         }
     );
 
@@ -162,6 +194,6 @@ public class ScoreMath {
     public double[] interpolate(Pose3d turretPose, Pose3d scorePose){
         double dist = PoseEX.getDistanceFromPoseMeters(turretPose.toPose2d(), scorePose.toPose2d());
         double[] interpolated = distToSpeedAndAngle.get(dist);
-        return new double[]{interpolated[0], interpolated[1], targetRotation(turretPose.toPose2d(), scorePose.toPose2d())};
+        return new double[]{interpolated[0] + additional, interpolated[1]/divisor, targetRotation(turretPose.toPose2d(), scorePose.toPose2d())};
     }
 }

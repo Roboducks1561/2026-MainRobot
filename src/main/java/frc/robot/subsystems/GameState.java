@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
@@ -12,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.GameData;
 import frc.robot.util.PoseEX;
+import frc.robot.util.SendableConsumer;
 
 public class GameState {
     private final Notifier notifier;
@@ -38,16 +40,8 @@ public class GameState {
         notifier.startPeriodic(.02);
         Runtime.getRuntime().addShutdownHook(new Thread(notifier::close));
 
-        SendableChooser<Boolean> wonAutoSendableChooser = new SendableChooser<>();
-
-        wonAutoSendableChooser.addOption("Lost", false);
-        wonAutoSendableChooser.setDefaultOption("Won", true);
-
-        SmartDashboard.putData("WonAuto?", wonAutoSendableChooser);
-
-        wonAutoSendableChooser.onChange((value)->{
-            wonAuto = value;
-        });
+        BooleanEntry wonAutoConsumer = SendableConsumer.createSendableChooser("wonAuto",true);
+        SendableConsumer.checker(wonAutoConsumer, (b)->wonAuto = b);
 
         matchTime = Timer.getFPGATimestamp();
         gameState = 0;
@@ -59,7 +53,7 @@ public class GameState {
     }
 
     public boolean shootingPeriod(){
-        return gameState < 1 || gameState == 5 || (wonAuto ? (gameState == 2 || gameState == 4) : (gameState == 1 || gameState == 3));
+        return true;//gameState < 1 || gameState == 5 || (wonAuto ? (gameState == 2 || gameState == 4) : (gameState == 1 || gameState == 3));
     }
 
     public Command shoot(){

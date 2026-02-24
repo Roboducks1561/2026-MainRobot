@@ -32,11 +32,18 @@ public class SequentialAutos {
 
         defaultAuto = commandMechanism.swerveDrive.getAutoConsumer();
 
-        NamedCommands.registerCommand("shoot", shoot());
+        NamedCommands.registerCommand("shoot", shoot().finallyDo(()->{
+            commandMechanism.leftShooter.setVelocity(0);
+            commandMechanism.rightShooter.setVelocity(0);
+            commandMechanism.leftIndexer.setVelocity(0);
+            commandMechanism.rightIndexer.setVelocity(0);
+        }));
         NamedCommands.registerCommand("shootStatic", shootStatic());
         NamedCommands.registerCommand("passLeft", passLeft());
         NamedCommands.registerCommand("passRight", passRight());
         NamedCommands.registerCommand("intake", intake());
+        NamedCommands.registerCommand("hopperOut", hopperOut());
+        NamedCommands.registerCommand("overDepot", overDepot());
         NamedCommands.registerCommand("stopShooting", stopShooting());
         NamedCommands.registerCommand("stopIntake", stopIntake());
     }
@@ -102,6 +109,14 @@ public class SequentialAutos {
 
     public Command intake(){
         return commandMechanism.intake();
+    }
+
+    public Command hopperOut(){
+        return commandMechanism.hopperOut();
+    }
+
+    public Command overDepot(){
+        return commandMechanism.overDepot();
     }
 
     public Command wrapCommand(Command command){

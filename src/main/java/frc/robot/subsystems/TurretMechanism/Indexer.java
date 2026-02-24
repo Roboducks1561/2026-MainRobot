@@ -2,7 +2,9 @@ package frc.robot.subsystems.TurretMechanism;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -35,7 +37,7 @@ public class Indexer extends SubsystemBase{
     private final int id;
     private final int canRangeID;
 
-    public Indexer(int id, int canRangeID){
+    public Indexer(int id, int canRangeID, boolean inverted){
         this.id = id;
         this.canRangeID = canRangeID;
         rollerVelocityPublisher = IndexerTable
@@ -47,7 +49,9 @@ public class Indexer extends SubsystemBase{
             rollerIO = new SimRoller(IndexerConstants.RollerSim, new PIDController(20, 0, 0));
             canRange = new DigitalInputSim();
         }else{
-            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), IndexerConstants.talonFXConfiguration, true);
+            TalonFXConfiguration config = IndexerConstants.talonFXConfiguration;
+            config.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), config, true);
             canRange = new CANRange(canRangeID, .1, "Canivore");
         }
     }

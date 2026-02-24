@@ -2,7 +2,9 @@ package frc.robot.subsystems.TurretMechanism;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -25,20 +27,20 @@ public class Shooter extends SubsystemBase{
     private final DoublePublisher rollerVelocityPublisher;
     private final DoublePublisher rollerTargetPublisher;
 
-    private final double maxError = .06;
+    private final double maxError = .1;
 
     private final int id;
 
-    public Shooter(int id){
+    public Shooter(int id, TalonFXConfiguration config){
         this.id = id;
         rollerVelocityPublisher = rollerTable
             .getDoubleTopic("ShooterVelocity"+id).publish();
         rollerTargetPublisher = rollerTable
             .getDoubleTopic("ShooterTargetVelocity"+id).publish();
         if (Robot.isSimulation()){
-            rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(25, 0, 0));
+            rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(140, 0, 0));
         }else{
-            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), ShooterConstants.talonFXConfiguration, true);
+            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), config, true);
         }
     }
 
@@ -87,6 +89,10 @@ public class Shooter extends SubsystemBase{
 
     public boolean withinBounds(){
         return Math.abs(getTargetVelocity() - getVelocity()) < maxError;
+    }
+
+    public TalonFX getMotor(){
+        return rollerIO.getMotor();
     }
 
     @Override

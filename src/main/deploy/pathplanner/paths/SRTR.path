@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 2.7232416638792656,
-        "y": 1.9834674355478081
+        "y": 1.9834674355478084
       },
       "nextControl": null,
       "isLocked": false,
@@ -70,7 +70,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 0.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -87,5 +87,5 @@
     "velocity": 0,
     "rotation": -0.7360937115577026
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

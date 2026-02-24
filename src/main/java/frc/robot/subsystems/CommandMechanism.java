@@ -7,12 +7,15 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -38,12 +41,20 @@ public class CommandMechanism extends BaseMechanism{
     private double[] dynamicPassLeft = new double[]{0,0,0};
     private double[] dynamicPassRight = new double[]{0,0,0};
     private boolean interpolate = false;
-    private final double maxAimError = .02;
+    private final double maxAimError = .03;
 
     protected final Animations animations;
 
     private final BooleanPublisher aimCorrect = readyToShootRequirements
         .getBooleanTopic("aimCorrect").publish();
+
+    private final DoublePublisher distance = readyToShootRequirements
+        .getDoubleTopic("distance").publish();
+
+    private final DoublePublisher aimDirection = readyToShootRequirements
+        .getDoubleTopic("aimDirection").publish();
+    private final DoublePublisher orientation = readyToShootRequirements
+        .getDoubleTopic("orientation").publish();
 
     public CommandMechanism(Arm arm, Intake intake, Indexer leftIndexer, Indexer rightIndexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
         super(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, swerveDrive);
@@ -52,7 +63,7 @@ public class CommandMechanism extends BaseMechanism{
         if (Robot.isSimulation()){
             Bootleg2026.addShooterSimulation(
                 ()->fromSwerveBase.plus(new Transform3d(0,0,0,new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),0)))
-                    ,()->leftShooter.getVelocity() * 1.07, "Fuel", "Intake");
+                    ,()->rpsTomps(leftShooter.getVelocity()) * 1.07, "Fuel", "Intake");
             Bootleg2026.addShootRequirements("Intake", ()->{
                 boolean ready = leftShooter.getVelocity() > 1 && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .15;
                 if (ready){
@@ -64,13 +75,10 @@ public class CommandMechanism extends BaseMechanism{
             Bootleg2026.addIntakeSimulation("Intake","Fuel",.5,1,60,new Translation2d(.2,0));
             Bootleg2026.addIntakeRequirements("Intake", ()->Math.abs(arm.getPosition() - armIntakePosition) < .05);
             
-            // int[] lastI = new int[]{1};
-            // Bootleg2026.hasPiece("Intake",(i)->{
-            //     intake.getMotorStrainIO().setValue(lastI[0] < i);
-            //     lastI[0] = i;
-            //     intake.getDigitalInputIO().setValue(i == 2);
-            //     indexer.getDigitalInputIO().setValue(i == 1 || i == 2);
-            // });
+            Bootleg2026.hasPiece("Intake",(i)->{
+                leftIndexer.getDigitalInputIO().setValue(i>0);
+                rightIndexer.getDigitalInputIO().setValue(i>0);
+            });
         }
 
         notifier = new Notifier(this :: commandPeriodic);
@@ -96,24 +104,28 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public boolean readyToShootHub(){
-        return Math.abs(dynamicScoringData[2]-swerveDrive.getYaw().getRotations()) < maxAimError;
+        return Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) < maxAimError;//Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) < maxAimError || Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) > .5 - maxAimError;//Robot.isSimulation() ? Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) < maxAimError : Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) > .5 - maxAimError;
     }
 
-    public double mpsTorps(double mps){
-        return Robot.isSimulation() ? mps : mps*10;
+    public double mpsTorps(double mps){ 
+        return Robot.isSimulation() ? mps:mps;//mps*11 : mps*11;
     }
 
     public double rpsTomps(double rps){
-        return Robot.isSimulation() ? rps : rps/10;
+        return Robot.isSimulation() ? rps:rps;//rps/11 : rps/11;
     }
 
     //TODO, likely the conversion of hood rotations to shoo rotations is not linear, so fix when physical robot is available.
     public double hoodRotationsToShootRotations(double rotations){
-        return Robot.isSimulation() ? rotations : rotations + HoodConstants.MIN_HOOD_ANGLE_RAD;
+        return Robot.isSimulation() ? rotations:rotations;//rotations*1.2 + .02 : rotations*1.2 + .02;
     }
+    // ax + b = y
+    // ay + b = x
+
+    // (x-b)/a = y
 
     public double shootRotationsToHoodRotations(double rotations){
-        return Robot.isSimulation() ? rotations : rotations - HoodConstants.MIN_HOOD_ANGLE_RAD;
+        return Robot.isSimulation() ? rotations:rotations;//(rotations - .02)/1.2 : (rotations - .02)/1.2;
     }
 
     public Command stopShooting(){
@@ -126,7 +138,7 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public Command stopIntake(){
-        return Commands.parallel(intake.reachGoalOnce(0), arm.reachGoalOnce(0));
+        return Commands.parallel(intake.reachGoalOnce(10), arm.reachGoalOnce(0));
     }
 
     public Command shootDefault(Supplier<double[]> dynamicScoringData, BooleanSupplier ready){
@@ -164,13 +176,18 @@ public class CommandMechanism extends BaseMechanism{
     double lastLaunchRight = 0;
     public void commandPeriodic(){
         dynamicScoringData = scoreMath.dynamicScore(GameData.getHubPose3d(), interpolate && !Robot.isSimulation()
-            ,hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD)), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(8));
+            ,hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD)), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
 
         dynamicPassLeft = scoreMath.dynamicScore(GameData.getPassPose3d(true), interpolate && !Robot.isSimulation()
-            ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(10));
+            ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
         dynamicPassRight = scoreMath.dynamicScore(GameData.getPassPose3d(false), interpolate && !Robot.isSimulation()
-            ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(10));
-    
+            ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
+        // System.out.println(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations()));
+        if (interpolate){
+            dynamicScoringData = new double[]{hoodRotationsToShootRotations(dynamicScoringData[0]), rpsTomps(dynamicScoringData[1]), dynamicScoringData[2]};
+            dynamicPassLeft = new double[]{hoodRotationsToShootRotations(dynamicPassLeft[0]), rpsTomps(dynamicPassLeft[1]), dynamicPassLeft[2]};
+            dynamicPassRight = new double[]{hoodRotationsToShootRotations(dynamicPassRight[0]), rpsTomps(dynamicPassRight[1]), dynamicPassRight[2]};
+        }
         if (!Robot.isSimulation() && leftShooter.getVelocity() > 1 && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
             lastLaunchLeft = Utils.getCurrentTimeSeconds();
             animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(leftShooter.getVelocity()));
@@ -179,7 +196,10 @@ public class CommandMechanism extends BaseMechanism{
             lastLaunchRight = Utils.getCurrentTimeSeconds();
             animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(rightShooter.getVelocity()));
         }
-
+        Pose2d turretPose = new Pose3d(swerveDrive.getPose()).transformBy(fromSwerveBase).toPose2d();
         aimCorrect.accept(readyToShootHub());
+        distance.accept(PoseEX.getDistanceFromPoseMeters(turretPose, GameData.getHubPose2d()));
+        aimDirection.accept(dynamicScoringData[2]);
+        orientation.accept(swerveDrive.getYaw().getRotations());
     }
 }

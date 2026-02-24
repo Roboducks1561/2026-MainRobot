@@ -1,5 +1,7 @@
 package frc.robot.subsystems.defaultSystems.velocity;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -94,5 +96,10 @@ public class SimRoller implements VelocityIO{
         voltageOut = true;
         outputVolts = volts;
         stopped = false;
+    }
+
+    @Override
+    public TalonFX getMotor() {
+        return null;
     }
 }

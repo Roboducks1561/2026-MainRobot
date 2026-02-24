@@ -27,6 +27,7 @@ public class PoseNavigation {
      * @return
      */
     public ChassisSpeeds calculateTowardRotation(Rotation2d target, Pose2d current, double radianPSCap) {
+        System.out.println(distToCorrectedPoint(target.getRadians(), current.getRotation().getRadians())+"   "+target.getRadians()+"    "+current.getRotation().getRadians());
         double finalRotation = Math.min(Math.max(rotationPID.calculate(distToCorrectedPoint(target.getRadians(), current.getRotation().getRadians()),0),-radianPSCap),radianPSCap);
         return new ChassisSpeeds(0, 0, finalRotation);
     }

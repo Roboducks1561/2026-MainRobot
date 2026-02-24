@@ -87,4 +87,9 @@ public class TalonRoller implements VelocityIO{
         configMotor(motor, talonFXConfigs);
         return this;
     }
+
+    @Override
+    public TalonFX getMotor() {
+        return intakeMotor;
+    }
 }
