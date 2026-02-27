@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -52,13 +53,13 @@ public class Arm extends SubsystemBase {
     }else{
       armIO = new TalonPosition(
         new TalonFX(ArmConstants.ARM_MOTOR_LEFT_ID)
-        ,ArmConstants.talonFXConfiguration, true
+        ,ArmConstants.talonFXConfiguration, false, true
       )/*.withFollower(new TalonFX(ArmConstants.ARM_MOTOR_RIGHT_ID), false)*/;
     }
   }
 
   public void setPosition(double position){
-    armIO.setPosition(position);
+    armIO.setPosition(MathUtil.clamp(position, 0, .4));
   }
 
   /**

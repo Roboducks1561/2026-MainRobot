@@ -1,0 +1,124 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.75,
+        "y": 0.673
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.0030350877192977,
+        "y": 1.6322456140350883
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.8353973902728358,
+        "y": 5.267
+      },
+      "prevControl": {
+        "x": 3.0269035087719294,
+        "y": 5.220537272897547
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.10176678445229587,
+      "maxWaypointRelativePos": 0.862190812720846,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.64,
+        "y": 4.03
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.11248593925759195,
+      "maxWaypointRelativePos": 0.8683914510686136,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "shoot",
+      "waypointRelativePos": 0.11024734982332154,
+      "endWaypointRelativePos": 0.8876325088339241,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
+    },
+    {
+      "name": "stopIntake",
+      "waypointRelativePos": 0.351943462897526,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stopIntake"
+        }
+      }
+    },
+    {
+      "name": "stopShooting",
+      "waypointRelativePos": 0.904386951631047,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stopShooting"
+        }
+      }
+    },
+    {
+      "name": "overDepot",
+      "waypointRelativePos": 0.9342756183745579,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "overDepot"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 141.40797520106605
+  },
+  "reversed": false,
+  "folder": "ToastOnly",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -179.99440713941019
+  },
+  "useDefaultConstraints": true
+}

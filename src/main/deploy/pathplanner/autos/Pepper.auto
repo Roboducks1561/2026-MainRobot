@@ -7,35 +7,42 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SLTL"
+            "pathName": "Pepper1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TLIL"
+            "pathName": "Pepper2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ILIR"
+            "pathName": "Pepper3"
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "IRTR"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "sequential",
                 "data": {
-                  "waitTime": 6.0
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopIntake"
+                      }
+                    }
+                  ]
                 }
               },
               {

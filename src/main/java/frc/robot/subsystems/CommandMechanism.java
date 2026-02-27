@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -40,7 +39,7 @@ public class CommandMechanism extends BaseMechanism{
     private double[] dynamicScoringData = new double[]{0,0,0};
     private double[] dynamicPassLeft = new double[]{0,0,0};
     private double[] dynamicPassRight = new double[]{0,0,0};
-    private boolean interpolate = false;
+    private boolean interpolate = true;
     private final double maxAimError = .03;
 
     protected final Animations animations;
@@ -50,11 +49,6 @@ public class CommandMechanism extends BaseMechanism{
 
     private final DoublePublisher distance = readyToShootRequirements
         .getDoubleTopic("distance").publish();
-
-    private final DoublePublisher aimDirection = readyToShootRequirements
-        .getDoubleTopic("aimDirection").publish();
-    private final DoublePublisher orientation = readyToShootRequirements
-        .getDoubleTopic("orientation").publish();
 
     public CommandMechanism(Arm arm, Intake intake, Indexer leftIndexer, Indexer rightIndexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
         super(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, swerveDrive);
@@ -104,7 +98,7 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public boolean readyToShootHub(){
-        return Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) < maxAimError;//Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) < maxAimError || Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) > .5 - maxAimError;//Robot.isSimulation() ? Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) < maxAimError : Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations())) > .5 - maxAimError;
+        return Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) < maxAimError;//Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) < maxAimError || Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) > .5 - maxAimError;//Robot.isSimulation() ? Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) < maxAimError : Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) > .5 - maxAimError;
     }
 
     public double mpsTorps(double mps){ 
@@ -138,24 +132,25 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public Command stopIntake(){
-        return Commands.parallel(intake.reachGoalOnce(10), arm.reachGoalOnce(0));
+        return Commands.parallel(intakeRollers(), arm.reachGoalOnce(0).until(()->arm.getPosition()-.05 < 0).andThen(arm.setVoltage(-1.3)));
     }
 
     public Command shootDefault(Supplier<double[]> dynamicScoringData, BooleanSupplier ready){
         return shootBothContinuous(()->shootRotationsToHoodRotations(dynamicScoringData.get()[0])
             ,()->mpsTorps(dynamicScoringData.get()[1])
-            ,()->PoseEX.correctedRotation(dynamicScoringData.get()[2]-swerveDrive.getYaw().getRotations())
+            ,()->PoseEX.correctedRotation(dynamicScoringData.get()[2]-swerveDrive.getPose().getRotation().getRotations())
             , ready);
     }
 
     public Command shootStatic() {
-        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5).until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .02)).andThen(swerveDrive.brake())
+        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5).until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .01)).andThen(swerveDrive.brake())
             ,shootDefault(()->dynamicScoringData, ()->readyToShootHub()));
     }
 
+
     public Command shootDynamic(DoubleSupplier vx, DoubleSupplier vy) {
         return shootDefault(()->dynamicScoringData, ()->readyToShootHub())
-            .alongWith(swerveDrive.pointWhileDrive(()->Rotation2d.fromRotations(dynamicScoringData[2]), vx,vy, 5,1,5,1));
+            .alongWith(swerveDrive.pointWhileDrive(()->Rotation2d.fromRotations(dynamicScoringData[2]), vx,vy, 5,1,5,1));    
     }
 
     public Command passStatic(boolean left) {
@@ -182,7 +177,7 @@ public class CommandMechanism extends BaseMechanism{
             ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
         dynamicPassRight = scoreMath.dynamicScore(GameData.getPassPose3d(false), interpolate && !Robot.isSimulation()
             ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
-        // System.out.println(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getYaw().getRotations()));
+        // System.out.println(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations()));
         if (interpolate){
             dynamicScoringData = new double[]{hoodRotationsToShootRotations(dynamicScoringData[0]), rpsTomps(dynamicScoringData[1]), dynamicScoringData[2]};
             dynamicPassLeft = new double[]{hoodRotationsToShootRotations(dynamicPassLeft[0]), rpsTomps(dynamicPassLeft[1]), dynamicPassLeft[2]};
@@ -199,7 +194,5 @@ public class CommandMechanism extends BaseMechanism{
         Pose2d turretPose = new Pose3d(swerveDrive.getPose()).transformBy(fromSwerveBase).toPose2d();
         aimCorrect.accept(readyToShootHub());
         distance.accept(PoseEX.getDistanceFromPoseMeters(turretPose, GameData.getHubPose2d()));
-        aimDirection.accept(dynamicScoringData[2]);
-        orientation.accept(swerveDrive.getYaw().getRotations());
     }
 }

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.760083036773429,
-        "y": 0.6727520759193351
+        "x": 0.7116666666666667,
+        "y": 0.6615964912280718
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7600830367734293,
-        "y": 0.6727520759193351
+        "x": 1.711666666666667,
+        "y": 0.6615964912280718
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OutpostPose"
     },
     {
       "anchor": {
@@ -74,7 +74,7 @@
     },
     {
       "name": "stopShooting",
-      "waypointRelativePos": 1.3964664310954047,
+      "waypointRelativePos": 1.3723284589426397,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -84,24 +84,24 @@
       }
     },
     {
-      "name": "intake",
-      "waypointRelativePos": 1.4247349823321567,
-      "endWaypointRelativePos": 2.0,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "intake"
-        }
-      }
-    },
-    {
       "name": "overDepot",
-      "waypointRelativePos": 1.8267716535433065,
+      "waypointRelativePos": 1.6467941507311428,
       "endWaypointRelativePos": 2.0,
       "command": {
         "type": "named",
         "data": {
           "name": "overDepot"
+        }
+      }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 1.6962879640045123,
+      "endWaypointRelativePos": 2.0,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
         }
       }
     }
@@ -122,7 +122,7 @@
   "folder": "Pathplanner Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.29049101172535
+    "rotation": 179.534190917235
   },
   "useDefaultConstraints": false
 }

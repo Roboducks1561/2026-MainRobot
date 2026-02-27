@@ -53,7 +53,7 @@ public class Hood extends SubsystemBase {
     }else{
       armIO = new TalonPosition(
         new TalonFX(HoodConstants.HOOD_MOTOR_ID,"Canivore")
-        ,HoodConstants.talonFXConfiguration, true
+        ,HoodConstants.talonFXConfiguration, true, false
       );
     }
   }

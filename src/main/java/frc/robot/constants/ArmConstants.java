@@ -30,30 +30,30 @@ public class ArmConstants{
     public static final double kV = 0;
     public static final double kA = 0;
     
-    public static final double kP = 100;
+    public static final double kP = 600;//100;
     public static final double kI = 0;
-    public static final double kD = 10;
+    public static final double kD = 50;//10;
     public static final double kG = 0;
 
-    public static final double ARM_SENSOR_TO_MECHANISM_RATIO = 43.2;
+    public static final double ARM_SENSOR_TO_MECHANISM_RATIO = 133.333333;
     public static final double ARM_ROTOR_TO_SENSOR_RATIO = 1;
 
     public static final double CRUISE_VELOCITY = 9999;
 
-    public static final double MAX_ACCELERATION = 2;
+    public static final double MAX_ACCELERATION = 10;
     public static final double JERK = 0;
 
     
     public static final Rotation2d ANGLE_OFFSET = Rotation2d.fromRotations(0.23);
 
     /* Arm Current Limiting */ //TODO: Change/Fix these values
-    public static final int ARM_CURRENT_LIMIT = 80;
+    public static final int ARM_CURRENT_LIMIT = 20;
     public static final int ARM_SUPPLY_CURRENT_THRESHOLD = 60;
     public static final int ARM_CURRENT_THRESHOLD = 60;
     public static final double ARM_CURRENT_THRESHOLD_TIME = 0;
     public static final boolean ARM_ENABLE_CURRENT_LIMIT = true;
     public static final boolean ARM_STATOR_CURRENT_LIMIT_ENABLE = true;
-    public static final double ARM_STATOR_CURRENT_LIMIT = 120;
+    public static final double ARM_STATOR_CURRENT_LIMIT = 80;
 
 
 

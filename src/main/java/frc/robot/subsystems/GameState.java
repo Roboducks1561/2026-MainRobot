@@ -60,6 +60,10 @@ public class GameState {
         return shooting().until(()->hiding);
     }
 
+    public Command shootSpot(){
+        return Commands.defer(()->commandMechanism.swerveDrive.pathToPose(GameData.getDefaultShootPose2d(passingLeft),.2,3).andThen(commandMechanism.shootStatic()), commandMechanism.smartShootRequirements);
+    }
+
     private Command shooting(){
         return Commands.either(commandMechanism.shootDynamic(()->-driverController.getLeftY(), ()->-driverController.getLeftX()).unless(()->!shootingPeriod()).until(()->!shootingPeriod())
             ,commandMechanism.passDynamic(()->passingLeft,()->-driverController.getLeftY(), ()->-driverController.getLeftX()), ()->shooting);
@@ -78,7 +82,7 @@ public class GameState {
             gameState++;
         }
 
-        hiding = PoseEX.isNear(swervePose, GameData.dangerousPoses,1.5);
+        hiding = PoseEX.isNear(swervePose, GameData.dangerousPoses,.5);
 
         shooting = biasedSwervePose.getX() < GameData.scorePose2d.getX();
 

@@ -120,10 +120,13 @@ public class RobotMain extends RobotContainer {
     driverController.rightBumper().whileTrue(gameState.shoot());
     driverController.leftBumper().whileTrue(gameState.intake());
     driverController.a().whileTrue(drivetrain.brake());
+    driverController.x().whileTrue(gameState.shootSpot());
     driverController.back().onTrue(new WheelRadiusCommand(drivetrain));
+    driverController.b().whileTrue(commandMechanism.shootStatic());
     operatorController.a().whileTrue(Commands.runOnce(()->commandMechanism.setHopperState(0)));
     operatorController.b().whileTrue(Commands.runOnce(()->commandMechanism.setHopperState(1)));
     operatorController.x().whileTrue(Commands.runOnce(()->commandMechanism.setHopperState(2)));
+    operatorController.y().whileTrue(commandMechanism.setIntakeNegative());
     
     // driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
     // driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));

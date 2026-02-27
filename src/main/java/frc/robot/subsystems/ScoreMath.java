@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleConsumer;
 
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -52,7 +53,7 @@ public class ScoreMath {
         //Done by finding the time it takes to hit the ground at 2.6 meters, multiplying by proportion I think it will actually travel (Because it hits hub before ground)
         double timeTillTarget = .728*1.8;
         if (interpolate){
-            timeTillTarget = .728 * 1.4;
+            timeTillTarget = .728 * 1.8;
         }
 
         //TODO the acceleration might not be working right, check this first if missing, .2 is mostly a guess too
@@ -151,26 +152,24 @@ public class ScoreMath {
 
 
 
-    private double divisor = .98;
-    private double additional = .03;
+    private double divisor = 1;
+    private double additional = 0.00;
     private MultiLinearInterpolator distToSpeedAndAngle = new MultiLinearInterpolator(new double[][]
         {
             //Distance meters, Pivot rotations, velocity
-            {1.5426,0.0,68.6}
-            ,{1.818,0.007,70}
-            ,{2.008,0.01,70}
-            ,{2.2,0.015,73}
-            ,{2.376,0.015,73}
-            ,{2.573,0.02,73}
-            ,{2.772,0.027,78}
-            ,{3.03,0.031,79}
-            ,{3.241,0.031,79}
-            ,{3.465,0.038,82}
-            ,{3.82,0.043,88}
-            ,{4.095,0.046,90}
-            ,{4.365,0.048,91}
-            ,{4.751,0.06,97}
-            ,{5.3,0.06,97}
+            {1.492,0.01,57}
+            ,{1.922,0.015,60}
+            ,{2.315,0.022,63}
+            ,{2.58,0.026,63}
+            ,{2.905,0.033,67}
+            ,{3.19,0.037,67}
+            ,{3.77,0.048,67}
+            ,{4.14,0.053,72}
+            ,{4.48,0.061,72}
+            ,{4.8,0.061,72}
+            ,{5.1,0.065,75}
+            ,{5.4,0.067,80}
+            ,{100,0.067,80}
             // ,{1.3852,0.005+additional,70}
             // ,{1.903,.018+additional,73}
             // ,{2.77,0.034+additional,82}

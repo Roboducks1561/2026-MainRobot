@@ -9,33 +9,24 @@ import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleEntry;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Robot;
+import frc.robot.commands.ArmSlow;
 import frc.robot.subsystems.TurretMechanism.Hood;
 import frc.robot.subsystems.TurretMechanism.Indexer;
 import frc.robot.subsystems.TurretMechanism.Shooter;
-import frc.robot.subsystems.TurretMechanism.Turret;
 import frc.robot.subsystems.intakeMechanism.Arm;
 import frc.robot.subsystems.intakeMechanism.Intake;
 import frc.robot.subsystems.intakeMechanism.Spindexer;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.SendableConsumer;
-import frc.robot.util.mapleSim.Animations;
-import frc.robot.util.mapleSim.Bootleg2026;
 
 public class BaseMechanism {
 
@@ -53,12 +44,14 @@ public class BaseMechanism {
 
     protected final double intakeSpeed = 20;
     protected final double indexSpeed = 10;
-    protected final double spinSpeed = 10;
+    protected final double spinSpeed = 30;
 
-    protected final double armIntakePosition = .30;
+    protected final double armIntakePosition = .34;
     protected final double shooterDefaultSpeed = 5;
 
     protected int hopperState = 0;
+    protected int lastHopperState = 0;
+    protected boolean invertedIntake = false;
 
     protected final Transform3d fromSwerveBase = new Transform3d(-.24,0,.326, new Rotation3d());
 
@@ -93,11 +86,23 @@ public class BaseMechanism {
         intakeRequirements = Set.of(intake, arm);
 
 
-        arm.setDefaultCommand(arm.reachGoal(()->hopperState == 2 ? armIntakePosition : hopperState == 1 ? (int)(Utils.getCurrentTimeSeconds() * 5)%2 == 1 ? .2: .1 : 0-.006));
-        intake.setDefaultCommand(intake.reachGoal(0));
+        arm.setDefaultCommand((
+            Commands.either(arm.reachGoal(armIntakePosition)
+            ,Commands.either(arm.reachGoal(()->(int)(Utils.getCurrentTimeSeconds() * 5)%2 == 1 ? .2: .1)
+            ,new ArmSlow(arm, 1, 0).until(()->arm.getPosition()-.05 < 0).andThen(arm.setVoltage(-1.3))
+            , ()->hopperState == 1)
+            , ()->hopperState == 2)
+        .until(()->{
+            boolean b = lastHopperState != hopperState;
+            if (b){
+                lastHopperState = hopperState;
+            }
+            return b;
+        })).repeatedly());
+        intake.setDefaultCommand(intake.reachGoal(()->!invertedIntake ? (int)(Utils.getCurrentTimeSeconds() * 5)%4 == 0 ? -intakeSpeed/24: intakeSpeed/24 : -intakeSpeed/2));
         leftIndexer.setDefaultCommand(leftIndexer.reachGoal(()->leftIndexer.hasPiece() ? 0 : indexSpeed/4));
         rightIndexer.setDefaultCommand(rightIndexer.reachGoal(()->rightIndexer.hasPiece() ? 0 : indexSpeed/4));
-        spindexer.setDefaultCommand(spindexer.reachGoal(()->leftIndexer.hasPiece() && rightIndexer.hasPiece() ? 0 : spinSpeed/4));
+        spindexer.setDefaultCommand(spindexer.reachGoal(()->leftIndexer.hasPiece() && rightIndexer.hasPiece() ? 0 : spinSpeed/30));
         
         hood.setDefaultCommand(hood.reachGoal(0));
         leftShooter.setDefaultCommand(leftShooter.reachGoal(0));
@@ -109,7 +114,7 @@ public class BaseMechanism {
         Runtime.getRuntime().addShutdownHook(new Thread(notifier::close));
 
         zeroSetter();
-        defaultSetter();
+        // defaultSetter();
     }
 
     public boolean readyToShootLeft(){
@@ -125,15 +130,23 @@ public class BaseMechanism {
     }
 
     public Command intake(){
-        return Commands.parallel(arm.reachGoal(armIntakePosition), intake.reachGoal(intakeSpeed));
+        return Commands.parallel(arm.reachGoal(armIntakePosition), intakeRollers());
+    }
+
+    public Command intakeRollers(){
+        return intake.reachGoal(()->!invertedIntake ? (int)(Utils.getCurrentTimeSeconds() * 3)%6 == 0 ? intakeSpeed: intakeSpeed : -intakeSpeed/2);
+    }
+
+    public Command setIntakeNegative(){
+        return Commands.idle().beforeStarting(()->invertedIntake = true).finallyDo(()->invertedIntake = false);
     }
 
     public Command hopperOut(){
-        return arm.reachGoal(armIntakePosition);
+        return arm.reachGoal(armIntakePosition).alongWith(intake.reachGoal(0));
     }
 
     public Command overDepot(){
-        return Commands.parallel(arm.reachGoal(armIntakePosition - .05), intake.reachGoal(intakeSpeed));
+        return Commands.parallel(arm.reachGoal(armIntakePosition - .1), intakeRollers());
     }
 
     public Command spindex(){
@@ -178,9 +191,9 @@ public class BaseMechanism {
      * @param ready the whole boolean of ready, not just additions
      * @return
      */
-    public Command shootContinuous(Shooter shooter, Indexer indxer, DoubleSupplier velocityRps, BooleanSupplier ready){
+    public Command shootContinuous(Shooter shooter, Indexer indexer, DoubleSupplier velocityRps, BooleanSupplier ready){
         return Commands.parallel(shooter.reachGoal(velocityRps)
-            ,indxer.reachGoal(()-> ready.getAsBoolean() ? indexSpeed : 0));
+            ,indexer.reachGoal(()-> ready.getAsBoolean() ? indexSpeed : 0));
     }
 
     public Command shootContinuousLeft(DoubleSupplier pivotRotation, DoubleSupplier velocityRps, DoubleSupplier turretRotation, BooleanSupplier ready){
@@ -198,7 +211,7 @@ public class BaseMechanism {
     public Command shootBothContinuous(DoubleSupplier pivotRotation, DoubleSupplier velocityRps, DoubleSupplier turretRotation, BooleanSupplier ready){
         return Commands.parallel(hood.reachGoal(pivotRotation)
             ,shootContinuous(leftShooter, leftIndexer, velocityRps, ()-> ready.getAsBoolean() && readyToShootLeft() || !leftIndexer.hasPiece())
-            ,shootContinuous(rightShooter, rightIndexer, ()-> velocityRps.getAsDouble(), ()-> ready.getAsBoolean() && readyToShootRight() || !rightIndexer.hasPiece())
+            ,shootContinuous(rightShooter, rightIndexer, ()-> velocityRps.getAsDouble() * 1.03, ()-> ready.getAsBoolean() && readyToShootRight() || !rightIndexer.hasPiece())
             ,spindex());
     }
 

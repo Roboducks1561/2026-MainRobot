@@ -20,9 +20,11 @@ public class TalonPosition implements PositionIO{
     private final VoltageOut voltageRequest = new VoltageOut(0);
     //TODO, the only thing in here that should be customizable and isn't. I don't currently have a fix, but i might not need one
     private final MotionMagicVoltage controlRequest = new MotionMagicVoltage(0);
+    private final MotionMagicTorqueCurrentFOC torqueCurrentFOC = new MotionMagicTorqueCurrentFOC(0);
     private final PositionVoltage positionVoltage = new PositionVoltage(0);
 
     private final boolean pro;
+    private final boolean torque;
 
     private final TalonFX armMotor;
     private CANcoder encoder = null;
@@ -31,10 +33,11 @@ public class TalonPosition implements PositionIO{
 
     private double armSetpointReal = 0;
 
-    public TalonPosition(TalonFX armMotor, TalonFXConfiguration configuration, boolean pro){
+    public TalonPosition(TalonFX armMotor, TalonFXConfiguration configuration, boolean pro, boolean torque){
         this.armMotor = armMotor;
         this.configuration = configuration;
         this.pro = pro;
+        this.torque = torque;
         configMotor(armMotor, configuration);
     }
     
@@ -47,6 +50,10 @@ public class TalonPosition implements PositionIO{
     public void setPosition(double position) {
         armSetpointReal = position;
         if (pro){
+            if (torque){
+                armMotor.setControl(torqueCurrentFOC.withPosition(armSetpointReal).withSlot(0));
+                return;
+            }
             armMotor.setControl(controlRequest.withPosition(armSetpointReal).withSlot(0));
             return;
         }

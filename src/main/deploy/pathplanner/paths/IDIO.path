@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 0.8031198102016615,
-        "y": 0.6619928825622776
+        "x": 0.7116666666666667,
+        "y": 0.6615964912280718
       },
       "prevControl": {
-        "x": 2.243181213710432,
-        "y": 1.3462209527377151
+        "x": 2.1517280701754373,
+        "y": 1.3458245614035094
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OutpostPose"
     }
   ],
   "rotationTargets": [
@@ -81,7 +81,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.20057588668246
+    "rotation": 179.534190917235
   },
   "reversed": false,
   "folder": "Pathplanner Paths",

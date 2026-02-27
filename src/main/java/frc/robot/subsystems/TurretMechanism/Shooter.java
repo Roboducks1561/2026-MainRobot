@@ -27,7 +27,7 @@ public class Shooter extends SubsystemBase{
     private final DoublePublisher rollerVelocityPublisher;
     private final DoublePublisher rollerTargetPublisher;
 
-    private final double maxError = .1;
+    private final double maxError = 2;
 
     private final int id;
 

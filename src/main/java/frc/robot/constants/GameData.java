@@ -24,8 +24,10 @@ public class GameData {
     public static final double rimHeight = 1.8288;
     public static final double rimRadius = .612;
 
-    public static final Pose3d scorePose3d = new Pose3d(4.637,fieldSizeY/2,funnelHeight, new Rotation3d());
+    public static final Pose3d scorePose3d = new Pose3d(4.637,fieldSizeY/2 + .15,funnelHeight, new Rotation3d());
     public static final Pose2d scorePose2d = scorePose3d.toPose2d();
+
+    public static final Pose2d defaultShootPosition = new Pose2d(3.7,0.662,Rotation2d.fromDegrees(66));
 
     public static final Pose3d leftPassPose3d = new Pose3d(1,fieldSizeY-1,0,new Rotation3d());
     public static final Pose3d rightPassPose3d = new Pose3d(1,1,0,new Rotation3d());
@@ -99,6 +101,17 @@ public class GameData {
         Pose2d pose = rightPassPose2d;
         if (left){
             pose = leftPassPose2d;
+        }
+        if (isRed.getAsBoolean()){
+            return PoseEX.pose180(pose);
+        }
+        return pose;
+    }
+
+    public static Pose2d getDefaultShootPose2d(boolean left){
+        Pose2d pose = defaultShootPosition;
+        if (left){
+            pose = new Pose2d(defaultShootPosition.getX(), fieldSizeY-defaultShootPosition.getY(), defaultShootPosition.getRotation().times(-1));
         }
         if (isRed.getAsBoolean()){
             return PoseEX.pose180(pose);

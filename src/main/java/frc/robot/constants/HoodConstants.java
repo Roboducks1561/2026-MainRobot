@@ -35,7 +35,7 @@ public class HoodConstants{
     public static final double kD = 0;//50;
     public static final double kG = 0;//-26;//8.4749;
 
-    public static final double HOOD_SENSOR_TO_MECHANISM_RATIO = 24;
+    public static final double HOOD_SENSOR_TO_MECHANISM_RATIO = 33;
     public static final double HOOD_ROTOR_TO_SENSOR_RATIO = 1;
 
     public static final double CRUISE_VELOCITY = 9999;

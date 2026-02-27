@@ -54,7 +54,7 @@ public class Turret extends SubsystemBase {
     }else{
       armIO = new TalonPosition(
         new TalonFX(TurretConstants.TURRET_MOTOR_ID)
-        ,TurretConstants.talonFXConfiguration, true
+        ,TurretConstants.talonFXConfiguration, true, false
       );//.withEncoder(new CANcoder(TurretConstants.TURRET_ENCODER_ID), TurretConstants.encoderConfiguration);
     }
   }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.482158956109135,
-        "y": 0.9202135231316719
+        "x": 3.138,
+        "y": 0.662
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8350944265569558,
-        "y": 0.8175985085447441
+        "x": 2.4065964912280706,
+        "y": 0.6566842105263158
       },
       "isLocked": false,
       "linkedName": null
@@ -20,37 +20,43 @@
         "y": 0.6615964912280718
       },
       "prevControl": {
-        "x": 1.724646427259567,
-        "y": 0.8259922072591015
+        "x": 1.3720263157894734,
+        "y": 0.6615964912280718
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "OutpostPose"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": -139.55176006299632
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "hopperOut",
-      "waypointRelativePos": 0.5624296962879657,
-      "endWaypointRelativePos": 1.0,
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "hopperOut"
         }
       }
+    },
+    {
+      "name": "stopShooting",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stopShooting"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -62,10 +68,10 @@
     "rotation": 179.534190917235
   },
   "reversed": false,
-  "folder": "Pathplanner Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -113.02549200852809
+    "rotation": 66.49001340848771
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

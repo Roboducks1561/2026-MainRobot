@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SLTL"
+            "pathName": "SRTR"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TLIL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ILIR"
+            "pathName": "TRIR"
           }
         },
         {

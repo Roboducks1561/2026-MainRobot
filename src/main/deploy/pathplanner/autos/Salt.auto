@@ -7,35 +7,42 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SLTL"
+            "pathName": "Salt1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TLIL"
+            "pathName": "Salt2"
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "ILIR"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IRTR"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "sequential",
                 "data": {
-                  "waitTime": 6.0
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopIntake"
+                      }
+                    }
+                  ]
                 }
               },
               {

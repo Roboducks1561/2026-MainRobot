@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Avacado1"
+            "pathName": "Egg1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Avacado2"
+            "pathName": "Egg2"
           }
         },
         {
@@ -24,12 +24,6 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 6.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "shootStatic"
                 }
               },
               {
@@ -49,6 +43,12 @@
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootStatic"
                 }
               }
             ]
@@ -57,31 +57,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Avacado3"
+            "pathName": "Egg & Pepper Fix1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Avacado4"
+            "pathName": "Pepper2"
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
+          "data": {
+            "pathName": "Pepper3"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 6.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "shootStatic"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -99,6 +93,12 @@
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootStatic"
                 }
               }
             ]
