@@ -119,6 +119,7 @@ public class Bootleg2026{
             .getStructArrayTopic("AllFuel", Pose3d.struct).publish();
         
         updateThread = new Thread(()->{
+            // ((Arena2026Rebuilt)SimulatedArena).getInstance();
             int lastGamePieceAmount = 8;
             // ((Arena2026Rebuilt)SimulatedArena.getInstance()).setEfficiencyMode(false);
             ((Arena2026Rebuilt)SimulatedArena.getInstance()).resetFieldForAuto();

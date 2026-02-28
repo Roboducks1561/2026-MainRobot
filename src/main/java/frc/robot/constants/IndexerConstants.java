@@ -47,7 +47,7 @@ public class IndexerConstants {
 
         talonFXConfiguration.Feedback.SensorToMechanismRatio = INDEXER_SENSOR_TO_MECHANISM_RATIO;
 
-        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         // set Motion Magic Velocity settings
         MotionMagicConfigs motionMagicConfigs = talonFXConfiguration.MotionMagic;

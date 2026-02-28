@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7116666666666667,
-        "y": 0.6615964912280718
+        "x": 0.42742165242165253,
+        "y": 0.8307834757834758
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3449989092217964,
-        "y": 0.44057488000075284
+        "x": 1.0607538949767823,
+        "y": 0.6097618645561568
       },
       "isLocked": false,
       "linkedName": "OutpostPose"
@@ -95,7 +95,7 @@
   "folder": "Pathplanner Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.534190917235
+    "rotation": -90.71994875373822
   },
   "useDefaultConstraints": false
 }

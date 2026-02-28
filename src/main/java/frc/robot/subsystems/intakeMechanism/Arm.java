@@ -90,11 +90,15 @@ public class Arm extends SubsystemBase {
   }
 
   public Command setVoltage(DoubleSupplier volts){
-    return this.run(()->setVoltage(volts.getAsDouble()));
+    return this.run(()->applyVoltage(volts.getAsDouble()));
   }
 
   public Command setVoltage(double volts){
-    return this.run(()->setVoltage(volts));
+    return this.run(()->applyVoltage(volts));
+  }
+
+  public void applyVoltage(double volts){
+    armIO.setVoltage(volts);
   }
 
   public Command stop(){

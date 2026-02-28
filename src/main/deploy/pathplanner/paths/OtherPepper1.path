@@ -3,44 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.631638176638176,
-        "y": 7.226296296296296
+        "x": 3.605797720797721,
+        "y": 6.063475783475784
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.107051282051282,
-        "y": 7.433019943019944
+        "x": 2.5463390313390324,
+        "y": 5.934273504273505
       },
       "isLocked": false,
-      "linkedName": "LeftStartIn"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.698746438746439,
-        "y": 6.644886039886041
+        "x": 0.7633475783475787,
+        "y": 5.921353276353277
       },
       "prevControl": {
-        "x": 1.0532649572649575,
-        "y": 7.322059829059831
+        "x": 2.0553703703703716,
+        "y": 5.817991452991453
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.6714031971580825,
-      "rotationDegrees": -151.24370220880104
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8399729912221415,
+      "minWaypointRelativePos": 0.8966914247130297,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.5,
+        "maxVelocity": 0.25,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -61,6 +56,17 @@
           "name": "intake"
         }
       }
+    },
+    {
+      "name": "overDepot",
+      "waypointRelativePos": 0.6833220796758862,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "overDepot"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -72,8 +78,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.5,
-    "rotation": -131.30861401354875
+    "velocity": 0,
+    "rotation": 176.49646835521557
   },
   "reversed": false,
   "folder": "PepperOnly",

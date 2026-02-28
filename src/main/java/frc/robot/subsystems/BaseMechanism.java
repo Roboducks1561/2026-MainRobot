@@ -14,6 +14,7 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -44,13 +45,13 @@ public class BaseMechanism {
 
     protected final double intakeSpeed = 20;
     protected final double indexSpeed = 10;
-    protected final double spinSpeed = 30;
+    protected final double spinSpeed = 50;
 
     protected final double armIntakePosition = .34;
     protected final double shooterDefaultSpeed = 5;
 
-    protected int hopperState = 0;
-    protected int lastHopperState = 0;
+    protected DoubleSupplier hopperPos = ()->0;
+    protected double lastHopperPos = 0;
     protected boolean invertedIntake = false;
 
     protected final Transform3d fromSwerveBase = new Transform3d(-.24,0,.326, new Rotation3d());
@@ -84,21 +85,15 @@ public class BaseMechanism {
         smartShootRequirements = Set.of(leftIndexer, rightIndexer, spindexer, hood, leftShooter, rightShooter, swerveDrive);
         shooterRequirements = Set.of(leftIndexer, rightIndexer, spindexer, hood, leftShooter, rightShooter);
         intakeRequirements = Set.of(intake, arm);
-
-
-        arm.setDefaultCommand((
-            Commands.either(arm.reachGoal(armIntakePosition)
-            ,Commands.either(arm.reachGoal(()->(int)(Utils.getCurrentTimeSeconds() * 5)%2 == 1 ? .2: .1)
-            ,new ArmSlow(arm, 1, 0).until(()->arm.getPosition()-.05 < 0).andThen(arm.setVoltage(-1.3))
-            , ()->hopperState == 1)
-            , ()->hopperState == 2)
+        // arm.setDefaultCommand(arm.reachGoal(()->DriverStation.isAutonomous() ? 0 : hopperPos.getAsDouble() * armIntakePosition));
+        arm.setDefaultCommand(Commands.either(arm.reachGoal(0).until(()->arm.getPosition() - .1 < 0).andThen(arm.setVoltage(-1.3)), arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition), ()->hopperPos.getAsDouble() == 0)
         .until(()->{
-            boolean b = lastHopperState != hopperState;
+            boolean b = lastHopperPos != hopperPos.getAsDouble();
             if (b){
-                lastHopperState = hopperState;
+                lastHopperPos = hopperPos.getAsDouble();
             }
             return b;
-        })).repeatedly());
+        }));
         intake.setDefaultCommand(intake.reachGoal(()->!invertedIntake ? (int)(Utils.getCurrentTimeSeconds() * 5)%4 == 0 ? -intakeSpeed/24: intakeSpeed/24 : -intakeSpeed/2));
         leftIndexer.setDefaultCommand(leftIndexer.reachGoal(()->leftIndexer.hasPiece() ? 0 : indexSpeed/4));
         rightIndexer.setDefaultCommand(rightIndexer.reachGoal(()->rightIndexer.hasPiece() ? 0 : indexSpeed/4));
@@ -146,7 +141,7 @@ public class BaseMechanism {
     }
 
     public Command overDepot(){
-        return Commands.parallel(arm.reachGoal(armIntakePosition - .1), intakeRollers());
+        return Commands.parallel(arm.stop(), intakeRollers());
     }
 
     public Command spindex(){
@@ -158,8 +153,8 @@ public class BaseMechanism {
      * @param state
      * @return
      */
-    public void setHopperState(int state){
-        hopperState = state;
+    public void setHopperPos(DoubleSupplier state){
+        hopperPos = state;
     }
 
     /*

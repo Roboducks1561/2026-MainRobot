@@ -132,7 +132,7 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public Command stopIntake(){
-        return Commands.parallel(intakeRollers(), arm.reachGoalOnce(0).until(()->arm.getPosition()-.05 < 0).andThen(arm.setVoltage(-1.3)));
+        return intakeRollers().withTimeout(.5).andThen(Commands.parallel(intake.reachGoal(()->((int)Utils.getCurrentTimeSeconds()*5)%4 == 0 ? -intakeSpeed : intakeSpeed), arm.reachGoalOnce(0).until(()->arm.getPosition()-.05 < 0).andThen(arm.setVoltage(-1.3))));
     }
 
     public Command shootDefault(Supplier<double[]> dynamicScoringData, BooleanSupplier ready){
@@ -143,10 +143,9 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public Command shootStatic() {
-        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5).until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .01)).andThen(swerveDrive.brake())
+        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5)//.until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .01)).andThen(swerveDrive.brake())
             ,shootDefault(()->dynamicScoringData, ()->readyToShootHub()));
     }
-
 
     public Command shootDynamic(DoubleSupplier vx, DoubleSupplier vy) {
         return shootDefault(()->dynamicScoringData, ()->readyToShootHub())

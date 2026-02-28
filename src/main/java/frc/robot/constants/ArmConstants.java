@@ -53,7 +53,7 @@ public class ArmConstants{
     public static final double ARM_CURRENT_THRESHOLD_TIME = 0;
     public static final boolean ARM_ENABLE_CURRENT_LIMIT = true;
     public static final boolean ARM_STATOR_CURRENT_LIMIT_ENABLE = true;
-    public static final double ARM_STATOR_CURRENT_LIMIT = 80;
+    public static final double ARM_STATOR_CURRENT_LIMIT = 40;
 
 
 
@@ -101,7 +101,7 @@ public class ArmConstants{
 
         talonFXConfiguration.CurrentLimits = currentLimits;
 
-        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     }
 
     public static final DCMotor gearbox = DCMotor.getFalcon500(1);

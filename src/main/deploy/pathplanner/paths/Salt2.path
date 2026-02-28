@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.76,
-        "y": 0.651
+        "x": 0.5178632478632479,
+        "y": 0.7791025641025657
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6694240132379865,
-        "y": 2.2173520906602535
+        "x": 1.4272872611012344,
+        "y": 2.345454654762819
       },
       "isLocked": false,
       "linkedName": null
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "stopIntake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -48,7 +55,7 @@
   "folder": "SaltOnly",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.9434222687883
+    "rotation": -91.50743575877493
   },
   "useDefaultConstraints": true
 }

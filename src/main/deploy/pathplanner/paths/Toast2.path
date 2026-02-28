@@ -35,7 +35,7 @@
       "minWaypointRelativePos": 0.10176678445229587,
       "maxWaypointRelativePos": 0.862190812720846,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.75,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -70,12 +70,23 @@
     },
     {
       "name": "stopIntake",
-      "waypointRelativePos": 0.351943462897526,
+      "waypointRelativePos": 0.28883374689826613,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "stopIntake"
+        }
+      }
+    },
+    {
+      "name": "overDepot",
+      "waypointRelativePos": 0.7886563133018261,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "overDepot"
         }
       }
     },
@@ -87,17 +98,6 @@
         "type": "named",
         "data": {
           "name": "stopShooting"
-        }
-      }
-    },
-    {
-      "name": "overDepot",
-      "waypointRelativePos": 0.9342756183745579,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "overDepot"
         }
       }
     }

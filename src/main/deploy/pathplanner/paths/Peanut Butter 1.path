@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.138,
-        "y": 0.662
+        "x": 3.5541168091168096,
+        "y": 2.122806267806269
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4065964912280706,
-        "y": 0.6566842105263159
+        "x": 4.554116809116806,
+        "y": 2.122806267806269
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.42742165242165253,
-        "y": 0.8307834757834758
+        "x": 6.034800569800569,
+        "y": 2.0065242165242183
       },
       "prevControl": {
-        "x": 1.0877813015444593,
-        "y": 0.8307834757834758
+        "x": 5.701445868945868,
+        "y": 2.22939814814815
+      },
+      "nextControl": {
+        "x": 6.36815527065527,
+        "y": 1.7836502849002869
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.081339031339031,
+        "y": 1.386
+      },
+      "prevControl": {
+        "x": 6.4740883190883185,
+        "y": 1.295558404558404
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "OutpostPose"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,24 +49,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "hopperOut",
-      "waypointRelativePos": 0,
+      "name": "intake",
+      "waypointRelativePos": 1.426063470627951,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "hopperOut"
-        }
-      }
-    },
-    {
-      "name": "stopShooting",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "stopShooting"
+          "name": "intake"
         }
       }
     }
@@ -65,13 +70,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.71994875373822
+    "rotation": 48.94518622903775
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Peanut Butter",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 66.49001340848771
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

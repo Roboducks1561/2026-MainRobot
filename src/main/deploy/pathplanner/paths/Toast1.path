@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.7116666666666667,
-        "y": 0.6615964912280718
+        "x": 0.42742165242165253,
+        "y": 0.8307834757834758
       },
       "prevControl": {
-        "x": 0.9622725739276212,
-        "y": 0.6541364714033089
+        "x": 0.6780275596826071,
+        "y": 0.8233234559587128
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "hopperOut",
-      "waypointRelativePos": 0.3329583802024742,
+      "waypointRelativePos": 0.5644834571235607,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.534190917235
+    "rotation": -90.71994875373822
   },
   "reversed": false,
   "folder": "ToastOnly",
