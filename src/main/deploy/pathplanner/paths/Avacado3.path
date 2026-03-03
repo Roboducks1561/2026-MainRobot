@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 7.5937280701754375,
-        "y": 3.542
+        "x": 7.203877192982455,
+        "y": 3.534
       },
       "prevControl": {
-        "x": 8.58028947368421,
-        "y": -0.4838070175438576
+        "x": 7.784675438596491,
+        "y": -0.3167719298245597
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,7 +56,7 @@
     },
     {
       "name": "intake",
-      "waypointRelativePos": 0.5554770318021207,
+      "waypointRelativePos": 0.3505300353356898,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

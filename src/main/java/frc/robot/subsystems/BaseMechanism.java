@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.commands.ArmSlow;
 import frc.robot.subsystems.TurretMechanism.Hood;
 import frc.robot.subsystems.TurretMechanism.Indexer;
@@ -35,8 +36,7 @@ public class BaseMechanism {
 
     public final Arm arm;
     public final Intake intake;
-    public final Indexer leftIndexer;
-    public final Indexer rightIndexer;
+    public final Indexer indexer;
     public final Spindexer spindexer;
     public final Hood hood;
     public final Shooter leftShooter;
@@ -45,7 +45,7 @@ public class BaseMechanism {
 
     protected final double intakeSpeed = 20;
     protected final double indexSpeed = 10;
-    protected final double spinSpeed = 50;
+    protected final double spinSpeed = 100;
 
     protected final double armIntakePosition = .34;
     protected final double shooterDefaultSpeed = 5;
@@ -70,23 +70,21 @@ public class BaseMechanism {
         .getBooleanTopic("rightShooterCorrect").publish();
 
 
-    public BaseMechanism(Arm arm, Intake intake, Indexer leftIndexer, Indexer rightIndexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
-
+    public BaseMechanism(Arm arm, Intake intake, Indexer indexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
         this.arm = arm;
         this.intake = intake;
-        this.leftIndexer = leftIndexer;
-        this.rightIndexer = rightIndexer;
+        this.indexer = indexer;
         this.spindexer = spindexer;
         this.hood = hood;
         this.leftShooter = leftShooter;
         this.rightShooter = rightShooter;
         this.swerveDrive = swerveDrive;
 
-        smartShootRequirements = Set.of(leftIndexer, rightIndexer, spindexer, hood, leftShooter, rightShooter, swerveDrive);
-        shooterRequirements = Set.of(leftIndexer, rightIndexer, spindexer, hood, leftShooter, rightShooter);
+        smartShootRequirements = Set.of(indexer, spindexer, hood, leftShooter, rightShooter, swerveDrive);
+        shooterRequirements = Set.of(indexer, spindexer, hood, leftShooter, rightShooter);
         intakeRequirements = Set.of(intake, arm);
         // arm.setDefaultCommand(arm.reachGoal(()->DriverStation.isAutonomous() ? 0 : hopperPos.getAsDouble() * armIntakePosition));
-        arm.setDefaultCommand(Commands.either(arm.reachGoal(0).until(()->arm.getPosition() - .1 < 0).andThen(arm.setVoltage(-1.3)), arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition), ()->hopperPos.getAsDouble() == 0)
+        arm.setDefaultCommand(Commands.either(arm.reachGoal(0).until(()->arm.getPosition() - .05 < 0).andThen(arm.setVoltage(-1.3)), arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition), ()->hopperPos.getAsDouble() == 0)
         .until(()->{
             boolean b = lastHopperPos != hopperPos.getAsDouble();
             if (b){
@@ -95,9 +93,8 @@ public class BaseMechanism {
             return b;
         }));
         intake.setDefaultCommand(intake.reachGoal(()->!invertedIntake ? (int)(Utils.getCurrentTimeSeconds() * 5)%4 == 0 ? -intakeSpeed/24: intakeSpeed/24 : -intakeSpeed/2));
-        leftIndexer.setDefaultCommand(leftIndexer.reachGoal(()->leftIndexer.hasPiece() ? 0 : indexSpeed/4));
-        rightIndexer.setDefaultCommand(rightIndexer.reachGoal(()->rightIndexer.hasPiece() ? 0 : indexSpeed/4));
-        spindexer.setDefaultCommand(spindexer.reachGoal(()->leftIndexer.hasPiece() && rightIndexer.hasPiece() ? 0 : spinSpeed/30));
+        indexer.setDefaultCommand(indexer.reachGoal(0));
+        spindexer.setDefaultCommand(spindexer.reachGoal(0));
         
         hood.setDefaultCommand(hood.reachGoal(0));
         leftShooter.setDefaultCommand(leftShooter.reachGoal(0));
@@ -124,6 +121,20 @@ public class BaseMechanism {
         && rightShooter.getTargetVelocity() != 0;
     }
 
+    public Command stopShooting(){
+        return Commands.parallel(leftShooter.reachGoalOnce(0),
+            rightShooter.reachGoalOnce(0),
+            hood.reachGoalOnce(0), 
+            spindexer.reachGoalOnce(0), 
+            indexer.reachGoalOnce(0));
+    }
+
+    public Command stopIntake(){
+        return pulseIntake().withTimeout(.5).andThen(
+            Commands.parallel(pulseIntake()
+            ,arm.reachGoal(0).until(()->arm.getPosition()-.1 < 0).andThen(arm.setVoltage(-1.3))));
+    }
+
     public Command intake(){
         return Commands.parallel(arm.reachGoal(armIntakePosition), intakeRollers());
     }
@@ -134,6 +145,14 @@ public class BaseMechanism {
 
     public Command setIntakeNegative(){
         return Commands.idle().beforeStarting(()->invertedIntake = true).finallyDo(()->invertedIntake = false);
+    }
+
+    public Command hopperShake(){
+        return arm.reachGoal(()->((int)(Utils.getCurrentTimeSeconds()*3))%2 == 0 ? .25 : .05).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
+    public Command pulseIntake(){
+        return intake.reachGoal(()->((int)(Utils.getCurrentTimeSeconds()*3))%3 == 0 ? -intakeSpeed : intakeSpeed);
     }
 
     public Command hopperOut(){
@@ -157,56 +176,11 @@ public class BaseMechanism {
         hopperPos = state;
     }
 
-    /*
-     * 
-     * @param pivotRotation
-     * @param velocityRps
-     * @param turretRotation
-     * @param ready: Only an additional requirement; does general shooter up to speed automatically
-     * @return 
-     */
-
-    public Command shootLeft(double pivotRotation, double velocityRps, double turretRotation, BooleanSupplier ready){
-        return Commands.parallel(leftShooter.reachGoal(velocityRps), hood.reachGoal(pivotRotation), spindexer.reachGoal(spinSpeed))
-            .until(()->ready.getAsBoolean() && readyToShootLeft()).andThen(leftIndexer.reachGoal(indexSpeed));
-    }
-
-    public Command shootRight(double pivotRotation, double velocityRps, double turretRotation, BooleanSupplier ready){
-        return Commands.parallel(rightShooter.reachGoal(velocityRps), hood.reachGoal(pivotRotation), spindexer.reachGoal(spinSpeed))
-            .until(()->ready.getAsBoolean() && readyToShootRight()).andThen(rightIndexer.reachGoal(indexSpeed));
-    }
-
-    /**
-     * exempt hood and spindexer
-     * @param hood
-     * @param shooter
-     * @param pivotRotation
-     * @param velocityRps
-     * @param turretRotation
-     * @param ready the whole boolean of ready, not just additions
-     * @return
-     */
-    public Command shootContinuous(Shooter shooter, Indexer indexer, DoubleSupplier velocityRps, BooleanSupplier ready){
-        return Commands.parallel(shooter.reachGoal(velocityRps)
-            ,indexer.reachGoal(()-> ready.getAsBoolean() ? indexSpeed : 0));
-    }
-
-    public Command shootContinuousLeft(DoubleSupplier pivotRotation, DoubleSupplier velocityRps, DoubleSupplier turretRotation, BooleanSupplier ready){
-        return Commands.parallel(hood.reachGoal(pivotRotation)
-            ,shootContinuous(leftShooter, leftIndexer, velocityRps, ()-> (ready.getAsBoolean() && readyToShootLeft()) || !leftIndexer.hasPiece())
-            ,spindex());
-    }
-
-    public Command shootContinuousRight(DoubleSupplier pivotRotation, DoubleSupplier velocityRps, DoubleSupplier turretRotation, BooleanSupplier ready){
-        return Commands.parallel(hood.reachGoal(pivotRotation)
-            ,shootContinuous(rightShooter, rightIndexer, velocityRps, ()-> ready.getAsBoolean() && readyToShootRight() || !rightIndexer.hasPiece())
-            ,spindex());
-    }
-
     public Command shootBothContinuous(DoubleSupplier pivotRotation, DoubleSupplier velocityRps, DoubleSupplier turretRotation, BooleanSupplier ready){
         return Commands.parallel(hood.reachGoal(pivotRotation)
-            ,shootContinuous(leftShooter, leftIndexer, velocityRps, ()-> ready.getAsBoolean() && readyToShootLeft() || !leftIndexer.hasPiece())
-            ,shootContinuous(rightShooter, rightIndexer, ()-> velocityRps.getAsDouble() * 1.03, ()-> ready.getAsBoolean() && readyToShootRight() || !rightIndexer.hasPiece())
+            ,rightShooter.reachGoal(velocityRps)
+            ,leftShooter.reachGoal(velocityRps)
+            ,indexer.reachGoal(()-> ready.getAsBoolean() && readyToShootLeft() && readyToShootRight() ? indexSpeed : 0)
             ,spindex());
     }
 
@@ -217,13 +191,12 @@ public class BaseMechanism {
         double[] values = new double[]{0,0,0,0,0,0,0,0};
         arm.setDefaultCommand(arm.reachGoal(()->values[0]));
         intake.setDefaultCommand(intake.reachGoal(()->values[1]));
-        leftIndexer.setDefaultCommand(leftIndexer.reachGoal(()->values[2]));
-        rightIndexer.setDefaultCommand(rightIndexer.reachGoal(()->values[3]));
+        indexer.setDefaultCommand(indexer.reachGoal(()->values[2]));
         spindexer.setDefaultCommand(spindexer.reachGoal(()->values[4]));
         hood.setDefaultCommand(hood.reachGoal(()->values[5]));
         leftShooter.setDefaultCommand(leftShooter.reachGoal(()->values[6]));
         rightShooter.setDefaultCommand(rightShooter.reachGoal(()->values[7]));
-        DoubleEntry[] defaultSetters = SendableConsumer.createSendableChooser("Defaults",new String[]{"arm","intake","leftIndexer","rightIndexer","spindexer","hood","leftShooter","rightShooter"}, new double[]{0,0,0,0,0,0,0,0});
+        DoubleEntry[] defaultSetters = SendableConsumer.createSendableChooser("Defaults",new String[]{"arm","intake","indexer","rightIndexer","spindexer","hood","leftShooter","rightShooter"}, new double[]{0,0,0,0,0,0,0,0});
         SendableConsumer.checker(defaultSetters, new DoubleConsumer[]{
             (i)->values[0] = i
             ,(i)->values[1] = i

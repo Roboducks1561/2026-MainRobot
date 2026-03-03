@@ -45,7 +45,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "stopIntake"
+                        "name": "hopperShake"
                       }
                     }
                   ]
@@ -95,7 +95,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "stopIntake"
+                        "name": "hopperShake"
                       }
                     }
                   ]

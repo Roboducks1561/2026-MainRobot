@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.729,
-        "y": 3.51
+        "x": 8.238,
+        "y": 3.621
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.484833333333334,
-        "y": 0.04907894736841989
+        "x": 9.009745614035086,
+        "y": 0.2953333333333341
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.138,
+        "x": 3.13828947368421,
         "y": 0.662
       },
       "prevControl": {
-        "x": 3.3687245663067324,
-        "y": 0.224410433225273
+        "x": 3.7031754385964915,
+        "y": 0.3194824561403515
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,11 +42,22 @@
       "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": null
+    },
+    {
+      "name": "shootSpeedup",
+      "waypointRelativePos": 0.6883392226148412,
+      "endWaypointRelativePos": 1.0,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shootSpeedup"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -54,7 +65,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 70.53743439063634
+    "rotation": 66.04346226107185
   },
   "reversed": false,
   "folder": "AvacadoOnly",
@@ -62,5 +73,5 @@
     "velocity": 0,
     "rotation": 100.26715052864739
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -45,15 +45,14 @@ public class RobotTest extends RobotContainer{
   private final SwerveDrive drivetrain = new SwerveDrive();
 
   private final Arm arm = new Arm();
-  private final Indexer leftIndexer = new Indexer(IndexerConstants.INDEXER_MOTOR_LEFT_ID, IndexerConstants.INDEXER_CAN_RANGE_LEFT_ID, false);
-  private final Indexer rightIndexer = new Indexer(IndexerConstants.INDEXER_MOTOR_RIGHT_ID, IndexerConstants.INDEXER_CAN_RANGE_RIGHT_ID, true);
+  private final Indexer leftIndexer = new Indexer();
   private final Spindexer spindexer = new Spindexer();
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
   private final Shooter leftShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_LEFT_ID, ShooterConstants.talonFXConfigurationLeft);
   private final Shooter rightShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID, ShooterConstants.talonFXConfigurationRight);
 
-  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, drivetrain);
+  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, leftShooter, rightShooter, spindexer, hood, drivetrain);
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 

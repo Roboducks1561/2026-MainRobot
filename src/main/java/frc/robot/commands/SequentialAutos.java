@@ -30,22 +30,25 @@ public class SequentialAutos {
         this.commandMechanism = commandMechanism;
         this.swerveDrive = commandMechanism.swerveDrive;
 
-        defaultAuto = commandMechanism.swerveDrive.getAutoConsumer();
+        defaultAuto = commandMechanism.
+        swerveDrive.getAutoConsumer();
 
         NamedCommands.registerCommand("shoot", shoot().finallyDo(()->{
             commandMechanism.leftShooter.setVelocity(0);
             commandMechanism.rightShooter.setVelocity(0);
-            commandMechanism.leftIndexer.setVelocity(0);
-            commandMechanism.rightIndexer.setVelocity(0);
+            commandMechanism.indexer.setVelocity(0);
         }));
         NamedCommands.registerCommand("shootStatic", shootStatic());
+        NamedCommands.registerCommand("shootSpeedup", commandMechanism.shootSpeedup());
         NamedCommands.registerCommand("passLeft", passLeft());
         NamedCommands.registerCommand("passRight", passRight());
         NamedCommands.registerCommand("intake", intake());
         NamedCommands.registerCommand("hopperOut", hopperOut());
+        NamedCommands.registerCommand("hopperShake", commandMechanism.hopperShake().alongWith(commandMechanism.pulseIntake()));
         NamedCommands.registerCommand("overDepot", overDepot());
         NamedCommands.registerCommand("stopShooting", stopShooting());
         NamedCommands.registerCommand("stopIntake", stopIntake());
+        
     }
 
     public BiConsumer<ChassisSpeeds, DriveFeedforwards> pointToRotationConsumer(Supplier<Rotation2d> pointTo){

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.75,
-        "y": 0.673
+        "x": 0.46502631578947384,
+        "y": 0.6456842105263172
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0030350877192977,
-        "y": 1.6322456140350883
+        "x": 2.718061403508772,
+        "y": 1.6049298245614054
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OutpostPose"
     },
     {
       "anchor": {
@@ -35,7 +35,7 @@
       "minWaypointRelativePos": 0.10176678445229587,
       "maxWaypointRelativePos": 0.862190812720846,
       "constraints": {
-        "maxVelocity": 0.75,
+        "maxVelocity": 1.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -58,6 +58,17 @@
   ],
   "eventMarkers": [
     {
+      "name": "stopIntake",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stopIntake"
+        }
+      }
+    },
+    {
       "name": "shoot",
       "waypointRelativePos": 0.11024734982332154,
       "endWaypointRelativePos": 0.8876325088339241,
@@ -69,28 +80,6 @@
       }
     },
     {
-      "name": "stopIntake",
-      "waypointRelativePos": 0.28883374689826613,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "stopIntake"
-        }
-      }
-    },
-    {
-      "name": "overDepot",
-      "waypointRelativePos": 0.7886563133018261,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "overDepot"
-        }
-      }
-    },
-    {
       "name": "stopShooting",
       "waypointRelativePos": 0.904386951631047,
       "endWaypointRelativePos": null,
@@ -98,6 +87,17 @@
         "type": "named",
         "data": {
           "name": "stopShooting"
+        }
+      }
+    },
+    {
+      "name": "overDepot",
+      "waypointRelativePos": 0.9342756183745579,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "overDepot"
         }
       }
     }
@@ -118,7 +118,7 @@
   "folder": "ToastOnly",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.99440713941019
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

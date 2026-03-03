@@ -18,6 +18,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Robot;
 import frc.robot.constants.GameData;
 import frc.robot.constants.HoodConstants;
@@ -50,8 +51,8 @@ public class CommandMechanism extends BaseMechanism{
     private final DoublePublisher distance = readyToShootRequirements
         .getDoubleTopic("distance").publish();
 
-    public CommandMechanism(Arm arm, Intake intake, Indexer leftIndexer, Indexer rightIndexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
-        super(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, swerveDrive);
+    public CommandMechanism(Arm arm, Intake intake, Indexer leftIndexer, Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
+        super(arm, intake, leftIndexer, leftShooter, rightShooter, spindexer, hood, swerveDrive);
         scoreMath = new ScoreMath(swerveDrive, fromSwerveBase);
 
         if (Robot.isSimulation()){
@@ -69,10 +70,10 @@ public class CommandMechanism extends BaseMechanism{
             Bootleg2026.addIntakeSimulation("Intake","Fuel",.5,1,60,new Translation2d(.2,0));
             Bootleg2026.addIntakeRequirements("Intake", ()->Math.abs(arm.getPosition() - armIntakePosition) < .05);
             
-            Bootleg2026.hasPiece("Intake",(i)->{
-                leftIndexer.getDigitalInputIO().setValue(i>0);
-                rightIndexer.getDigitalInputIO().setValue(i>0);
-            });
+            // Bootleg2026.hasPiece("Intake",(i)->{
+            //     leftIndexer.getDigitalInputIO().setValue(i>0);
+            //     rightIndexer.getDigitalInputIO().setValue(i>0);
+            // });
         }
 
         notifier = new Notifier(this :: commandPeriodic);
@@ -122,19 +123,6 @@ public class CommandMechanism extends BaseMechanism{
         return Robot.isSimulation() ? rotations:rotations;//(rotations - .02)/1.2 : (rotations - .02)/1.2;
     }
 
-    public Command stopShooting(){
-        return Commands.parallel(leftShooter.reachGoalOnce(0),
-            rightShooter.reachGoalOnce(0),
-            hood.reachGoalOnce(0), 
-            spindexer.reachGoalOnce(0), 
-            leftIndexer.reachGoalOnce(0),
-            rightIndexer.reachGoalOnce(0));
-    }
-
-    public Command stopIntake(){
-        return intakeRollers().withTimeout(.5).andThen(Commands.parallel(intake.reachGoal(()->((int)Utils.getCurrentTimeSeconds()*5)%4 == 0 ? -intakeSpeed : intakeSpeed), arm.reachGoalOnce(0).until(()->arm.getPosition()-.05 < 0).andThen(arm.setVoltage(-1.3))));
-    }
-
     public Command shootDefault(Supplier<double[]> dynamicScoringData, BooleanSupplier ready){
         return shootBothContinuous(()->shootRotationsToHoodRotations(dynamicScoringData.get()[0])
             ,()->mpsTorps(dynamicScoringData.get()[1])
@@ -166,6 +154,10 @@ public class CommandMechanism extends BaseMechanism{
         return passDynamic(()->left, vx, vy);
     }
 
+    public Command shootSpeedup(){
+        return leftShooter.reachGoal(70).alongWith(rightShooter.reachGoal(70)).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
     double lastLaunchLeft = 0;
     double lastLaunchRight = 0;
     public void commandPeriodic(){
@@ -182,14 +174,14 @@ public class CommandMechanism extends BaseMechanism{
             dynamicPassLeft = new double[]{hoodRotationsToShootRotations(dynamicPassLeft[0]), rpsTomps(dynamicPassLeft[1]), dynamicPassLeft[2]};
             dynamicPassRight = new double[]{hoodRotationsToShootRotations(dynamicPassRight[0]), rpsTomps(dynamicPassRight[1]), dynamicPassRight[2]};
         }
-        if (!Robot.isSimulation() && leftShooter.getVelocity() > 1 && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
+        if (!Robot.isSimulation() && leftShooter.getVelocity() > 1 && indexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
             lastLaunchLeft = Utils.getCurrentTimeSeconds();
             animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(leftShooter.getVelocity()));
         }
-        if (!Robot.isSimulation() && rightShooter.getVelocity() > 1 && rightIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchRight + .2){
-            lastLaunchRight = Utils.getCurrentTimeSeconds();
-            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(rightShooter.getVelocity()));
-        }
+        // if (!Robot.isSimulation() && rightShooter.getVelocity() > 1 && rightIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchRight + .2){
+        //     lastLaunchRight = Utils.getCurrentTimeSeconds();
+        //     animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(rightShooter.getVelocity()));
+        // }
         Pose2d turretPose = new Pose3d(swerveDrive.getPose()).transformBy(fromSwerveBase).toPose2d();
         aimCorrect.accept(readyToShootHub());
         distance.accept(PoseEX.getDistanceFromPoseMeters(turretPose, GameData.getHubPose2d()));

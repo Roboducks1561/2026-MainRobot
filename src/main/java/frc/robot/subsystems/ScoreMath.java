@@ -53,7 +53,7 @@ public class ScoreMath {
         //Done by finding the time it takes to hit the ground at 2.6 meters, multiplying by proportion I think it will actually travel (Because it hits hub before ground)
         double timeTillTarget = .728*1.8;
         if (interpolate){
-            timeTillTarget = .728 * 1.5;
+            timeTillTarget = .728 * 1.73;
         }
 
         //TODO the acceleration might not be working right, check this first if missing, .2 is mostly a guess too
@@ -169,7 +169,8 @@ public class ScoreMath {
             ,{4.8,0.061,72}
             ,{5.1,0.065,75}
             ,{5.4,0.067,80}
-            ,{100,0.067,80}
+            ,{5.7,0.08,80}
+            ,{100,0.08,80}
             // ,{1.3852,0.005+additional,70}
             // ,{1.903,.018+additional,73}
             // ,{2.77,0.034+additional,82}

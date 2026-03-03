@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -48,6 +49,7 @@ public class IndexerConstants {
         talonFXConfiguration.Feedback.SensorToMechanismRatio = INDEXER_SENSOR_TO_MECHANISM_RATIO;
 
         talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        talonFXConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         // set Motion Magic Velocity settings
         MotionMagicConfigs motionMagicConfigs = talonFXConfiguration.MotionMagic;

@@ -30,16 +30,14 @@ public class Indexer extends SubsystemBase{
     private final DoublePublisher rollerVelocityPublisher;
     private final DoublePublisher rollerTargetPublisher;
 
-    private final DigitalInputIO canRange;
+    // private final DigitalInputIO canRange;
 
     private final double maxError = 1;
 
     private final int id;
-    private final int canRangeID;
 
-    public Indexer(int id, int canRangeID, boolean inverted){
-        this.id = id;
-        this.canRangeID = canRangeID;
+    public Indexer(){
+        this.id = IndexerConstants.INDEXER_MOTOR_LEFT_ID;
         rollerVelocityPublisher = IndexerTable
             .getDoubleTopic("IndexerVelocity"+id).publish();
         rollerTargetPublisher = IndexerTable
@@ -47,12 +45,11 @@ public class Indexer extends SubsystemBase{
 
         if (Robot.isSimulation()){
             rollerIO = new SimRoller(IndexerConstants.RollerSim, new PIDController(20, 0, 0));
-            canRange = new DigitalInputSim();
+            // canRange = new DigitalInputSim();
         }else{
-            TalonFXConfiguration config = IndexerConstants.talonFXConfiguration;
-            config.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
-            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), config, true);
-            canRange = new CANRange(canRangeID, .1, "Canivore");
+            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), IndexerConstants.talonFXConfiguration, true)
+                .withFollower(new TalonFX(IndexerConstants.INDEXER_MOTOR_RIGHT_ID, "Canivore"), true);
+            // canRange = new CANRange(canRangeID, .1, "Canivore");
         }
     }
 
@@ -99,17 +96,17 @@ public class Indexer extends SubsystemBase{
         return rollerIO.getTarget();
     }
 
-    public boolean hasPiece(){
-        return canRange.getValue();
-    }
+    // public boolean hasPiece(){
+    //     return canRange.getValue();
+    // }
 
     public boolean withinBounds(){
         return Math.abs(getTargetVelocity() - getVelocity()) < maxError;
     }
 
-    public DigitalInputIO getDigitalInputIO(){
-        return canRange;
-    }
+    // public DigitalInputIO getDigitalInputIO(){
+    //     return canRange;
+    // }
 
     @Override
     public void periodic() {

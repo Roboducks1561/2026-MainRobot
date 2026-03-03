@@ -78,8 +78,7 @@ public class RobotMain extends RobotContainer {
     .getStructTopic("Base", Pose2d.struct).publish();
 
   private final Arm arm = new Arm();
-  private final Indexer leftIndexer = new Indexer(IndexerConstants.INDEXER_MOTOR_LEFT_ID, IndexerConstants.INDEXER_CAN_RANGE_LEFT_ID, false);
-  private final Indexer rightIndexer = new Indexer(IndexerConstants.INDEXER_MOTOR_RIGHT_ID, IndexerConstants.INDEXER_CAN_RANGE_RIGHT_ID, true);
+  private final Indexer leftIndexer = new Indexer();
   private final Spindexer spindexer = new Spindexer();
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
@@ -87,7 +86,7 @@ public class RobotMain extends RobotContainer {
   private final Shooter rightShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID, ShooterConstants.talonFXConfigurationRight);
   // private final Turret turret = new Turret();
 
-  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, rightIndexer, leftShooter, rightShooter, spindexer, hood, drivetrain);
+  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, leftShooter, rightShooter, spindexer, hood, drivetrain);
   private final GameState gameState = new GameState(commandMechanism, driverController);
 
   // private final ObjectDetection objectDetection = new ObjectDetection("Test",
@@ -121,10 +120,11 @@ public class RobotMain extends RobotContainer {
     driverController.leftBumper().whileTrue(gameState.intake());
     driverController.a().whileTrue(drivetrain.brake());
     driverController.x().whileTrue(gameState.shootSpot());
-    driverController.back().onTrue(new WheelRadiusCommand(drivetrain));
+    // driverController.back().onTrue(new WheelRadiusCommand(drivetrain));
     driverController.b().whileTrue(commandMechanism.shootStatic());
     commandMechanism.setHopperPos(()->(operatorController.getRawAxis(3)+1)/2);
     operatorController.button(8).whileTrue(commandMechanism.setIntakeNegative());
+    operatorController.button(7).whileTrue(commandMechanism.hopperShake());
     
     // driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
     // driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));

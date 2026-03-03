@@ -8,49 +8,79 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4065964912280706,
-        "y": 0.6566842105263159
+        "x": 2.1517280701754387,
+        "y": 0.8207192982456146
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.42742165242165253,
-        "y": 0.8307834757834758
+        "x": 0.46502631578947384,
+        "y": 0.6456842105263172
       },
       "prevControl": {
-        "x": 1.0877813015444593,
-        "y": 0.8307834757834758
+        "x": 0.3775087719298247,
+        "y": 1.3776491228070202
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "OutpostPose"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5883777239709452,
+      "rotationDegrees": 45.522958444027665
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.7194346289752648,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "hopperOut",
+      "name": "shoot",
       "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.6530035335689034,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
+    },
+    {
+      "name": "hopperShake",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 0.5060070671378094,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "hopperShake"
+        }
+      }
+    },
+    {
+      "name": "hopperOut",
+      "waypointRelativePos": 0.5639575971731408,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "hopperOut"
-        }
-      }
-    },
-    {
-      "name": "stopShooting",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "stopShooting"
         }
       }
     }
@@ -65,7 +95,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.71994875373822
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": null,

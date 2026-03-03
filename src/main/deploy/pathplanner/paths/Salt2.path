@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5178632478632479,
-        "y": 0.7791025641025657
+        "x": 0.46502631578947384,
+        "y": 0.6456842105263172
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4272872611012344,
-        "y": 2.345454654762819
+        "x": 1.1759850143759691,
+        "y": 0.8861042005691615
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OutpostPose"
     },
     {
       "anchor": {
-        "x": 2.88369298245614,
-        "y": 2.3880789473684216
+        "x": 1.561,
+        "y": 1.5606403508771938
       },
       "prevControl": {
-        "x": 1.32682972666253,
-        "y": 1.4330246014721035
+        "x": 0.7219309510758739,
+        "y": 0.5512551991980019
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,29 +33,34 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "stopIntake",
-      "waypointRelativePos": 0,
+      "name": "shootSpeedup",
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": 1.0,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shootSpeedup"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 1000.0,
+    "maxAngularAcceleration": 1000.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 43.92414937920872
+    "rotation": 39.54910067164832
   },
   "reversed": false,
   "folder": "SaltOnly",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -91.50743575877493
+    "rotation": -90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

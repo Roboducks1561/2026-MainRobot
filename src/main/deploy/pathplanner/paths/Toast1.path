@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2601046327550645,
-        "y": 0.6657362473637263
+        "x": 2.1994649122807015,
+        "y": 1.3696929824561406
       },
       "isLocked": false,
       "linkedName": "StartRightIn"
     },
     {
       "anchor": {
-        "x": 0.42742165242165253,
-        "y": 0.8307834757834758
+        "x": 0.46502631578947384,
+        "y": 0.6456842105263172
       },
       "prevControl": {
-        "x": 0.6780275596826071,
-        "y": 0.8233234559587128
+        "x": 0.8071403508771933,
+        "y": 0.7729824561403518
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "hopperOut",
-      "waypointRelativePos": 0.5644834571235607,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.71994875373822
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "ToastOnly",
