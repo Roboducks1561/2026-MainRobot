@@ -43,9 +43,9 @@ public class BaseMechanism {
     public final Shooter rightShooter;
     public final SwerveDrive swerveDrive;
 
-    protected final double intakeSpeed = 20;
-    protected final double indexSpeed = 10;
-    protected final double spinSpeed = 100;
+    protected final double intakeSpeed = 30;
+    protected final double indexSpeed = 20;
+    protected final double spinSpeed = 10;
 
     protected final double armIntakePosition = .34;
     protected final double shooterDefaultSpeed = 5;
@@ -53,6 +53,7 @@ public class BaseMechanism {
     protected DoubleSupplier hopperPos = ()->0;
     protected double lastHopperPos = 0;
     protected boolean invertedIntake = false;
+    protected boolean invertedSpindexer = false;
 
     protected final Transform3d fromSwerveBase = new Transform3d(-.24,0,.326, new Rotation3d());
 
@@ -92,9 +93,9 @@ public class BaseMechanism {
             }
             return b;
         }));
-        intake.setDefaultCommand(intake.reachGoal(()->!invertedIntake ? (int)(Utils.getCurrentTimeSeconds() * 5)%4 == 0 ? -intakeSpeed/24: intakeSpeed/24 : -intakeSpeed/2));
+        intake.setDefaultCommand(intake.reachGoal(()->!invertedIntake ? intakeSpeed/24 : -intakeSpeed/2));
         indexer.setDefaultCommand(indexer.reachGoal(0));
-        spindexer.setDefaultCommand(spindexer.reachGoal(0));
+        spindexer.setDefaultCommand(spindexer.reachGoal(()->!invertedSpindexer ? 0 : -spinSpeed));
         
         hood.setDefaultCommand(hood.reachGoal(0));
         leftShooter.setDefaultCommand(leftShooter.reachGoal(0));
@@ -106,7 +107,7 @@ public class BaseMechanism {
         Runtime.getRuntime().addShutdownHook(new Thread(notifier::close));
 
         zeroSetter();
-        // defaultSetter();
+        defaultSetter();
     }
 
     public boolean readyToShootLeft(){
@@ -140,6 +141,7 @@ public class BaseMechanism {
     }
 
     public Command intakeRollers(){
+        // return (intake.reachGoal(intakeSpeed).until(()->intake.getCurrent() > 60).andThen(intake.reachGoal(-intakeSpeed).withTimeout(.1))).repeatedly();
         return intake.reachGoal(()->!invertedIntake ? (int)(Utils.getCurrentTimeSeconds() * 3)%6 == 0 ? intakeSpeed: intakeSpeed : -intakeSpeed/2);
     }
 
@@ -164,7 +166,11 @@ public class BaseMechanism {
     }
 
     public Command spindex(){
-        return (spindexer.reachGoal(spinSpeed).withTimeout(1.0).andThen(spindexer.reachGoal(-spinSpeed).withTimeout(.1))).repeatedly();
+        return spindexer.reachGoal(()->!invertedSpindexer ? spinSpeed : -spinSpeed);//(spindexer.reachGoal(spinSpeed).withTimeout(1.0).andThen(spindexer.reachGoal(-spinSpeed).withTimeout(.2))).repeatedly();
+    }
+
+    public Command setSpindexNegative(){
+        return Commands.idle().beforeStarting(()->invertedSpindexer = true).finallyDo(()->invertedSpindexer = false);
     }
 
     /**
@@ -192,11 +198,11 @@ public class BaseMechanism {
         arm.setDefaultCommand(arm.reachGoal(()->values[0]));
         intake.setDefaultCommand(intake.reachGoal(()->values[1]));
         indexer.setDefaultCommand(indexer.reachGoal(()->values[2]));
-        spindexer.setDefaultCommand(spindexer.reachGoal(()->values[4]));
-        hood.setDefaultCommand(hood.reachGoal(()->values[5]));
-        leftShooter.setDefaultCommand(leftShooter.reachGoal(()->values[6]));
-        rightShooter.setDefaultCommand(rightShooter.reachGoal(()->values[7]));
-        DoubleEntry[] defaultSetters = SendableConsumer.createSendableChooser("Defaults",new String[]{"arm","intake","indexer","rightIndexer","spindexer","hood","leftShooter","rightShooter"}, new double[]{0,0,0,0,0,0,0,0});
+        spindexer.setDefaultCommand(spindexer.reachGoal(()->values[3]));
+        hood.setDefaultCommand(hood.reachGoal(()->values[4]));
+        leftShooter.setDefaultCommand(leftShooter.reachGoal(()->values[5]));
+        rightShooter.setDefaultCommand(rightShooter.reachGoal(()->values[6]));
+        DoubleEntry[] defaultSetters = SendableConsumer.createSendableChooser("Defaults",new String[]{"arm","intake","indexer","spindexer","hood","leftShooter","rightShooter"}, new double[]{0,0,0,0,0,0,0});
         SendableConsumer.checker(defaultSetters, new DoubleConsumer[]{
             (i)->values[0] = i
             ,(i)->values[1] = i
@@ -205,7 +211,6 @@ public class BaseMechanism {
             ,(i)->values[4] = i
             ,(i)->values[5] = i
             ,(i)->values[6] = i
-            ,(i)->values[7] = i
         });
     }
 

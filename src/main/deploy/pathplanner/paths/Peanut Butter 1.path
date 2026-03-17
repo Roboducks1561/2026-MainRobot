@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5541168091168096,
-        "y": 2.122806267806269
+        "x": 3.4507549857549855,
+        "y": 2.3295299145299158
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.554116809116806,
-        "y": 2.122806267806269
+        "x": 4.450754985754983,
+        "y": 2.3295299145299158
       },
       "isLocked": false,
       "linkedName": null
@@ -44,7 +44,12 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7164179104477608,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
@@ -61,22 +66,22 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 48.94518622903775
   },
   "reversed": false,
   "folder": "Peanut Butter",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 45.64374571417536
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

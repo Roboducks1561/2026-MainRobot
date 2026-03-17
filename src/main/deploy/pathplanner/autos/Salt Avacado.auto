@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Peanut Butter 1"
+            "pathName": "Salt1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Peanut Butter 2"
+            "pathName": "Salt Avacado Fix1"
           }
         },
         {
@@ -23,13 +29,13 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 6.0
+                  "waitTime": 4.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "passLeft"
+                  "name": "shootStatic"
                 }
               },
               {
@@ -57,45 +63,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Peanut Butter 3"
+            "pathName": "Salt Avacado Fix 2"
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 6.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "passRight"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "hopperShake"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "Avacado2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootStatic"
           }
         }
       ]

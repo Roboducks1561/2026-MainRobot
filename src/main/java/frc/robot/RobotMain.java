@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SequentialAutos;
@@ -123,9 +124,14 @@ public class RobotMain extends RobotContainer {
     // driverController.back().onTrue(new WheelRadiusCommand(drivetrain));
     driverController.b().whileTrue(commandMechanism.shootStatic());
     commandMechanism.setHopperPos(()->(operatorController.getRawAxis(3)+1)/2);
-    operatorController.button(8).whileTrue(commandMechanism.setIntakeNegative());
-    operatorController.button(7).whileTrue(commandMechanism.hopperShake());
-    
+    // operatorController.button(8).whileTrue(commandMechanism.setIntakeNegative());
+    operatorController.button(1).whileTrue(commandMechanism.hopperShake().alongWith(intake.reachGoal(10)));
+    operatorController.button(13).whileTrue(commandMechanism.hopperShake().alongWith(intake.reachGoal(-100)));
+    // operatorController.button(5).whileTrue(commandMechanism.setSpindexNegative());
+    operatorController.button(7).whileTrue((commandMechanism.spindexer.reachGoal(-10).alongWith(commandMechanism.indexer.reachGoal(-10))).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // operatorController.button(13).whileTrue(commandMechanism.intake.reachGoal(10).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    operatorController.button(6).whileTrue(commandMechanism.arm.setVoltage(2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    operatorController.button(11).whileTrue(commandMechanism.arm.setVoltage(8).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
     // driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));
   }

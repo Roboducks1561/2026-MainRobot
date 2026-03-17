@@ -92,6 +92,10 @@ public class Intake extends SubsystemBase{
         return intakeIO.getTarget();
     }
 
+    public double getCurrent(){
+        return intakeIO.getCurrent();
+    }
+
     // public boolean hasPiece(){
     //     return colorSensor.getValue();
     // }

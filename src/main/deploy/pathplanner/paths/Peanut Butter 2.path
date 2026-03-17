@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.081,
-        "y": 1.3860000000000001
+        "x": 9.148575498575498,
+        "y": 0.8695441595441615
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 6.942
       },
       "prevControl": {
-        "x": 8.412122507122506,
-        "y": 6.967840455840456
+        "x": 8.515484330484329,
+        "y": 6.993732193732194
       },
       "nextControl": null,
       "isLocked": false,
@@ -35,7 +35,7 @@
     },
     {
       "waypointRelativePos": 0.8805970149253584,
-      "rotationDegrees": 98.29701194241107
+      "rotationDegrees": 139.35774393216974
     }
   ],
   "constraintZones": [],
@@ -54,8 +54,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -68,8 +68,8 @@
   "reversed": false,
   "folder": "Peanut Butter",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 53.64825213780888
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -21,8 +21,8 @@ public class TunerConstants {
     public static double kSpeedAt12VoltsMps = 6;
     public static double MAX_ANGULAR_RATE = 3 * Math.PI;
     public static double driveBaseRadius = 18.75/2;
-    public static final Distance kWheelRadius = Inches.of(2);
-    public static final double kWheelRadiusDouble = 2;
+    public static final Distance kWheelRadius = Inches.of(1.9722);
+    public static final double kWheelRadiusDouble = 1.9722;
     // Both sets of gains need to be tuned to your individual robot.
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with the

@@ -164,9 +164,13 @@ public class SwerveDrive extends SubsystemBase{
     }
 
     public void createDefaultCommand(CommandXboxController driverController, double speedPercent, double rotationPercent){
-        setDefaultCommand(applyRequest(() -> driverCentricDrive.withVelocityX(-driverController.getLeftY() * speedPercent * TunerConstants.kSpeedAt12VoltsMps)
-            .withVelocityY(-driverController.getLeftX() * speedPercent * TunerConstants.kSpeedAt12VoltsMps)
-            .withRotationalRate(-driverController.getRightX() * rotationPercent * TunerConstants.MAX_ANGULAR_RATE)));
+        setDefaultCommand(applyRequest(() ->{
+            // System.out.println(Math.abs(driverController.getLeftY()) < .0001 && Math.abs(driverController.getLeftX()) < .0001 && Math.abs(driverController.getRightX()) < .0001);
+            return (Math.abs(driverController.getLeftY()) < .0001 && Math.abs(driverController.getLeftX()) < .0001 && Math.abs(driverController.getRightX()) < .0001) ? swerveBrake : 
+                driverCentricDrive.withVelocityX(-driverController.getLeftY() * speedPercent * TunerConstants.kSpeedAt12VoltsMps)
+                .withVelocityY(-driverController.getLeftX() * speedPercent * TunerConstants.kSpeedAt12VoltsMps)
+                .withRotationalRate(-driverController.getRightX() * rotationPercent * TunerConstants.MAX_ANGULAR_RATE);
+        }));
     }
 
     public BiConsumer<ChassisSpeeds, DriveFeedforwards> getAutoConsumer(){

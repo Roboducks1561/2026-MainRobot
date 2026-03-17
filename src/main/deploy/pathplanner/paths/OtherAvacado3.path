@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.589750889679717,
-        "y": 0.6297153024911029
+        "x": 3.179430199430199,
+        "y": 2.6654558404558406
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.589315789473684,
-        "y": 1.115096491228071
+        "x": 4.179430199430197,
+        "y": 2.6654558404558406
       },
       "isLocked": false,
-      "linkedName": "StartRightIn"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.34,
-        "y": 0.796
+        "x": 7.804871794871794,
+        "y": 3.634472934472935
       },
       "prevControl": {
-        "x": 1.2867807017543857,
-        "y": 1.0983333333333325
+        "x": 8.037435897435897,
+        "y": 2.23908831908832
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "OutpostPose"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "hopperOut",
-      "waypointRelativePos": 0,
+      "name": "intake",
+      "waypointRelativePos": 0.44834571235651344,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "hopperOut"
+          "name": "intake"
         }
       }
     }
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 64.46256560936361
   },
   "reversed": false,
-  "folder": "SaltOnly",
+  "folder": "OtherAvacado",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.7885774189607
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

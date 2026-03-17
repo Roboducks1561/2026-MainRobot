@@ -23,7 +23,7 @@ public class ScoreMath {
         this.swerveDrive = swerveDrive;
         this.turretTransform = turretTransform;
         SendableConsumer.checker(
-            SendableConsumer.createSendableChooser("interpolationTuning", new String[]{"hood additional", "shooter divisor"}, new double[]{0.0,1.0})
+            SendableConsumer.createSendableChooser("interpolationTuning", new String[]{"hood additional", "shooter divisor"}, new double[]{0.0,1})
         ,new DoubleConsumer[]{
             (i)->{additional = i;},
             (i)->{divisor = i;}
@@ -154,23 +154,37 @@ public class ScoreMath {
 
     private double divisor = 1;
     private double additional = 0.00;
+
+    //tortured poets dept is .98
+    //
     private MultiLinearInterpolator distToSpeedAndAngle = new MultiLinearInterpolator(new double[][]
         {
             //Distance meters, Pivot rotations, velocity
+            // {1.2715, 0.0, 60}
+            // ,{1.57, 0.01, 61}
+            // ,{1.974, 0.02, 62}
+            // ,{1.974, 0.02, 62}
+            // ,{0, 0, 0}
             {1.492,0.01,57}
             ,{1.922,0.015,60}
-            ,{2.315,0.022,63}
-            ,{2.58,0.026,63}
-            ,{2.905,0.033,67}
-            ,{3.19,0.037,67}
-            ,{3.77,0.048,67}
-            ,{4.14,0.053,72}
-            ,{4.48,0.061,72}
-            ,{4.8,0.061,72}
-            ,{5.1,0.065,75}
-            ,{5.4,0.067,80}
-            ,{5.7,0.08,80}
-            ,{100,0.08,80}
+            ,{2.315,0.022,62}
+            ,{2.58,0.026,64}
+            ,{2.905,0.033,68}
+            ,{3.19,0.037,70}
+            ,{3.65,0.04+.0043,75}
+            ,{4.24,0.05+.0043,77}
+            ,{4.6,0.055+.0043,80}
+            ,{5.1,0.059+.0043,82/0.94}
+            ,{5.76,0.061+.0043,84}
+            ,{100,0.061+.0043,84}
+            // ,{3.77,0.048,70}
+            // ,{4.14,0.053,72}
+            // ,{4.48,0.061,74}
+            // ,{4.8,0.061,75}
+            // ,{5.1,0.065,77}
+            // ,{5.4,0.067,82}
+            // ,{5.7,0.08,84}
+            // ,{100,0.08,84}
             // ,{1.3852,0.005+additional,70}
             // ,{1.903,.018+additional,73}
             // ,{2.77,0.034+additional,82}

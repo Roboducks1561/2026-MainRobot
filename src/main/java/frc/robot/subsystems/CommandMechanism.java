@@ -176,7 +176,7 @@ public class CommandMechanism extends BaseMechanism{
         }
         if (!Robot.isSimulation() && leftShooter.getVelocity() > 1 && indexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
             lastLaunchLeft = Utils.getCurrentTimeSeconds();
-            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(leftShooter.getVelocity()));
+            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition()*1.2 + .02)),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(leftShooter.getVelocity()/11));
         }
         // if (!Robot.isSimulation() && rightShooter.getVelocity() > 1 && rightIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchRight + .2){
         //     lastLaunchRight = Utils.getCurrentTimeSeconds();
