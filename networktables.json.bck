@@ -10,7 +10,111 @@
   {
     "name": "/Tunables/interpolationTuning/shooter divisor",
     "type": "double",
-    "value": 1.04,
+    "value": 1.00,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/hood additional",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/Defaults/rightShooter",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/Defaults/leftShooter",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry0/dist",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry0/rotations",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry0/velocity",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/Defaults/indexer",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry1/velocity",
+    "type": "double",
+    "value": 10.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry1/dist",
+    "type": "double",
+    "value": 10.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry1/rotations",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry9/dist",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry9/velocity",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Tunables/interpolationTuning/entry9/rotations",
+    "type": "double",
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
