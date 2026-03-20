@@ -49,10 +49,9 @@ public class RobotTest extends RobotContainer{
   private final Spindexer spindexer = new Spindexer();
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
-  private final Shooter leftShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_LEFT_ID, ShooterConstants.talonFXConfigurationLeft);
-  private final Shooter rightShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID, ShooterConstants.talonFXConfigurationRight);
+  private final Shooter shooter = new Shooter();
 
-  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, leftShooter, rightShooter, spindexer, hood, drivetrain);
+  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, shooter, spindexer, hood, drivetrain);
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -73,7 +72,7 @@ public class RobotTest extends RobotContainer{
       }
     }));
 
-    SysIDGenerator idGenerator = SysIDGenerator.flywheelSysID(leftShooter, leftShooter.getMotor());
+    SysIDGenerator idGenerator = SysIDGenerator.flywheelSysID(shooter, shooter.getMotor());
     driverController.a().onTrue(idGenerator.sysIdDynamic(Direction.kForward));
     driverController.b().onTrue(idGenerator.sysIdDynamic(Direction.kReverse));
     driverController.x().onTrue(idGenerator.sysIdQuasistatic(Direction.kForward));

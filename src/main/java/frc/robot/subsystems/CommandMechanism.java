@@ -51,16 +51,16 @@ public class CommandMechanism extends BaseMechanism{
     private final DoublePublisher distance = readyToShootRequirements
         .getDoubleTopic("distance").publish();
 
-    public CommandMechanism(Arm arm, Intake intake, Indexer leftIndexer, Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
-        super(arm, intake, leftIndexer, leftShooter, rightShooter, spindexer, hood, swerveDrive);
+    public CommandMechanism(Arm arm, Intake intake, Indexer leftIndexer, Shooter shooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
+        super(arm, intake, leftIndexer, shooter, spindexer, hood, swerveDrive);
         scoreMath = new ScoreMath(swerveDrive, fromSwerveBase);
 
         if (Robot.isSimulation()){
             Bootleg2026.addShooterSimulation(
                 ()->fromSwerveBase.plus(new Transform3d(0,0,0,new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),0)))
-                    ,()->rpsTomps(leftShooter.getVelocity()) * 1.07, "Fuel", "Intake");
+                    ,()->rpsTomps(shooter.getVelocity()) * 1.07, "Fuel", "Intake");
             Bootleg2026.addShootRequirements("Intake", ()->{
-                boolean ready = leftShooter.getVelocity() > 1 && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .15;
+                boolean ready = shooter.getVelocity() > 1 && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .15;
                 if (ready){
                     lastLaunchLeft = Utils.getCurrentTimeSeconds();
                 }
@@ -124,7 +124,7 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public Command shootDefault(Supplier<double[]> dynamicScoringData, BooleanSupplier ready){
-        return shootBothContinuous(()->shootRotationsToHoodRotations(dynamicScoringData.get()[0])
+        return shootContinuous(()->shootRotationsToHoodRotations(dynamicScoringData.get()[0])
             ,()->mpsTorps(dynamicScoringData.get()[1])
             ,()->PoseEX.correctedRotation(dynamicScoringData.get()[2]-swerveDrive.getPose().getRotation().getRotations())
             , ready);
@@ -155,7 +155,7 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public Command shootSpeedup(){
-        return leftShooter.reachGoal(70).alongWith(rightShooter.reachGoal(70)).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+        return shooter.reachGoal(70).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
     }
 
     double lastLaunchLeft = 0;
@@ -174,9 +174,9 @@ public class CommandMechanism extends BaseMechanism{
             dynamicPassLeft = new double[]{hoodRotationsToShootRotations(dynamicPassLeft[0]), rpsTomps(dynamicPassLeft[1]), dynamicPassLeft[2]};
             dynamicPassRight = new double[]{hoodRotationsToShootRotations(dynamicPassRight[0]), rpsTomps(dynamicPassRight[1]), dynamicPassRight[2]};
         }
-        if (!Robot.isSimulation() && leftShooter.getVelocity() > 1 && indexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
+        if (!Robot.isSimulation() && shooter.getVelocity() > 1 && indexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
             lastLaunchLeft = Utils.getCurrentTimeSeconds();
-            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition()*1.2 + .02)),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(leftShooter.getVelocity()/11));
+            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition()*1.2 + .02)),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(shooter.getVelocity()/11));
         }
         // if (!Robot.isSimulation() && rightShooter.getVelocity() > 1 && rightIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchRight + .2){
         //     lastLaunchRight = Utils.getCurrentTimeSeconds();

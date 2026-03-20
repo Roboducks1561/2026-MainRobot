@@ -46,7 +46,6 @@ public class ShooterConstants {
 
 
     public static final TalonFXConfiguration talonFXConfigurationLeft = new TalonFXConfiguration();
-    public static final TalonFXConfiguration talonFXConfigurationRight = new TalonFXConfiguration();
     public static final CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs();
     static{
         Slot0Configs slot0ConfigsL = talonFXConfigurationLeft.Slot0;
@@ -75,21 +74,6 @@ public class ShooterConstants {
         currentLimits.StatorCurrentLimitEnable = SHOOTER_STATOR_CURRENT_LIMIT_ENABLE; // And enable it
 
         talonFXConfigurationLeft.CurrentLimits = currentLimits;
-
-
-        Slot0Configs slot0ConfigsR = talonFXConfigurationRight.Slot0;
-        slot0ConfigsR.kS = rS;
-        slot0ConfigsR.kV = rV;
-        slot0ConfigsR.kA = rA;
-        slot0ConfigsR.kP = rP;
-        slot0ConfigsR.kI = rI;
-        slot0ConfigsR.kD = rD;
-
-        talonFXConfigurationRight.Feedback = talonFXConfigurationLeft.Feedback;
-        talonFXConfigurationRight.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        talonFXConfigurationRight.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        talonFXConfigurationRight.MotionMagic = talonFXConfigurationLeft.MotionMagic;
-        talonFXConfigurationRight.CurrentLimits = talonFXConfigurationLeft.CurrentLimits;
     }
 
     public static final DCMotor gearbox = DCMotor.getFalcon500(1);

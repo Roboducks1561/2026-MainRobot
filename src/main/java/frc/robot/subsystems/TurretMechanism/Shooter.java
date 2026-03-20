@@ -30,17 +30,19 @@ public class Shooter extends SubsystemBase{
     private final double maxError = 10;
 
     private final int id;
-
-    public Shooter(int id, TalonFXConfiguration config){
-        this.id = id;
+    public Shooter(){
+        this.id = ShooterConstants.SHOOTER_MOTOR_LEFT_ID;
         rollerVelocityPublisher = rollerTable
             .getDoubleTopic("ShooterVelocity"+id).publish();
         rollerTargetPublisher = rollerTable
             .getDoubleTopic("ShooterTargetVelocity"+id).publish();
         if (Robot.isSimulation()){
-            rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(140, 0, 0));
+            rollerIO = new SimRoller(ShooterConstants.shooterSim, new PIDController(20, 0, 0));
+            // canRange = new DigitalInputSim();
         }else{
-            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), config, true);
+            rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), ShooterConstants.talonFXConfigurationLeft, true)
+                .withFollower(new TalonFX(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID, "Canivore"), false);
+            // canRange = new CANRange(canRangeID, .1, "Canivore");
         }
     }
 

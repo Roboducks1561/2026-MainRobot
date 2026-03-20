@@ -39,8 +39,7 @@ public class BaseMechanism {
     public final Indexer indexer;
     public final Spindexer spindexer;
     public final Hood hood;
-    public final Shooter leftShooter;
-    public final Shooter rightShooter;
+    public final Shooter shooter;
     public final SwerveDrive swerveDrive;
 
     protected final double intakeSpeed = 30;
@@ -65,24 +64,22 @@ public class BaseMechanism {
     protected final NetworkTable readyToShootRequirements = robot.getSubTable("ShootRequirements");
     private final BooleanPublisher hoodCorrect = readyToShootRequirements
         .getBooleanTopic("HoodCorrect").publish();
-    private final BooleanPublisher leftShooterCorrect = readyToShootRequirements
-        .getBooleanTopic("leftShooterCorrect").publish();
-    private final BooleanPublisher rightShooterCorrect = readyToShootRequirements
-        .getBooleanTopic("rightShooterCorrect").publish();
+    private final BooleanPublisher shooterCorrect = readyToShootRequirements
+        .getBooleanTopic("shooterCorrect").publish();
 
 
-    public BaseMechanism(Arm arm, Intake intake, Indexer indexer,Shooter leftShooter,Shooter rightShooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
+
+    public BaseMechanism(Arm arm, Intake intake, Indexer indexer,Shooter shooter, Spindexer spindexer, Hood hood, SwerveDrive swerveDrive){
         this.arm = arm;
         this.intake = intake;
         this.indexer = indexer;
         this.spindexer = spindexer;
         this.hood = hood;
-        this.leftShooter = leftShooter;
-        this.rightShooter = rightShooter;
+        this.shooter = shooter;
         this.swerveDrive = swerveDrive;
 
-        smartShootRequirements = Set.of(indexer, spindexer, hood, leftShooter, rightShooter, swerveDrive);
-        shooterRequirements = Set.of(indexer, spindexer, hood, leftShooter, rightShooter);
+        smartShootRequirements = Set.of(indexer, spindexer, hood, shooter, swerveDrive);
+        shooterRequirements = Set.of(indexer, spindexer, hood, shooter);
         intakeRequirements = Set.of(intake, arm);
         // arm.setDefaultCommand(arm.reachGoal(()->DriverStation.isAutonomous() ? 0 : hopperPos.getAsDouble() * armIntakePosition));
         arm.setDefaultCommand(Commands.either(arm.reachGoal(0).until(()->arm.getPosition() - .05 < 0).andThen(arm.setVoltage(-1.3)), arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition), ()->hopperPos.getAsDouble() == 0)
@@ -98,8 +95,7 @@ public class BaseMechanism {
         spindexer.setDefaultCommand(spindexer.reachGoal(()->!invertedSpindexer ? 0 : -spinSpeed));
         
         hood.setDefaultCommand(hood.reachGoal(0));
-        leftShooter.setDefaultCommand(leftShooter.reachGoal(0));
-        rightShooter.setDefaultCommand(rightShooter.reachGoal(0));
+        shooter.setDefaultCommand(shooter.reachGoal(0));
 
         notifier = new Notifier(this :: periodic);
         notifier.setName("BaseMechanism Periodic");
@@ -110,21 +106,14 @@ public class BaseMechanism {
         defaultSetter();
     }
 
-    public boolean readyToShootLeft(){
-        return leftShooter.withinBounds()
+    public boolean readyToShoot(){
+        return shooter.withinBounds()
         && hood.withinBounds()
-        && leftShooter.getTargetVelocity() != 0;
-    }
-    
-    public boolean readyToShootRight(){
-        return rightShooter.withinBounds()
-        && hood.withinBounds()
-        && rightShooter.getTargetVelocity() != 0;
+        && shooter.getTargetVelocity() != 0;
     }
 
     public Command stopShooting(){
-        return Commands.parallel(leftShooter.reachGoalOnce(0),
-            rightShooter.reachGoalOnce(0),
+        return Commands.parallel(shooter.reachGoalOnce(0),
             hood.reachGoalOnce(0), 
             spindexer.reachGoalOnce(0), 
             indexer.reachGoalOnce(0));
@@ -182,11 +171,10 @@ public class BaseMechanism {
         hopperPos = state;
     }
 
-    public Command shootBothContinuous(DoubleSupplier pivotRotation, DoubleSupplier velocityRps, DoubleSupplier turretRotation, BooleanSupplier ready){
+    public Command shootContinuous(DoubleSupplier pivotRotation, DoubleSupplier velocityRps, DoubleSupplier turretRotation, BooleanSupplier ready){
         return Commands.parallel(hood.reachGoal(pivotRotation)
-            ,rightShooter.reachGoal(velocityRps)
-            ,leftShooter.reachGoal(velocityRps)
-            ,indexer.reachGoal(()-> ready.getAsBoolean() && readyToShootLeft() && readyToShootRight() ? indexSpeed : 0)
+            ,shooter.reachGoal(velocityRps)
+            ,indexer.reachGoal(()-> ready.getAsBoolean() && readyToShoot() ? indexSpeed : 0)
             ,spindex());
     }
 
@@ -200,9 +188,8 @@ public class BaseMechanism {
         indexer.setDefaultCommand(indexer.reachGoal(()->values[2]));
         spindexer.setDefaultCommand(spindexer.reachGoal(()->values[3]));
         hood.setDefaultCommand(hood.reachGoal(()->values[4]));
-        leftShooter.setDefaultCommand(leftShooter.reachGoal(()->values[5]));
-        rightShooter.setDefaultCommand(rightShooter.reachGoal(()->values[6]));
-        DoubleEntry[] defaultSetters = SendableConsumer.createSendableChooser("Defaults",new String[]{"arm","intake","indexer","spindexer","hood","leftShooter","rightShooter"}, new double[]{0,0,0,0,0,0,0});
+        shooter.setDefaultCommand(shooter.reachGoal(()->values[5]));
+        DoubleEntry[] defaultSetters = SendableConsumer.createSendableChooser("Defaults",new String[]{"arm","intake","indexer","spindexer","hood","shooter"}, new double[]{0,0,0,0,0,0});
         SendableConsumer.checker(defaultSetters, new DoubleConsumer[]{
             (i)->values[0] = i
             ,(i)->values[1] = i
@@ -210,7 +197,6 @@ public class BaseMechanism {
             ,(i)->values[3] = i
             ,(i)->values[4] = i
             ,(i)->values[5] = i
-            ,(i)->values[6] = i
         });
     }
 
@@ -225,7 +211,6 @@ public class BaseMechanism {
 
     public void periodic(){
         hoodCorrect.accept(hood.withinBounds());
-        leftShooterCorrect.accept(leftShooter.withinBounds());
-        rightShooterCorrect.accept(rightShooter.withinBounds());
+        shooterCorrect.accept(shooter.withinBounds());
     }
 }

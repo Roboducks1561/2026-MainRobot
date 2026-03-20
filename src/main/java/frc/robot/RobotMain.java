@@ -79,15 +79,14 @@ public class RobotMain extends RobotContainer {
     .getStructTopic("Base", Pose2d.struct).publish();
 
   private final Arm arm = new Arm();
-  private final Indexer leftIndexer = new Indexer();
+  private final Indexer indexer = new Indexer();
   private final Spindexer spindexer = new Spindexer();
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
-  private final Shooter leftShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_LEFT_ID, ShooterConstants.talonFXConfigurationLeft);
-  private final Shooter rightShooter = new Shooter(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID, ShooterConstants.talonFXConfigurationRight);
+  private final Shooter shooter = new Shooter();
   // private final Turret turret = new Turret();
 
-  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, leftShooter, rightShooter, spindexer, hood, drivetrain);
+  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, indexer, shooter, spindexer, hood, drivetrain);
   private final GameState gameState = new GameState(commandMechanism, driverController);
 
   // private final ObjectDetection objectDetection = new ObjectDetection("Test",

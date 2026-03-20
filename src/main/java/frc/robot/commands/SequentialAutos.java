@@ -34,8 +34,7 @@ public class SequentialAutos {
         swerveDrive.getAutoConsumer();
 
         NamedCommands.registerCommand("shoot", shoot().finallyDo(()->{
-            commandMechanism.leftShooter.setVelocity(0);
-            commandMechanism.rightShooter.setVelocity(0);
+            commandMechanism.shooter.setVelocity(0);
             commandMechanism.indexer.setVelocity(0);
         }));
         NamedCommands.registerCommand("shootStatic", shootStatic());

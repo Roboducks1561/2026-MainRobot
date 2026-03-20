@@ -48,7 +48,7 @@ public class Indexer extends SubsystemBase{
             // canRange = new DigitalInputSim();
         }else{
             rollerIO = new TalonRoller(new TalonFX(id, "Canivore"), IndexerConstants.talonFXConfiguration, true)
-                .withFollower(new TalonFX(IndexerConstants.INDEXER_MOTOR_RIGHT_ID, "Canivore"), true);
+                .withFollower(new TalonFX(IndexerConstants.INDEXER_MOTOR_RIGHT_ID, "Canivore"), false);
             // canRange = new CANRange(canRangeID, .1, "Canivore");
         }
     }
