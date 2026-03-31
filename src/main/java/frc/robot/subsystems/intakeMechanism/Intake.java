@@ -39,7 +39,8 @@ public class Intake extends SubsystemBase{
             // colorSensor = new DigitalInputSim();
             // motorStrain = new DigitalInputSim();
         }else{
-            intakeIO = new TalonRoller(new TalonFX(IntakeConstants.INTAKE_MOTOR_ID), IntakeConstants.talonFXConfiguration, true);
+            intakeIO = new TalonRoller(new TalonFX(IntakeConstants.INTAKE_MOTOR_ID), IntakeConstants.talonFXConfiguration, true)
+                .withFollower(new TalonFX(IntakeConstants.INTAKE_MOTOR_ID2), true);
             // colorSensor = new ColorSensor(Port.kOnboard);
             // ((ColorSensor)colorSensor).assignBooleanSupplier(()->{
             //     RawColor col = ((ColorSensor)colorSensor).getColor();

@@ -41,17 +41,18 @@ public class RobotTest extends RobotContainer{
 
 
   private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
   
   private final SwerveDrive drivetrain = new SwerveDrive();
 
   private final Arm arm = new Arm();
-  private final Indexer leftIndexer = new Indexer();
+  private final Indexer indexer = new Indexer();
   private final Spindexer spindexer = new Spindexer();
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
   private final Shooter shooter = new Shooter();
 
-  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, leftIndexer, shooter, spindexer, hood, drivetrain);
+  private final CommandMechanism commandMechanism = new CommandMechanism(arm, intake, indexer, shooter, spindexer, hood, drivetrain);
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -72,13 +73,19 @@ public class RobotTest extends RobotContainer{
       }
     }));
 
-    SysIDGenerator idGenerator = SysIDGenerator.flywheelSysID(shooter, shooter.getMotor());
-    driverController.a().onTrue(idGenerator.sysIdDynamic(Direction.kForward));
-    driverController.b().onTrue(idGenerator.sysIdDynamic(Direction.kReverse));
-    driverController.x().onTrue(idGenerator.sysIdQuasistatic(Direction.kForward));
-    driverController.y().onTrue(idGenerator.sysIdQuasistatic(Direction.kReverse));
+    // SysIDGenerator idGenerator = SysIDGenerator.flywheelSysID(shooter, shooter.getMotor());
+    // driverController.a().onTrue(idGenerator.sysIdDynamic(Direction.kForward));
+    // driverController.b().onTrue(idGenerator.sysIdDynamic(Direction.kReverse));
+    // driverController.x().onTrue(idGenerator.sysIdQuasistatic(Direction.kForward));
+    // driverController.y().onTrue(idGenerator.sysIdQuasistatic(Direction.kReverse));
     // driverController.a().onTrue(drivetrain.brake().withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // driverController.b().whileTrue(Commands.defer(()->drivetrain.rotateTo(GameData.getHubPose2d(), 5), Set.of(drivetrain)));
+    
+    commandMechanism.setHopperPos(()->(operatorController.getRawAxis(3)+1)/2);
+
+    driverController.leftBumper().whileTrue(commandMechanism.intake());
+
+    driverController.rightBumper().whileTrue(indexer.reachGoal(40).alongWith(spindexer.reachGoal(20)));
     // driverController.rightBumper().whileTrue(leftIndexer.reachGoal(10).alongWith(rightIndexer.reachGoal(-10)).alongWith(spindexer.reachGoal(10)));
     // driverController.leftBumper().whileTrue(arm.reachGoal(.22).alongWith(intake.reachGoal(20)));
     // driverController.rightTrigger().whileTrue(leftShooter.reachGoal(90).alongWith(rightShooter.reachGoal(90)));

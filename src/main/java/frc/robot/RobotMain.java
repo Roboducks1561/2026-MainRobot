@@ -129,8 +129,8 @@ public class RobotMain extends RobotContainer {
     // operatorController.button(5).whileTrue(commandMechanism.setSpindexNegative());
     operatorController.button(7).whileTrue((commandMechanism.spindexer.reachGoal(-10).alongWith(commandMechanism.indexer.reachGoal(-10))).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // operatorController.button(13).whileTrue(commandMechanism.intake.reachGoal(10).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    operatorController.button(6).whileTrue(commandMechanism.arm.setVoltage(2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    operatorController.button(11).whileTrue(commandMechanism.arm.setVoltage(8).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // operatorController.button(6).whileTrue(commandMechanism.arm.setVoltage(2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // operatorController.button(11).whileTrue(commandMechanism.arm.setVoltage(8).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // driverController.leftBumper().whileTrue(Commands.defer(()->drivetrain.toArcWhilePoint(GameData.getHubPose3d().toPose2d(), GameData.getHubPose3d().toPose2d(),2,5,5),Set.of(drivetrain)));
     // driverController.rightBumper().whileTrue(Commands.defer(()->drivetrain.pointWhileDrive(GameData.getHubPose3d().toPose2d(), driverController, 5,1,5,1), Set.of(drivetrain)));
   }

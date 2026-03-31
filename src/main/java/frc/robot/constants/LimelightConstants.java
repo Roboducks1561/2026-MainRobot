@@ -16,7 +16,7 @@ public class LimelightConstants {
         new Transform3d(new Translation3d(-0.261,-0.311, 0.242), new Rotation3d(0, Units.degreesToRadians(47.718), Units.degreesToRadians(-180)));
     public static final String FR_LIMELIGHT_NAME = "limelight-rfront";
     public static final Transform3d FR_LIMELIGHT_CAMERA_TRANSFORM =
-        new Transform3d(new Translation3d(-0.085,0.252, 0.519), new Rotation3d(0, Units.degreesToRadians(28.859), Units.degreesToRadians(0)));
+        new Transform3d(new Translation3d(-0.074549,0.22345, 0.550291), new Rotation3d(0, Units.degreesToRadians(28.859), Units.degreesToRadians(0)));
 
     public static final String FL_LIMELIGHT_NAME = "limelight-lfront";
     public static final Transform3d FL_LIMELIGHT_CAMERA_TRANSFORM =

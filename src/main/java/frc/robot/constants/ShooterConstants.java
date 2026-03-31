@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class ShooterConstants {
     public static final int SHOOTER_MOTOR_LEFT_ID = 21;
-    public static final int SHOOTER_MOTOR_RIGHT_ID = 23;
+    public static final int SHOOTER_MOTOR_RIGHT_ID = 22;
     // Add 0.25 V output to overcome static friction
 
     //Left
-    public static final double lS = .265; // An error of 1 rps results in 0.11 V output
-    public static final double lV = .12; // A velocity target of 1 rps results in 0.12 V output
+    public static final double lS = .27; // An error of 1 rps results in 0.11 V output
+    public static final double lV = .122; // A velocity target of 1 rps results in 0.12 V output
     public static final double lA = 0; // An acceleration of 1 rps/s requires 0.01 V output
     public static final double lP = 0; // This will need to be tuned after feedforward
     public static final double lI = 0; // For flywheels, this should be 0
@@ -59,7 +59,7 @@ public class ShooterConstants {
         talonFXConfigurationLeft.Feedback.SensorToMechanismRatio = SHOOTER_SENSOR_TO_MECHANISM_RATIO;
 
         talonFXConfigurationLeft.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        talonFXConfigurationLeft.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        talonFXConfigurationLeft.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         // set Motion Magic Velocity settings
         MotionMagicConfigs motionMagicConfigs = talonFXConfigurationLeft.MotionMagic;

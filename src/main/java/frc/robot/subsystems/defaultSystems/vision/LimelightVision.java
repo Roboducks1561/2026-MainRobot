@@ -18,8 +18,8 @@ public class LimelightVision implements VisionIO{
 
     @Override
     public PoseEstimate getPoseEstimate() {
-        // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-        return LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+        // return LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
     }
 
     @Override

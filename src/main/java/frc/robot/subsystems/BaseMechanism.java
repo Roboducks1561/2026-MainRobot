@@ -42,11 +42,11 @@ public class BaseMechanism {
     public final Shooter shooter;
     public final SwerveDrive swerveDrive;
 
-    protected final double intakeSpeed = 30;
-    protected final double indexSpeed = 20;
-    protected final double spinSpeed = 10;
+    protected final double intakeSpeed = 17;
+    protected final double indexSpeed = 30;
+    protected final double spinSpeed = 30;
 
-    protected final double armIntakePosition = .34;
+    protected final double armIntakePosition = 2.3;
     protected final double shooterDefaultSpeed = 5;
 
     protected DoubleSupplier hopperPos = ()->0;
@@ -82,7 +82,7 @@ public class BaseMechanism {
         shooterRequirements = Set.of(indexer, spindexer, hood, shooter);
         intakeRequirements = Set.of(intake, arm);
         // arm.setDefaultCommand(arm.reachGoal(()->DriverStation.isAutonomous() ? 0 : hopperPos.getAsDouble() * armIntakePosition));
-        arm.setDefaultCommand(Commands.either(arm.reachGoal(0).until(()->arm.getPosition() - .05 < 0).andThen(arm.setVoltage(-1.3)), arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition), ()->hopperPos.getAsDouble() == 0)
+        arm.setDefaultCommand(Commands.either(arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition).until(()->arm.withinBounds()).andThen(arm.stop()), arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition), ()->hopperPos.getAsDouble() == 1)
         .until(()->{
             boolean b = lastHopperPos != hopperPos.getAsDouble();
             if (b){
@@ -90,7 +90,7 @@ public class BaseMechanism {
             }
             return b;
         }));
-        intake.setDefaultCommand(intake.reachGoal(()->!invertedIntake ? intakeSpeed/24 : -intakeSpeed/2));
+        intake.setDefaultCommand(intake.reachGoal(()->!invertedIntake ? intakeSpeed/12 : -intakeSpeed/2));
         indexer.setDefaultCommand(indexer.reachGoal(0));
         spindexer.setDefaultCommand(spindexer.reachGoal(()->!invertedSpindexer ? 0 : -spinSpeed));
         
@@ -103,7 +103,7 @@ public class BaseMechanism {
         Runtime.getRuntime().addShutdownHook(new Thread(notifier::close));
 
         zeroSetter();
-        defaultSetter();
+        // defaultSetter();
     }
 
     public boolean readyToShoot(){
@@ -122,7 +122,7 @@ public class BaseMechanism {
     public Command stopIntake(){
         return pulseIntake().withTimeout(.5).andThen(
             Commands.parallel(pulseIntake()
-            ,arm.reachGoal(0).until(()->arm.getPosition()-.1 < 0).andThen(arm.setVoltage(-1.3))));
+            ,arm.reachGoal(0)));
     }
 
     public Command intake(){

@@ -113,7 +113,7 @@ public class Hood extends SubsystemBase {
   }
 
   public boolean withinBounds(){
-    return Math.abs(getTarget() - getPosition()) < maxError;
+    return true;//Math.abs(getTarget() - getPosition()) < maxError;
   }
 
   public void setZero(){

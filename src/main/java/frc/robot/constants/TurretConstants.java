@@ -22,8 +22,8 @@ public class TurretConstants{
     public static final double MAX_TURRET_ANGLE_RAD = Units.rotationsToRadians(.5676);
     public static final double MIN_TURRET_ANGLE_RAD = Units.rotationsToRadians(-.5676);
 
-    public static final int TURRET_MOTOR_ID = 20;
-    public static final int TURRET_ENCODER_ID = 20;
+    public static final int TURRET_MOTOR_ID = 52;
+    public static final int TURRET_ENCODER_ID = 52;
 
     public static final double kS = 0;
     public static final double kV = 0;
@@ -94,7 +94,7 @@ public class TurretConstants{
 
         talonFXConfiguration.CurrentLimits = currentLimits;
 
-        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     }
 
     public static final DCMotor gearbox = DCMotor.getFalcon500(1);

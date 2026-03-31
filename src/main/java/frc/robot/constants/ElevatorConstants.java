@@ -91,7 +91,7 @@ public class ElevatorConstants{
 
         talonFXConfiguration.CurrentLimits = currentLimits;
 
-        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     }
 
     public static final DCMotor gearbox = DCMotor.getFalcon500(1);

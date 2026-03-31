@@ -24,7 +24,7 @@ public class GameData {
     public static final double rimHeight = 1.8288;
     public static final double rimRadius = .612;
 
-    public static final Pose3d scorePose3d = new Pose3d(4.637,fieldSizeY/2 + .15,funnelHeight, new Rotation3d());
+    public static final Pose3d scorePose3d = new Pose3d(4.637,fieldSizeY/2 - .2,funnelHeight, new Rotation3d());
     public static final Pose2d scorePose2d = scorePose3d.toPose2d();
 
     public static final Pose2d defaultShootPosition = new Pose2d(3.7,0.662,Rotation2d.fromDegrees(66));

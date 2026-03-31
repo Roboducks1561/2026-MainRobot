@@ -13,10 +13,11 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 12;
+    public static final int INTAKE_MOTOR_ID2 = 13;
     // Add 0.25 V output to overcome static friction
 
-    public static final double kS = .45; // An error of 1 rps results in 0.11 V output
-    public static final double kV = .42; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kS = .6; // An error of 1 rps results in 0.11 V output
+    public static final double kV = .4; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0; // An acceleration of 1 rps/s requires 0.01 V output
     public static final double kP = 0; // This will need to be tuned after feedforward
     public static final double kI = 0; // For flywheels, this should be 0
@@ -25,14 +26,14 @@ public class IntakeConstants {
     public static final double INTAKE_SENSOR_TO_MECHANISM_RATIO = 3.49056;
 
     /* Intake Current Limiting */
-    public static final int INTAKE_CURRENT_LIMIT = 30;
+    public static final int INTAKE_CURRENT_LIMIT = 90;
     public static final int INTAKE_SUPPLY_CURRENT_THRESHOLD = 65;
-    public static final int INTAKE_CURRENT_THRESHOLD = 65;
+    public static final int INTAKE_CURRENT_THRESHOLD = 90;
     public static final double INTAKE_CURRENT_THRESHOLD_TIME = 0.1;
     public static final boolean INTAKE_ENABLE_CURRENT_LIMIT = true;
 
     public static final boolean INTAKE_STATOR_CURRENT_LIMIT_ENABLE = true;
-	public static final double INTAKE_STATOR_CURRENT_LIMIT = 60;
+	public static final double INTAKE_STATOR_CURRENT_LIMIT = 120;
 
 
     public static final TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration();
@@ -48,7 +49,7 @@ public class IntakeConstants {
 
         talonFXConfiguration.Feedback.SensorToMechanismRatio = IntakeConstants.INTAKE_SENSOR_TO_MECHANISM_RATIO;
 
-        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        talonFXConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         // set Motion Magic Velocity settings
         talonFXConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;

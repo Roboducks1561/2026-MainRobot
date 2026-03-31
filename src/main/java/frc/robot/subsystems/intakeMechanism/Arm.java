@@ -59,7 +59,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void setPosition(double position){
-    armIO.setPosition(MathUtil.clamp(position, 0, .4));
+    armIO.setPosition(MathUtil.clamp(position, 0, 3));
   }
 
   /**

@@ -12,7 +12,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class IndexerConstants {
-    public static final int INDEXER_MOTOR_LEFT_ID = 22;
+    public static final int INDEXER_MOTOR_LEFT_ID = 23;
     public static final int INDEXER_MOTOR_RIGHT_ID = 24;
     // Add 0.25 V output to overcome static friction
 
