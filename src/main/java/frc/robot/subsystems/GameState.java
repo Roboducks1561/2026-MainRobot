@@ -65,9 +65,14 @@ public class GameState {
     }
 
     private Command shooting(){
-        return Commands.either(commandMechanism.shootDynamic(()->-driverController.getLeftY(), ()->-driverController.getLeftX()).unless(()->!shootingPeriod()).until(()->!shootingPeriod())
+        return Commands.either(commandMechanism.shootStatic().unless(()->!shootingPeriod()).until(()->!shootingPeriod())
             ,commandMechanism.passDynamic(()->passingLeft,()->-driverController.getLeftY(), ()->-driverController.getLeftX()), ()->shooting);
     }
+
+    // private Command shooting(){
+    //     return Commands.either(commandMechanism.shootDynamic(()->-driverController.getLeftY(), ()->-driverController.getLeftX()).unless(()->!shootingPeriod()).until(()->!shootingPeriod())
+    //         ,commandMechanism.passDynamic(()->passingLeft,()->-driverController.getLeftY(), ()->-driverController.getLeftX()), ()->shooting);
+    // }
 
     public Command intake(){
         return commandMechanism.intake();

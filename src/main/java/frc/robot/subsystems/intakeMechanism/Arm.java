@@ -23,6 +23,7 @@ import frc.robot.Robot;
 import frc.robot.constants.ArmConstants;
 import frc.robot.subsystems.defaultSystems.position.PositionIO;
 import frc.robot.subsystems.defaultSystems.position.SimArm;
+import frc.robot.subsystems.defaultSystems.position.SimElevator;
 import frc.robot.subsystems.defaultSystems.position.TalonPosition;
 
 
@@ -49,7 +50,7 @@ public class Arm extends SubsystemBase {
   /** Subsystem constructor. */
   public Arm() {
     if (Robot.isSimulation()){
-      armIO = new SimArm(ArmConstants.singleJointedArmSim, new PIDController(50, 0, 3));
+      armIO = new SimElevator(ArmConstants.singleJointedArmSim, new PIDController(50, 0, 3));
     }else{
       armIO = new TalonPosition(
         new TalonFX(ArmConstants.ARM_MOTOR_LEFT_ID)
@@ -125,10 +126,11 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic(){
+    double meterRadius = .24;
     // armPublisher.accept(new Pose3d());
-    armPublisher.accept(new Pose3d(0.2,0, 0.15,new Rotation3d(0,Units.rotationsToRadians(getPosition()),0)));
-    double meterRadius = .172;
-    hopperPublisher.accept(new Pose3d(Math.sin(Units.rotationsToRadians(getPosition()))*meterRadius,0, 0,new Rotation3d(0,0,0)));
+    armPublisher.accept(new Pose3d(meterRadius*getPosition()/3,0, 0,new Rotation3d(0,0,0)));
+    
+    hopperPublisher.accept(new Pose3d(meterRadius*getPosition()/3,0, 0,new Rotation3d(0,0,0)));
     armRotations.accept(getPosition());
     armTarget.accept(getTarget());
   }

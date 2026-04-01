@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.MomentOfInertia;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class ArmConstants{
@@ -106,15 +107,15 @@ public class ArmConstants{
 
     public static final DCMotor gearbox = DCMotor.getFalcon500(1);
 
-    public static final SingleJointedArmSim singleJointedArmSim =
-      new SingleJointedArmSim(
+    public static final ElevatorSim singleJointedArmSim =
+      new ElevatorSim(
           gearbox,
           ARM_ROTOR_TO_SENSOR_RATIO * ARM_SENSOR_TO_MECHANISM_RATIO,
-          SingleJointedArmSim.estimateMOI(ARM_LENGTH_METERS, ARM_WEIGHT_KG),
+          3,
           ARM_LENGTH_METERS,
           MIN_ARM_ANGLE_RAD,
           MAX_ARM_ANGLE_RAD,
-          true,
+          false,
           Units.rotationsToRadians(0)
         );
 }

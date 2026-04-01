@@ -76,8 +76,8 @@ public class ShooterConstants {
         talonFXConfigurationLeft.CurrentLimits = currentLimits;
     }
 
-    public static final DCMotor gearbox = DCMotor.getFalcon500(1);
+    public static final DCMotor gearbox = DCMotor.getFalcon500(2);
 
-    public static final FlywheelSim shooterSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(gearbox,1,10),
+    public static final FlywheelSim shooterSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(gearbox,.01,1),
      gearbox);
 }

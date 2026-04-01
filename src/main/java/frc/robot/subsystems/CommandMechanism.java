@@ -40,8 +40,10 @@ public class CommandMechanism extends BaseMechanism{
     private double[] dynamicScoringData = new double[]{0,0,0};
     private double[] dynamicPassLeft = new double[]{0,0,0};
     private double[] dynamicPassRight = new double[]{0,0,0};
-    private boolean interpolate = true;
+    private boolean interpolate = false;
     private final double maxAimError = .03;
+
+    private final double shootAngle = .06;
 
     protected final Animations animations;
 
@@ -57,8 +59,8 @@ public class CommandMechanism extends BaseMechanism{
 
         if (Robot.isSimulation()){
             Bootleg2026.addShooterSimulation(
-                ()->fromSwerveBase.plus(new Transform3d(0,0,0,new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition())),0)))
-                    ,()->rpsTomps(shooter.getVelocity()) * 1.07, "Fuel", "Intake");
+                ()->fromSwerveBase.plus(new Transform3d(0,0,0,new Rotation3d(0,Units.rotationsToRadians(.25-shootAngle),0)))
+                    ,()->rpsTomps(shooter.getVelocity()), "Fuel", "Intake");
             Bootleg2026.addShootRequirements("Intake", ()->{
                 boolean ready = shooter.getVelocity() > 1 && leftIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .15;
                 if (ready){
@@ -102,36 +104,23 @@ public class CommandMechanism extends BaseMechanism{
         return Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) < maxAimError;//Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) < maxAimError || Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) > .5 - maxAimError;//Robot.isSimulation() ? Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) < maxAimError : Math.abs(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations())) > .5 - maxAimError;
     }
 
-    public double mpsTorps(double mps){ 
-        return Robot.isSimulation() ? mps:mps;//mps*11 : mps*11;
-    }
-
     public double rpsTomps(double rps){
-        return Robot.isSimulation() ? rps:rps;//rps/11 : rps/11;
+        return Robot.isSimulation() ? rps/8 : rps/8;
     }
 
-    //TODO, likely the conversion of hood rotations to shoo rotations is not linear, so fix when physical robot is available.
-    public double hoodRotationsToShootRotations(double rotations){
-        return Robot.isSimulation() ? rotations:rotations;//rotations*1.2 + .02 : rotations*1.2 + .02;
-    }
-    // ax + b = y
-    // ay + b = x
-
-    // (x-b)/a = y
-
-    public double shootRotationsToHoodRotations(double rotations){
-        return Robot.isSimulation() ? rotations:rotations;//(rotations - .02)/1.2 : (rotations - .02)/1.2;
+    public double mpsToRps(double rps){
+        return Robot.isSimulation() ? rps*8 : rps*8;
     }
 
     public Command shootDefault(Supplier<double[]> dynamicScoringData, BooleanSupplier ready){
-        return shootContinuous(()->shootRotationsToHoodRotations(dynamicScoringData.get()[0])
-            ,()->mpsTorps(dynamicScoringData.get()[1])
+        return shootContinuous(()->dynamicScoringData.get()[0]
+            ,()->dynamicScoringData.get()[1]
             ,()->PoseEX.correctedRotation(dynamicScoringData.get()[2]-swerveDrive.getPose().getRotation().getRotations())
             , ready);
     }
 
     public Command shootStatic() {
-        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5)//.until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .01)).andThen(swerveDrive.brake())
+        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5).until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .02) && swerveDrive.getSpeeds().omegaRadiansPerSecond < .5).andThen(swerveDrive.brake())
             ,shootDefault(()->dynamicScoringData, ()->readyToShootHub()));
     }
 
@@ -161,22 +150,26 @@ public class CommandMechanism extends BaseMechanism{
     double lastLaunchLeft = 0;
     double lastLaunchRight = 0;
     public void commandPeriodic(){
-        dynamicScoringData = scoreMath.dynamicScore(GameData.getHubPose3d(), interpolate && !Robot.isSimulation()
-            ,hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD)), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
+        // dynamicScoringData = scoreMath.dynamicScore(GameData.getHubPose3d(), interpolate && !Robot.isSimulation()
+        //     ,hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD)), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
 
-        dynamicPassLeft = scoreMath.dynamicScore(GameData.getPassPose3d(true), interpolate && !Robot.isSimulation()
-            ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
-        dynamicPassRight = scoreMath.dynamicScore(GameData.getPassPose3d(false), interpolate && !Robot.isSimulation()
-            ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
+        // dynamicPassLeft = scoreMath.dynamicScore(GameData.getPassPose3d(true), interpolate && !Robot.isSimulation()
+        //     ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
+        // dynamicPassRight = scoreMath.dynamicScore(GameData.getPassPose3d(false), interpolate && !Robot.isSimulation()
+        //     ,Units.radiansToRotations(HoodConstants.MIN_HOOD_ANGLE_RAD), hoodRotationsToShootRotations(Units.radiansToRotations(HoodConstants.MAX_HOOD_ANGLE_RAD)), rpsTomps(100));
+        dynamicScoringData = scoreMath.staticScore(GameData.getHubPose3d(), interpolate, shootAngle, rpsTomps(100));
+        dynamicPassLeft = scoreMath.staticScore(GameData.getPassPose3d(true), interpolate, shootAngle, rpsTomps(100));
+        dynamicPassRight = scoreMath.staticScore(GameData.getPassPose3d(false), interpolate, shootAngle, rpsTomps(100));
+
         // System.out.println(PoseEX.correctedRotation(dynamicScoringData[2]-swerveDrive.getPose().getRotation().getRotations()));
-        if (interpolate){
-            dynamicScoringData = new double[]{hoodRotationsToShootRotations(dynamicScoringData[0]), rpsTomps(dynamicScoringData[1]), dynamicScoringData[2]};
-            dynamicPassLeft = new double[]{hoodRotationsToShootRotations(dynamicPassLeft[0]), rpsTomps(dynamicPassLeft[1]), dynamicPassLeft[2]};
-            dynamicPassRight = new double[]{hoodRotationsToShootRotations(dynamicPassRight[0]), rpsTomps(dynamicPassRight[1]), dynamicPassRight[2]};
+        if (!interpolate){
+            dynamicScoringData = new double[]{shootAngle, mpsToRps(dynamicScoringData[1])*1.2, dynamicScoringData[2]};
+            dynamicPassLeft = new double[]{shootAngle, mpsToRps(dynamicPassLeft[1])*1.2, dynamicPassLeft[2]};
+            dynamicPassRight = new double[]{shootAngle, mpsToRps(dynamicPassRight[1])*1.2, dynamicPassRight[2]};
         }
-        if (!Robot.isSimulation() && shooter.getVelocity() > 1 && indexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
+        if (shooter.getVelocity() > 1 && indexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
             lastLaunchLeft = Utils.getCurrentTimeSeconds();
-            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-hoodRotationsToShootRotations(hood.getPosition()*1.2 + .02)),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(shooter.getVelocity()/11));
+            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-shootAngle),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(shooter.getVelocity()));
         }
         // if (!Robot.isSimulation() && rightShooter.getVelocity() > 1 && rightIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchRight + .2){
         //     lastLaunchRight = Utils.getCurrentTimeSeconds();
