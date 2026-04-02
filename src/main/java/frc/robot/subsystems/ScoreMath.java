@@ -23,7 +23,7 @@ public class ScoreMath {
         this.swerveDrive = swerveDrive;
         this.turretTransform = turretTransform;
         SendableConsumer.checker(
-            SendableConsumer.createSendableChooser("interpolationTuning", new String[]{"hood additional", "shooter divisor"}, new double[]{0.0,1})
+            SendableConsumer.createSendableChooser("interpolationTuning", new String[]{"hood additional", "shooter divisor"}, new double[]{0.0,1.07})
         ,new DoubleConsumer[]{
             (i)->{additional = i;},
             (i)->{divisor = i;}

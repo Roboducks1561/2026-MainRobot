@@ -4,6 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "AvacadoOnly",
+    "Avacado & PeanutButter",
+    "Egg & Jam",
     "EggOnly",
     "OtherAvacado",
     "Pathplanner Paths",
@@ -12,7 +14,9 @@
     "SaltOnly",
     "ToastOnly"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Going To Run"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

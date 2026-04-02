@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.957279202279201,
-        "y": 3.569871794871795
+        "x": 6.099401709401709,
+        "y": 3.505270655270655
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.636908831908832,
-        "y": 2.032364672364673
+        "x": 7.77903133903134,
+        "y": 1.967763532763533
       },
       "isLocked": false,
       "linkedName": null
@@ -58,11 +58,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 46.50179252235934
   },
   "reversed": false,
-  "folder": "AvacadoPeanutButter",
+  "folder": "Avacado & PeanutButter",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.95484125387212

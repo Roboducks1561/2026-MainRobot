@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.042578347578347,
-        "y": 2.3682905982905993
+        "x": 7.572307692307692,
+        "y": 3.9316381766381774
       },
       "isLocked": false,
       "linkedName": null
@@ -20,15 +20,20 @@
         "y": 2.3682905982905993
       },
       "prevControl": {
-        "x": 2.98562678062678,
-        "y": 2.316609686609687
+        "x": 6.538689458689458,
+        "y": 2.1615669515669524
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
@@ -57,9 +62,9 @@
     "rotation": 41.21388796461841
   },
   "reversed": false,
-  "folder": "AvacadoPeanutButter",
+  "folder": "Avacado & PeanutButter",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 81.5449723228227
   },
   "useDefaultConstraints": true

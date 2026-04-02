@@ -121,7 +121,7 @@ public class BaseMechanism {
 
     public Command stopIntake(){
         return pulseIntake().withTimeout(.5).andThen(
-            Commands.parallel(pulseIntake()
+            Commands.parallel(intake.reachGoal(5)
             ,arm.reachGoal(0)));
     }
 

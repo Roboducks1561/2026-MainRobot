@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.419772079772079,
-        "y": 0.6111396011396026
+        "x": 2.7272222222222218,
+        "y": 2.2261680911680912
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.517991452991453,
-        "y": 0.5982193732193741
-      },
-      "isLocked": false,
-      "linkedName": "RightStartOut"
-    },
-    {
-      "anchor": {
-        "x": 6.097973684210526,
-        "y": 0.6218157894736851
-      },
-      "prevControl": {
-        "x": 4.426010076669595,
-        "y": 0.5666961101042042
-      },
-      "nextControl": {
-        "x": 7.545991228070175,
-        "y": 0.6695526315789482
+        "x": 3.727222222222224,
+        "y": 2.2261680911680912
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.231239316239316,
-        "y": 2.8721794871794875
+        "x": 7.352663817663816,
+        "y": 2.575014245014246
       },
       "prevControl": {
-        "x": 8.485835807467385,
-        "y": 0.4773812415654528
+        "x": 6.352663817663816,
+        "y": 2.575014245014246
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,8 +33,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "stopShooting",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
       "name": "intake",
-      "waypointRelativePos": 0.4833922261484035,
+      "waypointRelativePos": 0.42673869007426923,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -61,22 +51,22 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 101.41583952440708
-  },
-  "reversed": false,
-  "folder": "AvacadoOnly",
-  "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "reversed": false,
+  "folder": "Avacado & PeanutButter",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 35.537677791974346
+  },
+  "useDefaultConstraints": true
 }

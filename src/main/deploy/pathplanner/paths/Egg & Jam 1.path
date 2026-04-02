@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.419772079772079,
-        "y": 0.6111396011396026
+        "x": 4.42604761904762,
+        "y": 7.4038571428571425
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.517991452991453,
-        "y": 0.5982193732193741
+        "x": 5.426047619047618,
+        "y": 7.4038571428571425
       },
       "isLocked": false,
-      "linkedName": "RightStartOut"
+      "linkedName": "LeftStartOut"
     },
     {
       "anchor": {
-        "x": 6.097973684210526,
-        "y": 0.6218157894736851
+        "x": 8.282920227920226,
+        "y": 5.197820512820512
       },
       "prevControl": {
-        "x": 4.426010076669595,
-        "y": 0.5666961101042042
-      },
-      "nextControl": {
-        "x": 7.545991228070175,
-        "y": 0.6695526315789482
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.231239316239316,
-        "y": 2.8721794871794875
-      },
-      "prevControl": {
-        "x": 8.485835807467385,
-        "y": 0.4773812415654528
+        "x": 8.605925925925925,
+        "y": 7.9239886039886045
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "intake",
-      "waypointRelativePos": 0.4833922261484035,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -61,19 +45,19 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 101.41583952440708
+    "velocity": 1.0,
+    "rotation": -96.6325146151385
   },
   "reversed": false,
-  "folder": "AvacadoOnly",
+  "folder": "Egg & Jam",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

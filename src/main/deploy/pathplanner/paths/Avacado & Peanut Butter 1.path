@@ -69,11 +69,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 1.0,
     "rotation": 101.41583952440708
   },
   "reversed": false,
-  "folder": "AvacadoOnly",
+  "folder": "Avacado & PeanutButter",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

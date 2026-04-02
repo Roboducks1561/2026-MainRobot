@@ -23,7 +23,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 6.0
+                  "waitTime": 4.0
                 }
               },
               {
@@ -108,6 +108,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Going To Run",
   "choreoAuto": false
 }

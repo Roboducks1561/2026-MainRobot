@@ -45,7 +45,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "hopperShake"
+                        "name": "stopIntake"
                       }
                     }
                   ]
@@ -95,7 +95,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "hopperShake"
+                        "name": "stopIntake"
                       }
                     }
                   ]
@@ -108,6 +108,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Going To Run",
   "choreoAuto": false
 }

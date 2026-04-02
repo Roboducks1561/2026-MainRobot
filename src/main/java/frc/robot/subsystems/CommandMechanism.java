@@ -40,10 +40,10 @@ public class CommandMechanism extends BaseMechanism{
     private double[] dynamicScoringData = new double[]{0,0,0};
     private double[] dynamicPassLeft = new double[]{0,0,0};
     private double[] dynamicPassRight = new double[]{0,0,0};
-    private boolean interpolate = false;
+    private boolean interpolate = true;
     private final double maxAimError = .03;
 
-    private final double shootAngle = .06;
+    private final double shootAngle = .055;
 
     protected final Animations animations;
 
@@ -105,11 +105,11 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public double rpsTomps(double rps){
-        return Robot.isSimulation() ? rps/8 : rps/8;
+        return Robot.isSimulation() ? rps/6.8 : rps/6.8;
     }
 
     public double mpsToRps(double rps){
-        return Robot.isSimulation() ? rps*8 : rps*8;
+        return Robot.isSimulation() ? rps*6.8 : rps*6.8;
     }
 
     public Command shootDefault(Supplier<double[]> dynamicScoringData, BooleanSupplier ready){
@@ -120,7 +120,7 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public Command shootStatic() {
-        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5).until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .02) && swerveDrive.getSpeeds().omegaRadiansPerSecond < .5).andThen(swerveDrive.brake())
+        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5).until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .02) && swerveDrive.getSpeeds().omegaRadiansPerSecond < .05).andThen(swerveDrive.brake())
             ,shootDefault(()->dynamicScoringData, ()->readyToShootHub()));
     }
 
@@ -169,7 +169,7 @@ public class CommandMechanism extends BaseMechanism{
         }
         if (shooter.getVelocity() > 1 && indexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchLeft + .2){
             lastLaunchLeft = Utils.getCurrentTimeSeconds();
-            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-shootAngle),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(shooter.getVelocity()));
+            animations.addFlyingObject(swerveDrive.getPose(), fromSwerveBase.getTranslation(), new Rotation3d(0,Units.rotationsToRadians(.25-shootAngle),Units.rotationsToRadians(0)), swerveDrive.getSpeeds(), rpsTomps(shooter.getVelocity()/1.07));
         }
         // if (!Robot.isSimulation() && rightShooter.getVelocity() > 1 && rightIndexer.getVelocity() > 2 && Utils.getCurrentTimeSeconds() > lastLaunchRight + .2){
         //     lastLaunchRight = Utils.getCurrentTimeSeconds();

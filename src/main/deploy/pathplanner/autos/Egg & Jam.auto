@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Salt1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "pathName": "Egg & Jam 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Salt Avacado Fix1"
+            "pathName": "Egg & Jam 2"
           }
         },
         {
@@ -63,25 +57,63 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Salt Avacado Fix 2"
+            "pathName": "Egg & Jam 3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Avacado2"
+            "pathName": "Egg & Jam 4"
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "shootStatic"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootStatic"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopIntake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Egg & Jam 5"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Going To Run",
   "choreoAuto": false
 }

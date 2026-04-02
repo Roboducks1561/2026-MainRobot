@@ -3,57 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8435042735042737,
-        "y": 2.342450142450143
+        "x": 2.933945868945868,
+        "y": 5.714629629629631
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.843504273504274,
-        "y": 2.342450142450143
+        "x": 3.9417236467236467,
+        "y": 5.482065527065528
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.917216880341879,
-        "y": 2.4054362535612537
+        "x": 7.456025641025641,
+        "y": 5.365783475783476
       },
       "prevControl": {
-        "x": 4.890759328274021,
-        "y": 2.555261819772063
+        "x": 7.2843355095991305,
+        "y": 5.781801871163098
       },
       "nextControl": {
-        "x": 6.525769230769231,
-        "y": 2.316609686609687
+        "x": 8.127877492877492,
+        "y": 3.737834757834759
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.58522792022792,
-        "y": 3.221025641025642
+        "x": 6.060641025641026,
+        "y": 4.306324786324787
       },
       "prevControl": {
-        "x": 7.551061254811237,
-        "y": 2.9663286806467246
-      },
-      "nextControl": {
-        "x": 7.869472934472933,
-        "y": 5.3399430199430205
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.176923076923076,
-        "y": 3.4665099715099723
-      },
-      "prevControl": {
-        "x": 5.789316239316237,
-        "y": 4.836054131054132
+        "x": 7.081339031339031,
+        "y": 3.3114672364672373
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,30 +46,22 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.45,
+      "waypointRelativePos": 0.5117270788912545,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.1385927505330478,
-      "rotationDegrees": 0.0
-    },
-    {
-      "waypointRelativePos": 1.7206823027718594,
-      "rotationDegrees": 77.58738883408496
-    },
-    {
-      "waypointRelativePos": 2.616204690831563,
-      "rotationDegrees": -139.70543777074943
+      "waypointRelativePos": 1.1556503198294201,
+      "rotationDegrees": -107.27805395839859
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.6772451046590129,
-      "maxWaypointRelativePos": 3.0,
+      "minWaypointRelativePos": 0.7076299797434167,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.0,
-        "maxAcceleration": 5.0,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -95,17 +71,6 @@
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
-    {
-      "name": "hopperOut",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "stopIntake"
-        }
-      }
-    },
     {
       "name": "stopShooting",
       "waypointRelativePos": 0,
@@ -118,8 +83,19 @@
       }
     },
     {
+      "name": "hopperOut",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "hopperOut"
+        }
+      }
+    },
+    {
       "name": "intake",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.3241053342336317,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -131,7 +107,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -139,13 +115,13 @@
   },
   "goalEndState": {
     "velocity": 1.0,
-    "rotation": -99.7066524093397
+    "rotation": 108.43494882292208
   },
   "reversed": false,
-  "folder": "Avacado & PeanutButter",
+  "folder": "Egg & Jam",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 45.43736386752074
+    "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

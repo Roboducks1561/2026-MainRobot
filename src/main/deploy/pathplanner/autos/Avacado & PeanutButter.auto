@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Avacado1"
+            "pathName": "Avacado & Peanut Butter 1"
           }
         },
         {
@@ -23,7 +23,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 4.0
                 }
               },
               {
@@ -33,9 +33,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "stopIntake"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopIntake"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -70,9 +83,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "stopIntake"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopIntake"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -81,13 +107,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Avacado & Peanut Butter 3"
+            "pathName": "Avacado & Peanut Butter 5"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Going To Run",
   "choreoAuto": false
 }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.138,
-        "y": 0.662
+        "x": 6.0864814814814805,
+        "y": 4.3967663817663825
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.996583333333334,
-        "y": 1.0116666666666674
+        "x": 6.6291310541310535,
+        "y": 5.805071225071226
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.34,
-        "y": 0.796
+        "x": 2.8435042735042737,
+        "y": 5.52082621082621
       },
       "prevControl": {
-        "x": 1.701699735449737,
-        "y": 1.250699735449733
+        "x": 3.088988603988604,
+        "y": 5.701709401709402
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "OutpostPose"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "hopperOut",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -47,20 +47,20 @@
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 400.0,
-    "maxAngularAcceleration": 400.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -90.0
+    "velocity": 0.0,
+    "rotation": -35.97687028710934
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Egg & Jam",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 66.49001340848771
+    "velocity": 1.0,
+    "rotation": 104.56027561935684
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

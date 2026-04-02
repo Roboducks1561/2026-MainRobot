@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.419772079772079,
-        "y": 0.6111396011396026
+        "x": 2.636780626780627,
+        "y": 5.482065527065528
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.517991452991453,
-        "y": 0.5982193732193741
-      },
-      "isLocked": false,
-      "linkedName": "RightStartOut"
-    },
-    {
-      "anchor": {
-        "x": 6.097973684210526,
-        "y": 0.6218157894736851
-      },
-      "prevControl": {
-        "x": 4.426010076669595,
-        "y": 0.5666961101042042
-      },
-      "nextControl": {
-        "x": 7.545991228070175,
-        "y": 0.6695526315789482
+        "x": 3.636780626780627,
+        "y": 5.482065527065528
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.231239316239316,
-        "y": 2.8721794871794875
+        "x": 7.456025641025641,
+        "y": 5.40454415954416
       },
       "prevControl": {
-        "x": 8.485835807467385,
-        "y": 0.4773812415654528
+        "x": 6.456025641025641,
+        "y": 5.40454415954416
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,8 +33,30 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "stopShooting",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stopShooting"
+        }
+      }
+    },
+    {
+      "name": "hopperOut",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "hopperOut"
+        }
+      }
+    },
+    {
       "name": "intake",
-      "waypointRelativePos": 0.4833922261484035,
+      "waypointRelativePos": 0.4240378122889892,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -61,22 +67,22 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 101.41583952440708
+    "velocity": 0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "AvacadoOnly",
+  "folder": "Egg & Jam",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
