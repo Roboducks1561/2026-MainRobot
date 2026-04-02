@@ -1,0 +1,126 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.8435042735042737,
+        "y": 2.342450142450143
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.843504273504274,
+        "y": 2.342450142450143
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.917216880341879,
+        "y": 2.4054362535612537
+      },
+      "prevControl": {
+        "x": 4.890759328274021,
+        "y": 2.555261819772063
+      },
+      "nextControl": {
+        "x": 6.525769230769231,
+        "y": 2.316609686609687
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.58522792022792,
+        "y": 3.221025641025642
+      },
+      "prevControl": {
+        "x": 7.551061254811237,
+        "y": 2.9663286806467246
+      },
+      "nextControl": {
+        "x": 7.869472934472933,
+        "y": 5.3399430199430205
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.176923076923076,
+        "y": 3.4665099715099723
+      },
+      "prevControl": {
+        "x": 5.789316239316237,
+        "y": 4.836054131054132
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.45,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.1385927505330478,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.7206823027718594,
+      "rotationDegrees": 77.58738883408496
+    },
+    {
+      "waypointRelativePos": 2.616204690831563,
+      "rotationDegrees": -139.70543777074943
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "hopperOut",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stopIntake"
+        }
+      }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 0.9,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -99.7066524093397
+  },
+  "reversed": false,
+  "folder": "AvacadoPeanutButter",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 45.43736386752074
+  },
+  "useDefaultConstraints": false
+}

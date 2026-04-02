@@ -1,0 +1,71 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.957279202279201,
+        "y": 3.569871794871795
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.636908831908832,
+        "y": 2.032364672364673
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.7918233618233614,
+        "y": 2.3036894586894596
+      },
+      "prevControl": {
+        "x": 3.36031339031339,
+        "y": 2.5233333333333348
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7420042643923238,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "hopperOut",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "hopperOut"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 46.50179252235934
+  },
+  "reversed": false,
+  "folder": "AvacadoPeanutButter",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.95484125387212
+  },
+  "useDefaultConstraints": true
+}
