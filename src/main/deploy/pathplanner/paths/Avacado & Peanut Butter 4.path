@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.7918233618233614,
-        "y": 2.3036894586894596
+        "x": 2.404216524216524,
+        "y": 2.0840455840455845
       },
       "prevControl": {
-        "x": 3.36031339031339,
-        "y": 2.5233333333333348
+        "x": 2.8822649572649572,
+        "y": 2.4716524216524216
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +30,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7420042643923238,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -167.50398895556253
+    },
+    {
+      "waypointRelativePos": 0.6417910447761223,
+      "rotationDegrees": -179.15427822750627
     }
   ],
   "constraintZones": [],
@@ -45,6 +49,17 @@
         "type": "named",
         "data": {
           "name": "hopperOut"
+        }
+      }
+    },
+    {
+      "name": "shootSpeedup",
+      "waypointRelativePos": 0.5455773126266052,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shootSpeedup"
         }
       }
     }

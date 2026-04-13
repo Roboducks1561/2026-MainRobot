@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.231239316239316,
-        "y": 2.846339031339032
+        "x": 8.218319088319088,
+        "y": 3.505270655270655
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.572307692307692,
-        "y": 3.9316381766381774
+        "y": 1.5672364672364676
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.67554131054131,
-        "y": 2.3682905982905993
+        "x": 2.98562678062678,
+        "y": 1.2829914529914526
       },
       "prevControl": {
-        "x": 6.538689458689458,
-        "y": 2.1615669515669524
+        "x": 2.0553703703703707,
+        "y": 3.182264957264957
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,10 +47,21 @@
           "name": "hopperOut"
         }
       }
+    },
+    {
+      "name": "shootSpeedup",
+      "waypointRelativePos": 0.469952734638754,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shootSpeedup"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -59,7 +70,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 41.21388796461841
+    "rotation": 59.393592968490516
   },
   "reversed": false,
   "folder": "Avacado & PeanutButter",
@@ -67,5 +78,5 @@
     "velocity": 2.0,
     "rotation": 81.5449723228227
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

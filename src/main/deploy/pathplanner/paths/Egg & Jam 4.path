@@ -8,27 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.6291310541310535,
-        "y": 5.805071225071226
+        "x": 6.654971509971509,
+        "y": 6.218518518518518
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.8435042735042737,
-        "y": 5.52082621082621
+        "x": 2.287934472934473,
+        "y": 5.805071225071226
       },
       "prevControl": {
-        "x": 3.088988603988604,
-        "y": 5.701709401709402
+        "x": 2.8176638176638176,
+        "y": 5.22366096866097
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4498933901918974,
+      "rotationDegrees": 176.25872087866153
+    },
+    {
+      "waypointRelativePos": 0.6353944562899764,
+      "rotationDegrees": -173.2431458100315
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
@@ -40,6 +49,17 @@
         "type": "named",
         "data": {
           "name": "hopperOut"
+        }
+      }
+    },
+    {
+      "name": "shootSpeedup",
+      "waypointRelativePos": 0.4537474679270741,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shootSpeedup"
         }
       }
     }

@@ -41,6 +41,17 @@ public class SendableConsumer {
         return entry;
     }
 
+    public static DoubleEntry[] setSendableChooser(String subTable, String[] items, double[] vals){
+        DoubleEntry[] entry = new DoubleEntry[items.length];
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("Tunables").getSubTable(subTable);
+        System.out.println(vals[1]+"   "+items[1]);
+        for (int i = 0; i < Math.min(items.length, vals.length); i++){
+            entry[i] = table.getDoubleTopic(items[i]).getEntry(vals[i]);
+            entry[i].accept(vals[i]);
+        }
+        return entry;
+    }
+
     public static BooleanEntry createSendableChooser(String id, boolean initVal){
         NetworkTable table = NetworkTableInstance.getDefault().getTable("Tunables");
         

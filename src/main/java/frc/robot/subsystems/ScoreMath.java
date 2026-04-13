@@ -9,6 +9,9 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.util.MultiLinearInterpolator;
 import frc.robot.util.PoseEX;
@@ -22,12 +25,15 @@ public class ScoreMath {
     public ScoreMath(SwerveDrive swerveDrive, Transform3d turretTransform){
         this.swerveDrive = swerveDrive;
         this.turretTransform = turretTransform;
-        SendableConsumer.checker(
-            SendableConsumer.createSendableChooser("interpolationTuning", new String[]{"hood additional", "shooter divisor"}, new double[]{0.0,1.07})
-        ,new DoubleConsumer[]{
-            (i)->{additional = i;},
-            (i)->{divisor = i;}
-        });
+        
+        
+        
+        // SendableConsumer.checker(
+        //     SendableConsumer.createSendableChooser("interpolationTuning", new String[]{"hood additional", "shooter multiplier"}, new double[]{0.0,1})
+        // ,new DoubleConsumer[]{
+        //     (i)->{additional = i;},
+        //     (i)->{divisor = i;}
+        // });
     }
 
     // /**
@@ -241,7 +247,7 @@ public class ScoreMath {
 
 
 
-    private double divisor = 1;
+    public static double divisor = .90;
     private double additional = 0.00;
 
     //tortured poets dept is .98
@@ -266,7 +272,7 @@ public class ScoreMath {
             {4.08, 0.0, 72},
             {4.2, 0.0, 75},
             {4.4, 0.0, 78},
-            {6, 0.0, 86},
+            {6, 0.0, 78},
             // {4.08, 0.0, 72},
 
             // {3.6, 0.0, 66},
@@ -352,6 +358,6 @@ public class ScoreMath {
     public double[] interpolate(Pose3d turretPose, Pose3d scorePose){
         double dist = PoseEX.getDistanceFromPoseMeters(turretPose.toPose2d(), scorePose.toPose2d());
         double[] interpolated = distToSpeedAndAngle.get(dist);
-        return new double[]{interpolated[0] + additional, interpolated[1]/divisor, targetRotation(turretPose.toPose2d(), scorePose.toPose2d())};
+        return new double[]{interpolated[0] + additional, interpolated[1]*divisor, targetRotation(turretPose.toPose2d(), scorePose.toPose2d())};
     }
 }

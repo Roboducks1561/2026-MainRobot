@@ -7,6 +7,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.BooleanEntry;
@@ -50,6 +51,7 @@ public class BaseMechanism {
     protected final double shooterDefaultSpeed = 5;
 
     protected DoubleSupplier hopperPos = ()->0;
+    protected DoubleSupplier shooterDefault = ()->0;
     protected double lastHopperPos = 0;
     protected boolean invertedIntake = false;
     protected boolean invertedSpindexer = false;
@@ -82,7 +84,7 @@ public class BaseMechanism {
         shooterRequirements = Set.of(indexer, spindexer, hood, shooter);
         intakeRequirements = Set.of(intake, arm);
         // arm.setDefaultCommand(arm.reachGoal(()->DriverStation.isAutonomous() ? 0 : hopperPos.getAsDouble() * armIntakePosition));
-        arm.setDefaultCommand(Commands.either(arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition).until(()->arm.withinBounds()).andThen(arm.stop()), arm.reachGoal(()->hopperPos.getAsDouble() * armIntakePosition), ()->hopperPos.getAsDouble() == 1)
+        arm.setDefaultCommand(Commands.either(arm.reachGoal(()->MathUtil.clamp(hopperPos.getAsDouble(),0.2,1.0) * armIntakePosition).until(()->arm.withinBounds()).andThen(arm.stop()), arm.reachGoal(()->MathUtil.clamp(hopperPos.getAsDouble(),0.2,1.0) * armIntakePosition), ()->hopperPos.getAsDouble() == 1)
         .until(()->{
             boolean b = lastHopperPos != hopperPos.getAsDouble();
             if (b){
@@ -95,7 +97,7 @@ public class BaseMechanism {
         spindexer.setDefaultCommand(spindexer.reachGoal(()->!invertedSpindexer ? 0 : -spinSpeed));
         
         hood.setDefaultCommand(hood.reachGoal(0));
-        shooter.setDefaultCommand(shooter.reachGoal(0));
+        shooter.setDefaultCommand(shooter.reachGoal(()->shooterDefault.getAsDouble()));
 
         notifier = new Notifier(this :: periodic);
         notifier.setName("BaseMechanism Periodic");
@@ -120,9 +122,8 @@ public class BaseMechanism {
     }
 
     public Command stopIntake(){
-        return pulseIntake().withTimeout(.5).andThen(
-            Commands.parallel(intake.reachGoal(5)
-            ,arm.reachGoal(0)));
+        return Commands.parallel(intake.reachGoal(5)
+            ,arm.reachGoal(0));
     }
 
     public Command intake(){
@@ -169,6 +170,10 @@ public class BaseMechanism {
      */
     public void setHopperPos(DoubleSupplier state){
         hopperPos = state;
+    }
+
+    public void setShooterVel(DoubleSupplier state){
+        shooterDefault = state;
     }
 
     public Command shootContinuous(DoubleSupplier pivotRotation, DoubleSupplier velocityRps, DoubleSupplier turretRotation, BooleanSupplier ready){

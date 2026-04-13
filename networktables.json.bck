@@ -10,7 +10,7 @@
   {
     "name": "/Tunables/interpolationTuning/shooter divisor",
     "type": "double",
-    "value": 1.0,
+    "value": 1.0811862790035058,
     "properties": {
       "persistent": true
     }

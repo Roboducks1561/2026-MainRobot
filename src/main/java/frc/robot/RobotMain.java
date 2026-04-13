@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -19,6 +21,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -41,6 +44,7 @@ import frc.robot.constants.ShooterConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandMechanism;
 import frc.robot.subsystems.GameState;
+import frc.robot.subsystems.ScoreMath;
 import frc.robot.subsystems.TurretMechanism.Hood;
 import frc.robot.subsystems.TurretMechanism.Indexer;
 import frc.robot.subsystems.TurretMechanism.Shooter;
@@ -54,6 +58,7 @@ import frc.robot.subsystems.swerve.swerveHelpers.Telemetry;
 import frc.robot.util.ChoreoEX;
 import frc.robot.util.MutSlewRateLimiter;
 import frc.robot.util.PoseEX;
+import frc.robot.util.SendableConsumer;
 
 
 public class RobotMain extends RobotContainer {
@@ -94,6 +99,8 @@ public class RobotMain extends RobotContainer {
   
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
+  BooleanSupplier booleanSupplier = ()->false;
+
   private void configureBindings() {
     drivetrain.resetPose(new Pose2d(7,5,Rotation2d.fromDegrees(180)));
   
@@ -122,12 +129,34 @@ public class RobotMain extends RobotContainer {
     driverController.x().whileTrue(gameState.shootSpot());
     // driverController.back().onTrue(new WheelRadiusCommand(drivetrain));
     driverController.b().whileTrue(commandMechanism.shootStatic());
-    commandMechanism.setHopperPos(()->(operatorController.getRawAxis(3)+1)/2);
+    commandMechanism.setHopperPos(()->(operatorController.getRawAxis(3)+1.0)/2.0);
     // operatorController.button(8).whileTrue(commandMechanism.setIntakeNegative());
-    operatorController.button(1).whileTrue(commandMechanism.hopperShake().alongWith(intake.reachGoal(10)));
-    operatorController.button(13).whileTrue(commandMechanism.hopperShake().alongWith(intake.reachGoal(-100)));
+    operatorController.button(1).whileTrue(commandMechanism.shooter.reachGoal(()->(60.0/.909)*ScoreMath.divisor).alongWith(Commands.waitSeconds(1).andThen(indexer.reachGoal(10).alongWith(spindexer.reachGoal(10)))));
+    DoubleEntry[] entries = SendableConsumer.setSendableChooser("interpolationTuning", new String[]{"hood additional", "shooter multiplier"}, new double[]{0.0,1});
+    operatorController.button(13).onTrue(Commands.runOnce(()->ScoreMath.divisor+=.01));
+    operatorController.button(14).onTrue(Commands.runOnce(()->ScoreMath.divisor-=.01));
+    operatorController.button(6).onTrue(Commands.runOnce(()->{
+      if (booleanSupplier.getAsBoolean()){
+        booleanSupplier = ()->false;
+      }else{
+        booleanSupplier = ()->true;
+      }
+    }));
+    commandMechanism.setShooterVel(()->{
+      return booleanSupplier.getAsBoolean() ? 30 : 0;
+    });
+    operatorController.button(5).whileTrue(commandMechanism.intake.reachGoal(20).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+
+    // commandMechanism.setShooterVel(()-> operatorController.button(6).getAsBoolean() ? 60 : 0);
+
+
+    // operatorController.button(15).whileTrue)
+    
+    // operatorController.button(13).whileTrue(commandMechanism.hopperShake().alongWith(intake.reachGoal(-100)));
     // operatorController.button(5).whileTrue(commandMechanism.setSpindexNegative());
-    operatorController.button(7).whileTrue((commandMechanism.spindexer.reachGoal(-10).alongWith(commandMechanism.indexer.reachGoal(-10))).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // operatorController.button(6).whileTrue(commandMechanism.shootStatic());
+    operatorController.button(8).whileTrue((commandMechanism.spindexer.reachGoal(-10).alongWith(commandMechanism.indexer.reachGoal(-10))).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    operatorController.button(7).whileTrue(commandMechanism.intake.reachGoal(-10).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // operatorController.button(13).whileTrue(commandMechanism.intake.reachGoal(10).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // operatorController.button(6).whileTrue(commandMechanism.arm.setVoltage(2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // operatorController.button(11).whileTrue(commandMechanism.arm.setVoltage(8).withInterruptBehavior(InterruptionBehavior.kCancelSelf));

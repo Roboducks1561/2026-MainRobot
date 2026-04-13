@@ -50,6 +50,7 @@ public class GameState {
             matchTime = Timer.getFPGATimestamp();
             gameState = 0;
         }));
+        //commandMechanism.shooter.setDefaultCommand(commandMechanism.shooter.reachGoal(()->shooting && shootingPeriod() ? 60 : 0));
     }
 
     public boolean shootingPeriod(){
@@ -65,7 +66,7 @@ public class GameState {
     }
 
     private Command shooting(){
-        return Commands.either(commandMechanism.shootStatic().unless(()->!shootingPeriod()).until(()->!shootingPeriod())
+        return Commands.either(commandMechanism.shootStatic()//.unless(()->!shootingPeriod()).until(()->!shootingPeriod())
             ,commandMechanism.passDynamic(()->passingLeft,()->-driverController.getLeftY(), ()->-driverController.getLeftX()), ()->shooting);
     }
 

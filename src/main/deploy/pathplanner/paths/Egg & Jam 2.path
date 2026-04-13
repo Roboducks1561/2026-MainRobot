@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.153717948717947,
-        "y": 5.22366096866097
+        "x": 8.19247863247863,
+        "y": 4.603490028490029
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.404344729344729,
-        "y": 4.78437321937322
+        "x": 6.913376068376067,
+        "y": 5.650028490028491
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.856424501424501,
-        "y": 5.76631054131054
+        "x": 2.9985470085470083,
+        "y": 6.644886039886041
       },
       "prevControl": {
-        "x": 3.0502279202279197,
-        "y": 5.985954415954415
+        "x": 2.9985470085470083,
+        "y": 5.081538461538462
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,6 +47,17 @@
           "name": "hopperOut"
         }
       }
+    },
+    {
+      "name": "shootSpeedup",
+      "waypointRelativePos": 0.5266711681296391,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shootSpeedup"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -59,7 +70,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -51.234480095541144
+    "rotation": -58.269115377550825
   },
   "reversed": false,
   "folder": "Egg & Jam",

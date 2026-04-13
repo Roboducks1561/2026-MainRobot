@@ -14,7 +14,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,6 +49,9 @@ public class CommandMechanism extends BaseMechanism{
     private final double shootAngle = .055;
 
     protected final Animations animations;
+
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("Tunables").getSubTable("Interpolation");
+    DoubleEntry entry = table.getDoubleTopic("multiplier").getEntry(1);
 
     private final BooleanPublisher aimCorrect = readyToShootRequirements
         .getBooleanTopic("aimCorrect").publish();
@@ -120,7 +126,7 @@ public class CommandMechanism extends BaseMechanism{
     }
 
     public Command shootStatic() {
-        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5).until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .02) && swerveDrive.getSpeeds().omegaRadiansPerSecond < .05).andThen(swerveDrive.brake())
+        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(dynamicScoringData[2]),5)//.until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .02) && swerveDrive.getSpeeds().omegaRadiansPerSecond < .05).andThen(swerveDrive.brake())
             ,shootDefault(()->dynamicScoringData, ()->readyToShootHub()));
     }
 
@@ -129,13 +135,23 @@ public class CommandMechanism extends BaseMechanism{
             .alongWith(swerveDrive.pointWhileDrive(()->Rotation2d.fromRotations(dynamicScoringData[2]), vx,vy, 5,1,5,1));    
     }
 
+    // public Command passStatic(boolean left) {
+    //     return Commands.parallel(Commands.deadline(swerveDrive.rotateTo(()->Rotation2d.fromRotations(left ? dynamicPassLeft[2] : dynamicPassRight[2]),5))
+    //         ,shootContinuous(()->0,()->60,()->0, ()->true));
+    // }
+    
     public Command passStatic(boolean left) {
-        return Commands.parallel(swerveDrive.rotateTo(()->Rotation2d.fromRotations(left ? dynamicPassLeft[2] : dynamicPassRight[2]),5)
-            ,shootDefault(()-> left ? dynamicPassLeft : dynamicPassRight, ()->true));
+        return Commands.parallel(Commands.deadline(
+                Commands.waitSeconds(100)
+                .until(()->swerveDrive.withinRotation(Rotation2d.fromRotations(dynamicScoringData[2]), .02) && swerveDrive.getSpeeds().omegaRadiansPerSecond < .05),
+                swerveDrive.rotateTo(()->Rotation2d.fromRotations(left ? dynamicPassLeft[2] : dynamicPassRight[2]),5))
+                .andThen(swerveDrive.brake())
+            ,shootContinuous(()->0,()->60,()->0, ()->true));
     }
 
+
     public Command passDynamic(BooleanSupplier left, DoubleSupplier vx, DoubleSupplier vy) {
-        return shootDefault(()-> left.getAsBoolean() ? dynamicPassLeft : dynamicPassRight, ()->true)
+        return shootContinuous(()->0,()->60,()->0, ()->true)
             .alongWith(swerveDrive.pointWhileDrive(()->Rotation2d.fromRotations(left.getAsBoolean() ? dynamicPassLeft[2] : dynamicPassRight[2]), vx, vy, 5,1,5,1));
     }
 
@@ -178,5 +194,6 @@ public class CommandMechanism extends BaseMechanism{
         Pose2d turretPose = new Pose3d(swerveDrive.getPose()).transformBy(fromSwerveBase).toPose2d();
         aimCorrect.accept(readyToShootHub());
         distance.accept(PoseEX.getDistanceFromPoseMeters(turretPose, GameData.getHubPose2d()));
+        entry.accept(ScoreMath.divisor);
     }
 }
